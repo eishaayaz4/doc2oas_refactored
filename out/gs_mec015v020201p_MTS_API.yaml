@@ -1,0 +1,512 @@
+openapi: 3.1.0
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+info:
+  contact:
+    url: https://forge.etsi.org/rep/mec/gs015-bandwith-mgmt-api
+  title: ETSI GS MEC 015 Multi-access Traffic Steering APIs
+  description: The present document focuses on the Multi-access Traffic Steering multi-access edge service. It describes the related application policy information including authorization and access control, information flows, required information and service aggregation patterns. The present document specifies the necessary API with the data model and data format.
+  license:
+    name: BSD-3-Clause
+    url: https://forge.etsi.org/legal-matters
+  version: 2.2.1
+paths:
+  /mts_capability_info:
+    get:
+      summary: Retrieve the MTS capability information.
+      description: The GET method is used to query information about the MTS information. This method is typically used in the "Get MTS service Info from the MTS Service" procedure as described in clause 6.2.6.
+      operationId: MtscapabilityinfoGET
+      tags:
+      - mts
+      responses:
+        '200':
+          description: Upon success, a response body containing the MTS capability information is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  MtsCapabilityInfo:
+                    $ref: '#/components/schemas/MtsCapabilityInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+      parameters: []
+  /mts_sessions/{sessionId}:
+    get:
+      summary: Retrieve information about specific MTS session.
+      description: This method retrieves information about an individual MTS session. This method is typically used in the "Get configured MTS Session Info from the MTS Service" procedure as described in clause 6.2.10.
+      operationId: MtssessionsGETSessionid
+      tags:
+      - mts
+      responses:
+        '200':
+          description: It is used to indicate nonspecific success. The response body contains a representation of the resource.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  MtsSessionInfo:
+                    $ref: '#/components/schemas/MtsSessionInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+      parameters:
+      - name: sessionId
+        in: path
+        required: true
+        description: The unique identifier of the sessionId.
+        schema:
+          type: string
+    put:
+      summary: Update the information about specific MTS session.
+      description: 'This method updates the information about an individual MTS session. As specified in ETSI GS MEC 009 [6], the PUT HTTP method has "replace" semantics. '
+      operationId: MtssessionsPUTSessionid
+      tags:
+      - mts
+      requestBody:
+        description: MtsSessionInfo with updated information is included as entity body of the request.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                MtsSessionInfo:
+                  $ref: '#/components/schemas/MtsSessionInfo'
+      responses:
+        '200':
+          description: Upon success, a response body containing data type describing the updated MtsSessionInfo is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  MtsSessionInfo:
+                    $ref: '#/components/schemas/MtsSessionInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+        '412':
+          $ref: '#/components/responses/412'
+      parameters:
+      - name: sessionId
+        in: path
+        required: true
+        description: The unique identifier of the sessionId.
+        schema:
+          type: string
+    delete:
+      summary: Remove specific MTS session.
+      description: DELETE method is typically used in "Unregister from the MTS Service" procedure as described in clause 6.2.8.
+      operationId: MtssessionsDELETESessionid
+      tags:
+      - mts
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+      parameters:
+      - name: sessionId
+        in: path
+        required: true
+        description: The unique identifier of the sessionId.
+        schema:
+          type: string
+  /mts_sessions:
+    get:
+      summary: Retrieve information about a list of MTS sessions.
+      description: This method retrieves information about a list of MTS sessions. This method is typically used in the "Get configured MTS Session Info from the MTS Service" procedure as described in clause 6.2.10.
+      operationId: MtssessionsGET
+      tags:
+      - mts
+      parameters:
+      - $ref: '#/components/parameters/Query.App_instance_id'
+      - $ref: '#/components/parameters/Query.App_name'
+      - $ref: '#/components/parameters/Query.Session_id'
+      responses:
+        '200':
+          description: Upon success, a response body containing an array of the MTS sessions is returned.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MtsSessionInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+    post:
+      summary: Create a MTS session.
+      description: This method is used to create a MTS session. This method is typically used in "Register application to the MTS Service" procedure as described in clause 6.2.7.
+      operationId: MtssessionsPOST
+      tags:
+      - mts
+      requestBody:
+        description: Entity body in the request contains MtsSessionInfo to be created.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                MtsSessionInfo:
+                  $ref: '#/components/schemas/MtsSessionInfo'
+      responses:
+        '201':
+          description: Upon success, the HTTP response shall include a "Location" HTTP header that contains the resource URI of the created resource.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  MtsSessionInfo:
+                    $ref: '#/components/schemas/MtsSessionInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+      parameters: []
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+    Uint32:
+      type: integer
+      format: uint32
+    Unit32:
+      type: integer
+      format: int32
+      minimum: 0
+      maximum: 2147483647
+    MtsCapabilityInfo:
+      x-etsi-ref: 7.2.4
+      type: object
+      properties:
+        timeStamp:
+          $ref: '#/components/schemas/TimeStamp'
+        mtsAccessInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/MtsAccessInfo'
+        mtsMode:
+          description: 'Numeric value corresponding to a specific MTS operation supported by the TMS
+
+            0 = low cost, i.e. using the unmetered access network connection whenever it is available
+
+            1 = low latency, i.e. using the access network connection with lower latency
+
+            2 = high throughput, i.e. using the access network connection with higher throughput, or/and multiple access network connection simultaneously if supported
+
+            3 = redundancy, i.e. sending duplicated (redundancy) packets over multiple access network connections for highreliability and low-latency applications
+
+            4 = QoS, i.e. performing MTS based on the specific QoS requirements from the app'
+          type: array
+          format: uint32
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Uint32'
+      required:
+      - mtsAccessInfo
+      - mtsMode
+      description: "|-\n  NOTE:\tA metered connection is a network connection that has a maximum data usage in a specific period, e.g.\_per hour/day/week/month. The user may get billed extra charges if they go over the allotted amount."
+    MtsSessionInfo:
+      x-etsi-ref: 7.2.5
+      type: object
+      properties:
+        sessionId:
+          description: MTS session instance identifier
+          type: string
+        timeStamp:
+          $ref: '#/components/schemas/TimeStamp1'
+        appInsId:
+          description: Application instance identifier
+          type: string
+        appName:
+          description: Name of the application
+          type: string
+        requestType:
+          type: integer
+          description: 'Numeric value (0 - 255) corresponding to specific type of consumer as following:
+
+            0 = APPLICATION_SPECIFIC_MTS_SESSION
+
+            1 = FLOW_SPECIFIC_MTS_SESSION'
+          enum:
+          - SEE_DESCRIPTION
+        flowFilter:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowFilter'
+        qosD:
+          $ref: '#/components/schemas/QosD'
+        mtsMode:
+          description: 'Numeric value (0 - 255) corresponding to a specific MTS mode of the MTS session:
+
+            0 = low cost, i.e. using the unmetered access network connection whenever it is available
+
+            1 = low latency, i.e. using the access network connection with lower latency
+
+            2 = high throughput, i.e. using the access network connection with higher throughput, or multiple access network connection simultaneously
+
+            3 = redundancy, i.e. sending duplicated (redundancy) packets over multiple access network connections for high-reliability and low-latency applications
+
+            4 = QoS, i.e. performing MTS based on the QoS requirement (qosD)'
+          type: integer
+          format: uint32
+        trafficDirection:
+          description: 'The direction of the requested MTS session:
+
+            00 = Downlink (towards the UE)
+
+            01 = Uplink (towards the application/session)
+
+            10 = Symmetrical (see note)'
+          type: string
+      required:
+      - appInsId
+      - requestType
+      - flowFilter
+      - qosD
+      - mtsMode
+      - trafficDirection
+      description: "|-\n  NOTE:\tFor the downlink direction of a symmetrical flow, \"sourceIp\" and \"sourcePort\" in the \"flowFilter\" structure are used for source address and port, respectively; \"dstIp\" and \"dstPort\" are used for destination address and port, respectively. For the uplink direction of a symmetrical flow, \"sourceIp\" and \"sourcePort\" are used for destination address and port, respectively; \"dstIp\" and \"dstPort\" are used for source address and port, respectively."
+    TimeStamp:
+      description: Time stamp to indicate when the corresponding information elements are sent
+      type: object
+      properties:
+        seconds:
+          description: Time in seconds in Unix-time since January 1, 1970, 00:00:00 UTC
+          type: integer
+          format: uint32
+        nanoSeconds:
+          description: Time in nanoseconds in Unix-time since January 1, 1970, 00:00:00 UTC
+          type: integer
+          format: uint32
+      required:
+      - seconds
+      - nanoSeconds
+    MtsAccessInfo:
+      description: The information on access network connection as defined below
+      type: object
+      minItems: 1
+      properties:
+        accessId:
+          description: Unique identifier for the access network connection
+          type: integer
+          format: uint32
+        accessType:
+          description: 'Numeric value (0-255) corresponding to specific type of access network as following:
+
+            0 = Unknown
+
+            1 = Any IEEE802.11-based WLAN technology
+
+            2 = Any 3GPP-based Cellular technology
+
+            3 = Any Fixed Access
+
+            11 = IEEE802.11 a/b/g WLAN
+
+            12 = IEEE 802.11 a/b/g/n WLAN
+
+            13 = IEEE 802.11 a/b/g/n/ac WLAN
+
+            14 = IEEE 802.11 a/b/g/n/ac/ax WLAN (Wi-Fi 6)
+
+            15 = IEEE 802.11 b/g/n WLAN
+
+            31 = 3GPP GERAN/UTRA (2G/3G)
+
+            32 = 3GPP E-UTRA (4G/LTE)
+
+            33 = 3GPP NR (5G) '
+          type: integer
+          format: uint32
+        metered:
+          description: 'Numeric value (0-255) corresponding to the following:
+
+            0: the connection is not metered (see note)
+
+            1: the connection is metered
+
+            2: unknown '
+          type: integer
+          format: uint32
+      required:
+      - accessId
+      - accessType
+      - metered
+    TimeStamp1:
+      description: 'Time stamp to indicate when the corresponding information elements are sent '
+      type: object
+      properties:
+        seconds:
+          description: The seconds part of the Time. Time is defined as Unixtime since January 1, 1970, 00:00:00 UTC
+          type: integer
+          format: uint32
+        nanoSeconds:
+          description: The nanoseconds part of the Time. Time is defined as Unix-time since January 1, 1970, 00:00:00 UTC
+          type: integer
+          format: uint32
+      required:
+      - seconds
+      - nanoSeconds
+    FlowFilter:
+      description: Traffic flow filtering criteria, applicable only if when requestType is set as FLOW_SPECIFIC_MTS_SESSION. Any filtering criteria shall define a single session only. In case multiple sessions match flowFilter, the request shall be rejected. If the flowFilter field is included, at least one of its subfields shall be included. Any flowFilter subfield that is not included shall be ignored in traffic flow filtering
+      type: object
+      minItems: 1
+      properties:
+        sourceIp:
+          description: "Source address identity of session. The string for an IPv4 address shall be formatted in the \"dotted decimal\" notation as defined in IETF RFC\_1166\_[10]. The string for an IPv6 address shall be formatted according to clause 4 of IETF RFC\_5952\_[11], with in CIDR notation [12] used to provide the routing prefix"
+          type: string
+        sourcePort:
+          description: 'Source port identity of session '
+          type: integer
+          format: uint32
+        dstIp:
+          description: "Destination address identity of session. The string for an IPv4 address shall be formatted in the \"dotted decimal\" notation as defined in IETF RFC\_1166\_[10]. The string for an IPv6 address shall be formatted according to clause 4 of IETF RFC\_5952\_[11], with in CIDR notation [12] used to provide the routing prefix"
+          type: string
+        dstPort:
+          description: Destination port identity of session
+          type: integer
+          format: uint32
+        protocol:
+          description: Protocol number
+          type: integer
+          format: uint32
+        dscp:
+          description: DSCP in the IPv4 header or Traffic Class in the IPv6 header
+          type: integer
+          format: uint32
+        flowlabel:
+          description: Flow Label in the IPv6 header, applicable only if the flow is IPv6
+          type: integer
+          format: uint32
+    QosD:
+      description: QoS requirement description of the MTS session, applicable only if mtsMode = 4 (QoS). If the qosD field is included, at least one of its subfields shall be included. Any qosD subfield that is not included shall be ignored in Multi-access Traffic Steering (MTS)
+      type: object
+      properties:
+        minTpt:
+          description: minimal throughput in [kbps]
+          $ref: '#/components/schemas/Unit32'
+          type: object
+        maxLatency:
+          description: tolerable (one-way) delay in [10 nanoseconds]
+          $ref: '#/components/schemas/Unit32'
+          type: object
+        maxLoss:
+          description: tolerable packet loss rate in [1/10^x]
+          $ref: '#/components/schemas/Unit32'
+          type: object
+        maxJitter:
+          description: tolerable jitter in [10 nanoseconds]
+          $ref: '#/components/schemas/Unit32'
+          type: object
+        priority:
+          description: 'numeric value (0 - 255) corresponding to the traffic priority: 0: low; 1: medium; 2: high; 3: critical'
+          $ref: '#/components/schemas/Unit32'
+          type: object
+  responses:
+    '200':
+      description: OK
+    '204':
+      description: No Content
+    '400':
+      description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '403':
+      description: 'Forbidden: operation is not allowed given the current status of the resource.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '404':
+      description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '412':
+      description: 'Precondition failed: used when a condition has failed during conditional requests, e.g. when using ETags to avoid write conflicts when using PUT'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+  parameters:
+    Query.App_instance_id:
+      description: 'A MEC application instance may use multiple app_instance_ids as an input parameter to query the MTS session of a list of MEC application instances. app_instance_id corresponds to appInsId defined in table 7.2.5-1.
+
+        See note.'
+      name: app_instance_id
+      in: query
+      required: false
+      x-exportParamName: Query.App_instance_id
+      schema:
+        type: array
+        items:
+          type: string
+    Query.App_name:
+      description: 'A MEC application instance may use multiple app_names as an input parameter to query the MTS session of a list of MEC application instances. app_name corresponds to appName defined in table 7.2.5-1.
+
+        See note.'
+      name: app_name
+      in: query
+      required: false
+      x-exportParamName: Query.App_name
+      schema:
+        type: array
+        items:
+          type: string
+    Query.Session_id:
+      description: 'A MEC application instance may use session_id as an input parameter to query the information of a list of MTS sessions. session_id corresponds to sessionId defined in table 7.2.5-1.
+
+        See note.'
+      name: session_id
+      in: query
+      required: false
+      x-exportParamName: Query.Session_id
+      schema:
+        type: array
+        items:
+          type: string
+

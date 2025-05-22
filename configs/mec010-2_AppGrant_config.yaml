@@ -1,0 +1,141 @@
+data_model_headings:
+  headings1:
+    - '6\.2\.4[ ]*Granting information model$'
+    - '6\.2\.5[ ]*Common information model$'
+
+  headings2:
+    - '6\.2\.2\.18[ ]*Type\: VimConnectionInfo$'
+    - '6\.2\.2\.19[ ]*Type\: AppInstanceSubscriptionLinkList$'
+
+api_def_headings:
+  headings1:
+    - 'Table 7\.2\-5 summarizes the resources and associated HTTP methods for MEO''s application life cycle management API over Mm3 reference points\.$'
+    - 'Table 7\.2\-6 summarizes the resources and associated HTTP methods for MEPM-V''s application life cycle management API over Mm3\* reference points\.$'
+
+  headings2:
+    - '7\.5[ ]*Resources of granting on Mm3$'
+    - '7\.6[ ]*Resources of MEPM''s application lifecycle management on Mm3$'
+    
+servers:
+  - url: https://localhost/granting/v1
+
+tags:
+  - 'granting'
+
+fake_data_types: False
+manual_types:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+
+    LinkType:
+      title: LinkType
+      required:
+      - href
+      type: object
+      properties:
+        href:
+          type: string
+          description: URI referring to a resource
+
+    KeyValuePairs:
+      description: |
+        This data type represents a list of key-value pairs. The order of the pairs in the list is not
+        significant. In JSON, a set of key-value pairs is represented as an object. It shall comply with
+        the provisions defined in clause 4 of IETF RFC 8259.
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+
+    KeyValuePair:
+      description: |
+        This data type represents a list of key-value pairs. The order of the pairs in the list is not
+        significant. In JSON, a set of key-value pairs is represented as an object. It shall comply with
+        the provisions defined in clause 4 of IETF RFC 8259.
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+
+
+info:
+  title: 'ETSI GS MEC 010-2 - Part 2: Application lifecycle, rules and requirements management'
+  description: 'ETSI GS MEC 010-2 - Part 2: Application lifecycle, rules and requirements management described using OpenAPI.'
+  license:
+    name: BSD-3-Clause
+    url: https://forge.etsi.org/legal-matters
+  contact:
+    name: ETSI Forge
+    url: https://forge.etsi.org/rep/mec/gs010-2-app-pkg-lcm-api
+    email: cti_support@etsi.org
+
+responses:
+  '200':
+    description: 'OK'
+  '204':
+    description: 'No Content'
+  '400':
+    description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '401':
+    description: 'Unauthorized: used when the client did not submit credentials.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '403':
+    description: 'Forbidden: operation is not allowed given the current status of the resource.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '404':
+    description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '406':
+    description: 'Not Acceptable: used to indicate that the server cannot provide the any of the content formats supported by the client.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '409':
+    description: 'Conflict: The operation cannot be executed currently, due to a conflict with the state of the resource. .'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '429':
+    description: 'Too Many Requests: used when a rate limiter has triggered.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'

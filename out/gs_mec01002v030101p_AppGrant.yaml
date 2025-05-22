@@ -1,0 +1,791 @@
+openapi: 3.1.0
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+info:
+  title: 'ETSI GS MEC 010-2 - Part 2: Application lifecycle, rules and requirements management'
+  description: 'ETSI GS MEC 010-2 - Part 2: Application lifecycle, rules and requirements management described using OpenAPI.'
+  license:
+    name: BSD-3-Clause
+    url: https://forge.etsi.org/legal-matters
+  contact:
+    name: ETSI Forge
+    url: https://forge.etsi.org/rep/mec/gs010-2-app-pkg-lcm-api
+    email: cti_support@etsi.org
+  version: 3.1.1
+paths:
+  /grants:
+    post:
+      summary: Request a grant for a particular application LCM operation.
+      description: The POST method requests a grant for a particular application lifecycle operation.
+      operationId: GrantsPOST
+      tags:
+      - granting
+      requestBody:
+        description: The POST method is to request a grand for an application lifecycle operation.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                GrantRequest:
+                  $ref: '#/components/schemas/GrantRequest'
+      responses:
+        '201':
+          description: 'Shall be returned when the grant was created successfully (synchronous mode).
+
+
+            A representation of the created "Individual grant" resource shall be returned in the response message content.
+
+
+            The HTTP response shall include a "Location" HTTP header that indicates the URI of the "Individual grant" resource just created.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Grant:
+                    $ref: '#/components/schemas/Grant'
+        '202':
+          description: 'Shall be returned when the request was accepted for processing, and it is expected to take some time to create the grant (asynchronous mode).
+
+
+            The HTTP response shall include a "Location" HTTP header that indicates the URI of the "Individual grant" resource just created.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters: []
+  /grants/{grantId}:
+    get:
+      summary: Read the status of grant for the application LCM operation.
+      description: The GET method reads a grant.
+      operationId: GrantsGETGrantid
+      tags:
+      - granting
+      responses:
+        '200':
+          description: 'Shall be returned when the grant was read successfully.
+
+
+            A representation of the "individual grant" resource shall be returned in the response message content.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Grant:
+                    $ref: '#/components/schemas/Grant'
+        '202':
+          description: 'Shall be returned when the process of creating the grant is ongoing, no grant is available yet.
+
+
+            The response message content shall be empty.
+
+
+            The HTTP response shall include a "Location" HTTP header that contains the URI of the newly-created resource.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: grantId
+        in: path
+        required: true
+        description: The unique identifier of the grantId.
+        schema:
+          type: string
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+    LinkType:
+      title: LinkType
+      required:
+      - href
+      type: object
+      properties:
+        href:
+          type: string
+          description: URI referring to a resource
+    KeyValuePairs:
+      description: 'This data type represents a list of key-value pairs. The order of the pairs in the list is not
+
+        significant. In JSON, a set of key-value pairs is represented as an object. It shall comply with
+
+        the provisions defined in clause 4 of IETF RFC 8259.
+
+        '
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    KeyValuePair:
+      description: 'This data type represents a list of key-value pairs. The order of the pairs in the list is not
+
+        significant. In JSON, a set of key-value pairs is represented as an object. It shall comply with
+
+        the provisions defined in clause 4 of IETF RFC 8259.
+
+        '
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    GrantRequest:
+      x-etsi-ref: 6.2.4.2
+      type: object
+      properties:
+        appInstanceId:
+          description: Identifier of the application instance which this grant request is related to. Shall also be provided for application instances that not yet exist but are planned to exist in the future, i.e. if the grant is requested for Instantiate.
+          type: string
+        appLcmOpOccId:
+          description: The identifier of the application lifecycle management operation occurrence associated to the GrantRequest.
+          type: string
+        appDId:
+          description: Identifier of the AppD that defines the application for which the LCM operation is to be granted.
+          type: string
+        operation:
+          type: string
+          description: 'The lifecycle management operation for which granting is requested:
+
+            INSTANTIATE.
+
+            OPERATE.
+
+            TERMINATE.
+
+
+            See notes 1 and 2.'
+          enum:
+          - SEE_DESCRIPTION
+        addResources:
+          description: List of resource definitions in the AppD for resources to be added by the LCM operation which is related to this grant request, with one entry per resource.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/ResourceDefinition'
+        tempResources:
+          description: List of resource definitions in the AppD for resources to be temporarily instantiated during the runtime of the LCM operation which is related to this grant request. See note 3.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/ResourceDefinition'
+        removeResources:
+          description: Removed by the LCM operation which is related to this grant request, with one entry per resource.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/ResourceDefinition'
+        updateResources:
+          description: Provides the definitions of resources to be modified by the LCM operation which is related to this grant request, with one entry per resource.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/ResourceDefinition'
+        additionalParams:
+          description: MEPM, specific to the application and the LCM operation.
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+      required:
+      - appInstanceId
+      - appLcmOpOccId
+      - appDId
+      - operation
+      - _links
+      description: "|-\n  NOTE 1:\tOther application LCM operations can be executed by the MEPM without requesting granting.\nNOTE 2:\tIf the granting request is for Instantiate, addResources shall be present.\nNOTE 3:\tThe MEO will assume that the MEPM will be responsible to both allocate and release the temporary resource during the runtime of the LCM operation. This means, the resource can be allocated and consumed after the \"start\" notification for the LCM operation is sent by the MEPM, and the resource will be released before the \"result\" notification of the application LCM operation is sent by the MEPM."
+    ResourceDefinition:
+      x-etsi-ref: 6.2.4.3
+      type: object
+      properties:
+        id:
+          description: Identifier of this "ResourceDefinition" structure, unique at least within the scope of the "GrantRequest" structure.
+          type: string
+        type:
+          type: string
+          description: 'Type of the resource definition referenced.
+
+            Permitted values:
+
+            COMPUTE.
+
+            STORAGE.
+
+            LINKPORT
+
+            OSCONTAINER, see note.'
+          enum:
+          - SEE_DESCRIPTION
+        vduId:
+          description: 'Reference to the related VDU in the AppD applicable to this resource.
+
+            Shall only be present if a VDU is applicable to this resource.'
+          type: string
+        resourceTemplateId:
+          description: 'Reference to a resource template in the AppD as follows:
+
+            If type="COMPUTE": VirtualComputeDescriptor,
+
+            If type="LINKPORT": AppExtCpd,
+
+            If type="STORAGE": VirtualStorageDescriptor,
+
+            If type="OSCONTAINER": osContainerDescriptor.
+
+            Cardinality may be greater than "1" when
+
+            Type ="OSCONTAINER" and multiple references to
+
+            OsContainerDescriptor are present in the AppD. Cardinality shall be "1" otherwise.'
+          type: array
+          minItems: 1
+          items:
+            type: string
+        resource:
+          $ref: '#/components/schemas/Resource'
+      required:
+      - id
+      - type
+      - resourceTemplateId
+      - resource
+      description: "|-\n  NOTE:\tThis permitted value reflects the ETSI NFV interpretation of the cloud native workloads."
+    Grant:
+      x-etsi-ref: 6.2.4.4
+      type: object
+      properties:
+        id:
+          description: 'Identifier of the Grant. '
+          type: string
+        appInstanceId:
+          description: Identifier of the application instance which this Grant is related to.
+          type: string
+        appLcmOpOccId:
+          description: The identifier of the application lifecycle management operation occurrence associated to the Grant.
+          type: string
+        vimConnections:
+          description: 'Provides information regarding VIM connections that are approved to be used by the MEPM to allocate resources, and provides parameters of these VIM connections.
+
+            See note 1.'
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/VimConnectionInfoMap'
+        zones:
+          description: Identifies resource zones where the resources are approved to be allocated by the MEPM.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/ZoneInfo'
+        zoneGroups:
+          description: Information about groups of resource zones that are related and that the MEO has chosen to fulfil a zoneGroup constraint in the Grant request.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/ZoneGroupInfo'
+        addResources:
+          description: List of resources that are approved to be added, with one entry per resource.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/GrantInfo'
+        tempResources:
+          description: List of resources that are approved to be temporarily instantiated during the runtime of the lifecycle operation, with one entry per resource.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/GrantInfo'
+        removeResources:
+          description: List of resources that are approved to be removed, with one entry per resource.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/GrantInfo'
+        updateResources:
+          description: List of resources that are approved to be modified, with one entry per resource.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/GrantInfo'
+        vimAssets:
+          $ref: '#/components/schemas/VimAssets'
+        extVirtualLinks:
+          description: Information about external VLs to connect the application instance to. See note 3.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/ExtVirtualLinkData'
+        additionalParams:
+          description: MEPM, specific to the application and the LCM operation.
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+      required:
+      - id
+      - appInstanceId
+      - appLcmOpOccId
+      - _links
+      description: "|-\n  NOTE 1: \tThis interface allows to signal the use of multiple VIMs per application. However, due to the partial support of this feature in the present release, it is recommended in the present document that the number of entries in the \"vims\" attribute in the Grant is not greater than 1.\nNOTE 2:\tThe further condition will be defined by ETSI GS NFV-SOL 003 [7].\nNOTE 3:\tExternal VLs can be passed in the application lifecycle management operation requests such as Instantiate, and/or in the grant response. The MEO may choose to override in the grant response external VL instances that have been passed previously in the associated application lifecycle management request, if the lifecycle management request has originated from the MEO itself."
+    GrantInfo:
+      x-etsi-ref: 6.2.4.5
+      type: object
+      properties:
+        resourceDefinitionId:
+          description: Identifier of the related "ResourceDefinition" structure from the related "GrantRequest" structure.
+          type: string
+        vimConnectionId:
+          description: Identifier of the VIM connection to be used to manage this resource. Shall be present for new resources, and shall be absent for resources that have already been allocated.
+          type: string
+        zoneId:
+          description: Reference to the identifier of the "ZoneInfo" structure in the "Grant" structure defining the resource zone into which this resource is to be placed. Shall be present for new resources if the zones concept is applicable to them (typically, Compute resources), and shall be absent for resources that have already been allocated.
+          type: string
+        resourceGroupId:
+          description: 'Identifier of the "infrastructure resource group", logical grouping of virtual resources assigned to a tenant within an Infrastructure Domain, to be provided when allocating the resource.
+
+            If the VIM connection referenced by "vimConnectionId" applies to multiple infrastructure resource groups, this attribute shall be present for new resources.
+
+            If the VIM connection referenced by "vimConnectionId" applies to a single infrastructure resource group, this attribute may be present for new resources.
+
+            This attribute shall be absent for resources that have already been allocated.'
+          type: string
+        containerNamespace:
+          description: 'The value of the namespace in which the MCIOs of an application with containerized components shall be deployed.
+
+            This attribute shall be present if the granted resources are managed by a CISM. The attribute shall be absent if the granted resources are not managed by a CISM. See note.'
+          type: string
+        mcioConstraints:
+          description: 'The constraint values to be assigned to MCIOs of an application with containerized components.
+
+            The key in the key-value pair indicates the parameter name of the MCIO constraint in the MCIO declarative descriptor and shall be one of the possible enumeration values of the "mcioConstraintsParams" attribute as specified in clause 7.1.6.2.2 of ETSI GS NFV-IFA 011 [1]. The value in the key-value pair indicates the value to be assigned to the MCIO constraint.
+
+            This attribute shall be present if the granted resources are managed by a CISM. The attribute shall be absent if the granted resources are not managed by a CISM. See note.'
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/KeyValuePair'
+      required:
+      - resourceDefinitionId
+      description: "|-\n  NOTE:\tThis attribute reflects the ETSI NFV interpretation of the cloud native workloads."
+    ZoneInfo:
+      x-etsi-ref: 6.2.4.6
+      type: object
+      properties:
+        id:
+          description: The identifier of this ZoneInfo instance, for the purpose of referencing it from other structures in the "Grant" structure.
+          type: string
+        zoneId:
+          description: The identifier of the resource zone, as managed by the resource management layer (typically, the VIM).
+          type: string
+        vimConnectionId:
+          description: 'Identifier of the connection to the VIM that manages the resource zone.
+
+
+            The applicable "VimConnectionInfo" structure, which is referenced by vimConnectionId, can be obtained from the " vimConnectionInfo" attribute of the "AppInstanceInfo" structure.'
+          type: string
+      required:
+      - id
+      - zoneId
+    ZoneGroupInfo:
+      x-etsi-ref: 6.2.4.7
+      type: object
+      properties:
+        zoneId:
+          description: References of identifiers of "ZoneInfo" structures, each of which provides information about a resource zone that belongs to this group.
+          type: array
+          minItems: 1
+          items:
+            type: string
+      required:
+      - zoneId
+    ExtVirtualLinkData:
+      x-etsi-ref: 6.2.4.8
+      type: object
+      properties:
+        id:
+          description: The identifier of the external VL instance. The identifier is assigned by the MEC entity that manages this VL instance.
+          type: string
+        vimConnectionId:
+          description: Identifier of the VIM connection to manage this resource.
+          type: string
+        resourceId:
+          description: The identifier of the resource in the scope of the VIM.
+          type: string
+        extCps:
+          description: External CPs of the application instance to be connected to this external VL.
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/AppExtCpData'
+        extLinkPorts:
+          description: Externally provided link ports to be used to connect external connection points to this external VL. If this attribute is not present, the MEPM shall create the link ports on the external VL.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/ExtLinkPortData'
+      required:
+      - id
+      - resourceId
+      - extCps
+    ExtLinkPortData:
+      x-etsi-ref: 6.2.4.9
+      type: object
+      properties:
+        id:
+          description: Identifier of this link port as provided by the entity that has created the link port.
+          type: string
+        resourceHandle:
+          description: Reference to the virtualised resource realizing this link port.
+          $ref: '#/components/schemas/ResourceHandle'
+          type: object
+      required:
+      - id
+      - resourceHandle
+    ResourceHandle:
+      x-etsi-ref: 6.2.4.10
+      type: object
+      properties:
+        vimConnectionId:
+          description: 'Identifier of the VIM connection to manage the resource.
+
+            The applicable "VimConnectionInfo" structure, which is referenced by vimConnectionId, can be obtained from the "vimConnectionInfo" attribute of the "AppInstance" structure.'
+          type: string
+        resourceId:
+          description: Identifier of the resource in the scope of the VIM or the CISM or the resource provider. See note 2.
+          type: string
+        vimLevelResourceType:
+          description: Type of the resource in the scope of the VIM. See note 1.
+          type: string
+      required:
+      - resourceId
+      description: "|-\n  NOTE 1:\tThe value set of the \"vimLevelResourceType\" attribute is within the scope of the VIM and can be used as information that complements the ResourceHandle. This value set is different from the value set of the \"type\" attribute in the ResourceDefinition.\nNOTE 2:\tWhen the container infrastructure service is a Kubernetes\xAE instance the resourceId shall be populated in the following way:\nFor a compute MCIO, it is the instance identifier that Kubernetes\xAE assigns, which is unique cluster wide per resource type.\nFor a storage MCIO modelled as a persistent volume claim, it is the name of the persistent volume claim, i.e. the value of the 'claimName' field in the Kubernetes\xAE manifest, or a compound name built by Kubernetes\xAE if the persistent volume claim is defined inline in another template instead of in its own manifest.\nFor a network MCIO representing a NetworkAttachmentDefinition, a Service or an Ingress, it is the value of the 'metadata.name' field in Kubernetes\xAE manifest."
+    VimSoftwareImage:
+      x-etsi-ref: 6.2.4.11
+      type: object
+      properties:
+        vimConnectionId:
+          description: Identifier of the VIM connection to access the software image referenced in this structure.
+          type: string
+        appDSoftwareImageId:
+          description: Identifier which references the software image descriptor in the AppD.
+          type: string
+        vimSoftwareImageId:
+          description: Identifier of the software image in the resource management layer (i.e. VIM). See note.
+          type: string
+      required:
+      - appDSoftwareImageId
+      - vimSoftwareImageId
+      description: "|-\n  NOTE:\tFor an OS container image, the value of this attribute is a string concatenating the name and tag of the image in the CIR separated by a colon ':' with no spaces, e.g. \"dbImage:001\"."
+    AppExtCpData:
+      x-etsi-ref: 6.2.4.12
+      type: object
+      properties:
+        cpdId:
+          description: The identifier of the CPD in the AppD.
+          type: string
+        cpConfig:
+          description: List of instance data that need to be configured on the CP instances created from the respective CPD.
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/AppExtCpConfigMap'
+      required:
+      - cpdId
+      - cpConfig
+    AppExtCpConfig:
+      x-etsi-ref: 6.2.4.13
+      type: object
+      properties:
+        cpInstanceId:
+          description: 'Identifier of the external CP instance to which this set of configuration parameters is requested to be applied.
+
+
+            Shall be present if this instance has already been created.'
+          type: string
+        linkPortId:
+          description: Identifier of a pre-configured link port to which the external CP will be associated. See note.
+          type: string
+        cpProtocolData:
+          description: Parameters for configuring the network protocols on the link port that connects the CP to a VL. See note.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/CpProtocolData'
+      description: "|-\n  NOTE:\tThe following conditions apply to the attributes \"linkPortId\" and \" cpProtocolData\":\nThe \"linkPortId\" and \"cpProtocolData\" attributes shall both be absent for the deletion of an existing external CP instance addressed by cpInstanceId.\nAt least one of these attributes shall be present for a to-be-created external CP instance or an existing external CP instance.\nIf the \"linkPortId\" attribute is absent, the MEPM shall create a link port.\nIf the \"cpProtocolData\" attribute is absent, the \"linkPortId\" attribute shall be provided referencing a pre-created link port, and the MEPM can use means outside the scope of the present document to obtain the pre-configured address information for the connection point from the resource representing the link port.\nIf both \"cpProtocolData\" and \"linkportId\" are provided, the API consumer shall ensure that the cpProtocolData can be used with the pre-created link port referenced by \"linkPortId\"."
+    CpProtocolData:
+      x-etsi-ref: 6.2.4.14
+      type: object
+      properties:
+        layerProtocol:
+          type: string
+          description: 'Identifier of layer(s) and protocol(s).
+
+
+            Permitted values: IP_OVER_ETHERNET.
+
+
+            See note.'
+          enum:
+          - SEE_DESCRIPTION
+        ipOverEthernet:
+          description: Network address data for IP over Ethernet to assign to the extCP instance. Shall be present if layerProtocol is equal to "IP_OVER_ETHERNET", and shall be absent otherwise.
+          $ref: '#/components/schemas/IpOverEthernetAddressData'
+          type: object
+      required:
+      - layerProtocol
+      description: "|-\n  NOTE:\tThis attribute allows to signal the addition of further types of layer and protocol in future versions of the present document in a backwards-compatible way. In the current version of the present document, only IP over Ethernet is supported."
+    IpOverEthernetAddressData:
+      x-etsi-ref: 6.2.4.15
+      type: object
+      properties:
+        macAddress:
+          description: MAC address. If this attribute is not present, it shall be chosen by the VIM. See note 1.
+          type: string
+        ipAddresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/IpAddresses'
+      description: "|-\n  NOTE 1:\tAt least one of \"macAddress\" or \"ipAddresses\" shall be present.\nNOTE 2:\tExactly one of \"fixedAddresses\", \"numDynamicAddresses\" or \"ipAddressRange\" shall be present."
+    VimConnectionInfo:
+      x-etsi-ref: 6.2.2.18
+      type: object
+      properties:
+        id:
+          description: The identifier of the VIM Connection. This identifier is managed by the MEO.
+          type: string
+        vimId:
+          description: 'The identifier of the VIM instance. This identifier is managed by the MEO.
+
+
+            Shall be present to address additional information about the VIM if such information has been configured into the MEPM by means outside the scope of the present document, and should be absent otherwise.'
+          type: string
+        vimType:
+          description: 'Discriminator for the different types of the VIM information.
+
+
+            The value of this attribute determines the structure of the "interfaceInfo" and "accessInfo" attributes, based on the type of the VIM.
+
+
+            The set of permitted values is expected to change over time as new types or versions of VIMs become available.'
+          type: string
+        interfaceInfo:
+          description: 'Information about the interface or interfaces to the VIM, if applicable, such as the URI of an interface endpoint to communicate with the VIM. The applicable keys are dependent on the content of vimType.
+
+
+            Alternatively, such information may have been configured into the VNFM and bound to the vimId.'
+          type: object
+        accessInfo:
+          description: 'Authentication credentials for accessing the VIM, and other access-related information such as tenants or infrastructure resource groups. The applicable keys are dependent on the content of vimType.
+
+
+            If the VimConnectionInfo structure is part of an HTTP response message content, sensitive attributes that are children of this attributes (such as passwords) shall not be included.
+
+
+            If the VimConnectionInfo structure is part of an HTTP request message content, sensitive attributes that are children of this attribute (such as passwords) shall be present if they have not been provisioned out of band.'
+          type: object
+        extra:
+          description: VIM type specific additional information. The applicable structure, and whether or not this attribute is available, is dependent on the content of vimType.
+          type: object
+      required:
+      - id
+      - vimType
+    _links:
+      description: Links to resources related to this request.
+      type: object
+      properties:
+        appLcmOpOcc:
+          description: Related lifecycle management operation occurrence.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+        appInstance:
+          description: Related application instance.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - appLcmOpOcc
+      - appInstance
+    Resource:
+      description: 'Resource information for an existing resource.
+
+        Shall be present for resources that are planned to be deleted or modified.
+
+        Shall be absent otherwise.'
+      type: object
+      properties:
+        vimConnectionInfo:
+          description: Specifies the connection information of VIM for the resources of the application instance.
+          $ref: '#/components/schemas/VimConnectionInfo'
+          type: object
+        resourceId:
+          description: Identifier of the resource in the scope of the VIM.
+          type: string
+      required:
+      - vimConnectionInfo
+      - resourceId
+    VimAssets:
+      description: 'Information about assets for the application that are managed by the MEO in the VIM, such as software images.
+
+        See note 2.'
+      type: object
+      properties:
+        softwareImages:
+          description: Mappings between software images defined in the AppD and software images managed in the VIM.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/VimSoftwareImage'
+    AddressRange:
+      description: 'An IP address range to be used, e.g. in case of egress connections.
+
+
+        In case this attribute is present, IP addresses from the range will be used. See note 2.'
+      type: object
+      properties:
+        minAddress:
+          description: Lowest IP address belonging to the range.
+          type: string
+        maxAddress:
+          description: Highest IP address belonging to the range.
+          type: string
+      required:
+      - minAddress
+      - maxAddress
+    IpAddresses:
+      description: 'List of IP addresses to assign to the CP instance. Each entry represents IP address data for fixed or dynamic IP address assignment per subnet.
+
+
+        If this attribute is not present, no IP address shall be assigned. See note 1.'
+      type: object
+      minItems: 0
+      properties:
+        type:
+          type: string
+          description: 'The type of the IP addresses.
+
+
+            Permitted values: IPV4, IPV6.'
+          enum:
+          - SEE_DESCRIPTION
+        fixedAddresses:
+          description: Fixed addresses to assign (from the subnet defined by "subnetId" if provided). See note 2.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        numDynamicAddresses:
+          description: Number of dynamic addresses to assign (from the subnet defined by "subnetId" if provided). See note 2.
+          type: integer
+        addressRange:
+          $ref: '#/components/schemas/AddressRange'
+        subnetId:
+          description: 'Subnet defined by the identifier of the subnet resource in the VIM.
+
+
+            In case this attribute is present, IP addresses from that subnet will be assigned; otherwise, IP addresses not bound to a subnet will be assigned.'
+          type: string
+      required:
+      - type
+    AppExtCpConfigMap:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/AppExtCpConfig'
+    VimConnectionInfoMap:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/VimConnectionInfo'
+  responses:
+    '200':
+      description: OK
+    '204':
+      description: No Content
+    '400':
+      description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '401':
+      description: 'Unauthorized: used when the client did not submit credentials.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '403':
+      description: 'Forbidden: operation is not allowed given the current status of the resource.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '404':
+      description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '406':
+      description: 'Not Acceptable: used to indicate that the server cannot provide the any of the content formats supported by the client.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '409':
+      description: 'Conflict: The operation cannot be executed currently, due to a conflict with the state of the resource. .'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '429':
+      description: 'Too Many Requests: used when a rate limiter has triggered.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+  parameters: {}
+

@@ -1,0 +1,1679 @@
+openapi: 3.1.0
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+info:
+  contact:
+    url: https://forge.etsi.org/rep/mec/gs029-fai-api
+  title: ETSI GS MEC 029 Fixed Access Information API
+  description: The ETSI MEC ISG Fixed Access Information API described using OpenAPI.
+  license:
+    name: BSD-3-Clause
+    url: https://forge.etsi.org/legal-matters
+  version: 2.2.1
+paths:
+  /queries/fa_info:
+    get:
+      summary: Retrieve current status of the FAI.
+      description: The GET method is used to query information about the available fixed access networks.
+      operationId: QueriesFainfoGET
+      tags:
+      - queries
+      parameters:
+      - $ref: '#/components/parameters/Query.Customerpremisesinfo'
+      - $ref: '#/components/parameters/Query.Lastmiletech'
+      - $ref: '#/components/parameters/Query.Interfacetype'
+      - $ref: '#/components/parameters/Query.Dsbw'
+      - $ref: '#/components/parameters/Query.Usbw'
+      - $ref: '#/components/parameters/Query.Latency'
+      responses:
+        '200':
+          description: Upon success, a response body containing the information of zero or more fix access networks is returned.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FaInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+  /queries/device_info:
+    get:
+      summary: Retrieve current status of the device information.
+      description: The GET method is used to query information about the devices that are connected to a fixed access network.
+      operationId: QueriesDeviceinfoGET
+      tags:
+      - queries
+      parameters:
+      - $ref: '#/components/parameters/Query.Gwid'
+      - $ref: '#/components/parameters/Query.Deviceid'
+      - $ref: '#/components/parameters/Query.Devicestatus'
+      responses:
+        '200':
+          description: Upon success, a response body containing the information of zero or more devices is returned.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeviceInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+  /queries/cable_line_info:
+    get:
+      summary: Retrieve current status of the cable line information.
+      description: The GET method is used to query information about the cable line of a fixed access network.
+      operationId: QueriesCablelineinfoGET
+      tags:
+      - queries
+      - cable_line_info
+      parameters:
+      - $ref: '#/components/parameters/Query.Customerpremisesinfo1'
+      - $ref: '#/components/parameters/Query.Cmid'
+      responses:
+        '200':
+          description: Upon success, a response body containing the information of zero or more cable lines is returned.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CableLineInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+  /queries/optical_network_info:
+    get:
+      summary: Retrieve current status of the optical network information.
+      description: The GET method is used to query information about the optical network.
+      operationId: QueriesOpticalnetworkinfoGET
+      tags:
+      - queries
+      - optical_network_info
+      parameters:
+      - $ref: '#/components/parameters/Query.Customerpremisesinfo2'
+      - $ref: '#/components/parameters/Query.Ponys_id'
+      - $ref: '#/components/parameters/Query.Onuid'
+      responses:
+        '200':
+          description: Upon success, a response body containing the information of zero or more optical networks is returned.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PonInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+  /subscriptions:
+    get:
+      summary: Retrieve a list of active subscriptions for this subscriber.
+      description: The GET method is used to request information about the subscriptions for this requestor. Upon success, the response contains entity body with the list of links to the subscriptions that are present for the requestor.
+      operationId: SubscriptionsGET
+      tags:
+      - subscriptions
+      parameters:
+      - $ref: '#/components/parameters/Query.Subscription_type'
+      responses:
+        '200':
+          description: Upon success, a response body containing the list of links to requestor's subscriptions is returned. The list shall only contain subscriptions of the subscription type specified by the URI query parameters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  SubscriptionLinkList:
+                    $ref: '#/components/schemas/SubscriptionLinkList'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+    post:
+      summary: Create a new subscription.
+      description: The POST method is used to create a new subscription to FAI notifications. Upon success, the response contains entity body describing the created subscription.
+      operationId: SubscriptionsPOST
+      tags:
+      - subscriptions
+      requestBody:
+        description: 'The entity body in the request contains data type of the specific FAI event subscription that is to be created, where the data type options are listed below:
+
+          OnuAlarmSubscription.
+
+          DevInfoSubscription.
+
+          CmConnSubscription.
+
+          AniAlarmSubscription.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                OnuAlarmSubscription:
+                  $ref: '#/components/schemas/OnuAlarmSubscription'
+      responses:
+        '201':
+          description: 'Indicates successful resource creation, where the resource URI shall be returned in the HTTP Location header field.
+
+
+            In the returned NotificationSubscription structure, the created subscription is described using the appropriate data type from the list below:
+
+            OnuAlarmSubscription.
+
+            DevInfoSubscription.
+
+            CmConnSubscription.
+
+            AniAlarmSubscription.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  OnuAlarmSubscription:
+                    $ref: '#/components/schemas/OnuAlarmSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '415':
+          $ref: '#/components/responses/415'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+      callbacks:
+        notification:
+          '{$request.body#/callbackUri}':
+            post:
+              summary: Callback POST used to send a notification
+              description: Subscription notification
+              operationId: notificationPOST
+              requestBody:
+                description: Subscription notification
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        subscriptionNotification:
+                          oneOf:
+                          - $ref: '#/components/schemas/OnuAlarmSubscription'
+                          - $ref: '#/components/schemas/DevInfoSubscription'
+                          - $ref: '#/components/schemas/CmConnSubscription'
+                          - $ref: '#/components/schemas/AniAlarmSubscription'
+              responses:
+                '204':
+                  description: No content
+                '404':
+                  description: Not found
+      parameters: []
+  /subscriptions/{subscriptionId}:
+    get:
+      summary: Retrieve information on current specific subscription.
+      description: The GET method is used to retrieve information about this subscription. Upon success, the response contains entity body with the data type describing the subscription.
+      operationId: SubscriptionsGETSubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '200':
+          description: 'Upon success, a response body containing data type describing the specific FAI event subscription is returned. The allowed data types for subscriptions are as follows:
+
+            OnuAlarmSubscription.
+
+            DevInfoSubscription.
+
+            CmConnSubscription.
+
+            AniAlarmSubscription.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  OnuAlarmSubscription:
+                    $ref: '#/components/schemas/OnuAlarmSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+    put:
+      summary: Modify existing subscription by sending a new data structure.
+      description: The PUT method is used to update the existing subscription. PUT method in this case has "replace" semantics. Upon successful operation, the target resource is updated with new Data Type received within the message body of the PUT request.
+      operationId: SubscriptionsPUTSubscriptionid
+      tags:
+      - subscriptions
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+    delete:
+      summary: Cancel the existing subscription.
+      description: The DELETE method is used to cancel the existing subscription. Cancellation can be made by deleting the resource that represents existing subscription.
+      operationId: SubscriptionsDELETESubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+components:
+  schemas:
+    LinkType:
+      x-etsi-ref: 6.5.8
+      type: object
+      properties:
+        href:
+          description: URI referring to a resource
+          type: string
+          format: uri
+      required:
+      - href
+    Href:
+      description: The URI referring to the subscription.
+      type: string
+      format: uri
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+    FaInfo:
+      x-etsi-ref: 6.2.2
+      type: object
+      properties:
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        customerPremisesInfo:
+          description: The physical location of a customer site.
+          $ref: '#/components/schemas/CpInfo'
+          type: object
+        lastMileTech:
+          type: integer
+          description: 'An informative field identifying the last mile access technology used.
+
+            The valid values are:
+
+            1 = ADSL.
+
+            2 = VDSL.
+
+            3 = GPON.
+
+            4 = XGPON.
+
+            5 = NGPON2.
+
+            6 = XGSPON.
+
+            7 = GFAST.
+
+            8 = P2PEthernet.'
+          enum:
+          - SEE_DESCRIPTION
+        interfaceType:
+          type: integer
+          description: 'The physical interface used for the end customer site:
+
+            1   =   100BASE-TX.
+
+            2   =   1000BASE-TX.
+
+            3   =   1000BASE-LX.
+
+            4   =   1000BASELX10.
+
+            5   =   1000BASEBX10.
+
+            6   =   1000BASE-LH.
+
+            7   =   1000Base-ZX.
+
+            8   =   ADSL-RJ11.
+
+            9   =   VDSL-RJ11.
+
+            10 =   GPON.'
+          enum:
+          - SEE_DESCRIPTION
+        dsbw:
+          description: The bandwidth (in Mbps) from the network towards the customer site.
+          type: integer
+        usbw:
+          description: The bandwidth (in Mbps) from the customer site towards the network.
+          type: integer
+        latency:
+          description: Maximum baseline latency (in ms) between customer site and service edge node.
+          type: integer
+      required:
+      - customerPremisesInfo
+      - lastMileTech
+      - interfaceType
+    DeviceInfo:
+      x-etsi-ref: 6.2.3
+      type: object
+      properties:
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        gwId:
+          description: 'Information (typically the serial number) to identify an Internet Gateway Device through which the customer premises device is connected.
+
+
+            This value shall remain fixed over the lifetime of the device, including across firmware updates.'
+          type: string
+        deviceId:
+          description: 'Typically, the serial number of the device.
+
+
+            This value shall remain fixed over the lifetime of the device, including across firmware updates.'
+          type: string
+        deviceStatus:
+          type: integer
+          description: 'Current operational status of the device. Enumeration of:
+
+            1 = Up.
+
+            2 = Initializing.
+
+            3 = Error.
+
+            4 = Disabled.'
+          enum:
+          - SEE_DESCRIPTION
+        upTime:
+          description: Time in seconds since the device was last restarted.
+          type: integer
+        iPConnectionUpTime:
+          description: The time in seconds that the IP interface has been connected.
+          type: integer
+        totalBytesSent:
+          description: Total number of IP payload bytes sent since the device was last restarted.
+          type: integer
+        totalBytesReceived:
+          description: Total number of IP payload bytes received since the device was last restarted.
+          type: integer
+        totalPacketsSent:
+          description: Total number of packets sent since the device was last restarted.
+          type: integer
+        totalPacketsReceived:
+          description: Total number of packets received since the device was last restarted.
+          type: integer
+        iPPingDiagnostics:
+          description: The result of an IP-layer ping test.
+          $ref: '#/components/schemas/IPPingDiagnostics'
+          type: object
+        traceRouteDiagnostics:
+          description: The result of an IP-layer trace-route test.
+          $ref: '#/components/schemas/TraceRouteDiagnostics'
+          type: object
+        downloadDiagnostics:
+          description: The result of a HTTP and FTP DownloadDiagnostics Test.
+          $ref: '#/components/schemas/DownloadDiagnostics'
+          type: object
+        uploadDiagnostics:
+          description: The result of a HTTP and FTP UploadDiagnostics Test.
+          $ref: '#/components/schemas/UploadDiagnostics'
+          type: object
+      required:
+      - gwId
+      - deviceId
+      - deviceStatus
+      - upTime
+      - iPConnectionUpTime
+      - totalBytesSent
+      - totalBytesReceived
+      - totalPacketsSent
+      - totalPacketsReceived
+    CableLineInfo:
+      x-etsi-ref: 6.2.4
+      type: object
+      properties:
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        customerPremisesInfo:
+          description: The physical location of a customer site.
+          $ref: '#/components/schemas/CpInfo'
+          type: object
+        cmId:
+          description: 'Information (typically the serial number) to identify a Cable Modem at subscriber locations intended for use in conveying data communications on a cable data system.
+
+
+            This value SHALL remain fixed over the lifetime of the device, including across firmware updates.'
+          type: string
+        cmStatus:
+          $ref: '#/components/schemas/CmStatus'
+        cmDpvStats:
+          $ref: '#/components/schemas/CmDpvStats'
+        serviceFlowStats:
+          $ref: '#/components/schemas/ServiceFlowStats'
+      required:
+      - customerPremisesInfo
+      - cmId
+    PonInfo:
+      x-etsi-ref: 6.2.5
+      type: object
+      properties:
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        customerPremisesInfo:
+          description: The physical location of a customer site.
+          $ref: '#/components/schemas/CpInfo'
+          type: object
+        ponSYS_ID:
+          description: 'The 20-bit identity of the optical system within a certain domain.
+
+            This is a reference value set by the OSS.'
+          type: string
+        onuId:
+          description: Information to identify an Optical Network Unit.
+          type: string
+        ponTech:
+          type: integer
+          description: 'An informative field identifying the optical technology used.
+
+
+            The valid values are:
+
+            1 = GPON.
+
+            2 = XGPON.
+
+            3 = NGPON2.
+
+            4 = XGSPON.'
+          enum:
+          - SEE_DESCRIPTION
+        operationalState:
+          type: integer
+          description: 'It reports whether the ONU is currently capable of performing its function. Valid values are:
+
+            0 = enabled
+
+            1 = disabled'
+          enum:
+          - SEE_DESCRIPTION
+        dsRate:
+          type: integer
+          description: "Downstream line rate, valid values are:\n1 =\t2,48832 Gbit/s: G-PON [i.9]; or\nNG-PON2 option 2 [i.8].\n2 =\t9,95328 Gbit/s:  XG-PON [i.10]; or\nXGS-PON [i.11]; or\nNG-PON2 option 1 [i.8]."
+          enum:
+          - SEE_DESCRIPTION
+        usRate:
+          type: integer
+          description: "Upstream line rate, valid values are:\n1 =\t1,24416 Gbit/s: G-PON option 1 [i.9].\n2 =\t2,48832 Gbit/s: G-PON option 2 [i.9]; or\nXG-PON [i.10]; or\nNG-PON2 option 2 [i.8].\n3 =\t9,95328 Gbit/s: XGS-PON [i.11]; or\nNG-PON2 option 1 [i.8]."
+          enum:
+          - SEE_DESCRIPTION
+      required:
+      - customerPremisesInfo
+      - ponSYS_ID
+      - onuId
+      - ponTech
+      - operationalState
+      - dsRate
+      - usRate
+    OnuAlarmSubscription:
+      x-etsi-ref: 6.3.2
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "OnuAlarmSubscription".
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: "Shall be set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as described in ETSI GS MEC 009 [i.1], clause\_6.12a.\nDefault: FALSE. "
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between FAIS and the service consumer for notifications. See note.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+        filterCriteriaOnuAlarm:
+          $ref: '#/components/schemas/FilterCriteriaOnuAlarm'
+        expiryDeadline:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - filterCriteriaOnuAlarm
+      description: "|-\n  NOTE:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to FAIS to choose an alternative and return only that alternative in the response, as described in ETSI GS MEC 009 [i.1], clause 6.12a."
+    DevInfoSubscription:
+      x-etsi-ref: 6.3.3
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "DevInfoSubscription".
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: "Shall be set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as described in ETSI GS MEC 009 [i.1], clause\_6.12a.\nDefault: FALSE. "
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between FAIS and the service consumer for notifications. See note.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+        filterCriteriaDevInfo:
+          $ref: '#/components/schemas/FilterCriteriaDevInfo'
+        expiryDeadline:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - filterCriteriaDevInfo
+      description: "|-\n  NOTE:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to FAIS to choose an alternative and return only that alternative in the response, as described in ETSI GS MEC 009 [i.1], clause 6.12a."
+    CmConnSubscription:
+      x-etsi-ref: 6.3.4
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "CmConnSubscription".
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note 1.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: "Shall be set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as described in ETSI GS MEC 009 [i.1], clause\_6.12a.\nDefault: FALSE. "
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between FAIS and the service consumer for notifications. See note 1.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+        filterCriteriaCmConn:
+          $ref: '#/components/schemas/FilterCriteriaCmConn'
+        expiryDeadline:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - filterCriteriaCmConn
+      description: "|-\n  NOTE 1:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to FAIS to choose an alternative and return only that alternative in the response, as described in ETSI GS MEC 009 [i.1], clause 6.12a.\nNOTE 2:\t'notReady' indicates that the CM has not started the registration process yet.\n\t'notSynchronized' indicates that the CM has not initiated or completed the synchronization of the downstream physical layer.\n\t'phySynchronized' indicates that the CM has completed the synchronization of the downstream physical layer.\n\t'dsTopologyResolutionInProgress' indicates that the CM is attempting to determine its MD-DS-SG.\n\t'usParametersAcquired' indicates that the CM has completed the upstream parameters acquisition or have completed the downstream and upstream service groups resolution.\n\t'rangingInProgress' indicates that the CM has initiated the initial ranging process.\n\t'rangingComplete' indicates that the CM has completed initial ranging and received a Ranging Status of success from the CMTS in the RNG-RSP message.\n\t'eaeInProgress' indicates that the CM has sent an Auth Info message for EAE.\n\t'dhcpv4InProgress' indicates that the CM has sent a DHCPv4 DISCOVER to gain IP connectivity.\n\t'dhcpv6InProgress' indicates that the CM has sent a DHCPv6 Solicit message.\n\t'dhcpv4Complete' indicates that the CM has received a DHCPv4 ACK message from the CMTS.\n\t'dhcpv6Complete' indicates that the CM has received a DHCPv6 Reply message from the CMTS.\n\t'todEstablished' indicates that the CM has successfully acquired time of day.\n\t'securityEstablished' indicates that the CM has successfully completed the BPI initialization process.\n\t'configFileDownloadComplete' indicates that the CM has completed the config file download process.\n\t'registrationInProgress' indicates that the CM has sent a Registration Request.\n\t'registrationComplete' indicates that the CM has successfully completed the Registration process with the CMTS.\n\t'accessDenied' indicates that the CM has received a registration aborted notification from the CMTS.\n\t'operational' indicates that the CM has completed all necessary initialization steps and is operational.\n\t'bpiInit' indicates that the CM has started the BPI initialization process as indicated in the CM config file.\n\t'forwardingDisabled' indicates that the registration process was completed, but the network access option in the received configuration file prohibits forwarding."
+    SubscriptionLinkList:
+      x-etsi-ref: 6.3.5
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/_links1'
+      required:
+      - _links
+    AniAlarmSubscription:
+      x-etsi-ref: 6.3.6
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "AniAlarmSubscription".
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: "Shall be set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as described in ETSI GS MEC 009 [i.1], clause\_6.12a.\nDefault: FALSE. "
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between FAIS and the service consumer for notifications. See note.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+        filterCriteriaAniAlarm:
+          $ref: '#/components/schemas/FilterCriteriaAniAlarm'
+        onuId:
+          description: The unique identifiers for the optical network unit,
+          type: string
+        aniIndex:
+          description: The index of an access network interface supported by the optical network unit.
+          type: string
+        alarms:
+          description: "In case alarms is not included in the subscription request, the default value -1 = All shall be used and included in the response:\n0  =\tLowReceivedOpticalPower.\n(Received downstream optical power below threshold.)\n1  =\tHighReceivedOpticalPower.\n\t(Received downstream optical power above threshold.)\n2  =\tSignalFalure.\n(Bit error-based signal fail.)\n3  =\tSignalDegrade.\n(Bit error-based signal degrade.)\n4  =\tLowTransmitOpticalPower.\n(Transmit optical power below lower threshold.)\n5  =\tHighTransmitOpticalPower.\n(Transmit optical power above upper threshold.)\n6  =\tLaserBiasCurrent.\n(Laser bias current above threshold determined by vendor.)\n-1 =\tAll."
+          type: array
+          minItems: 0
+          items:
+            type: integer
+        expiryDeadline:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - filterCriteriaAniAlarm
+      - onuId
+      - aniIndex
+      description: "|-\n  NOTE:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to FAIS to choose an alternative and return only that alternative in the response, as described in ETSI GS MEC 009 [i.1], clause 6.12a."
+    OnuAlarmNotification:
+      x-etsi-ref: 6.4.2
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "OnuAlarmNotification".
+          type: string
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        customerPremisesInfo:
+          description: The physical location of the related customer sites.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/CpInfo'
+        onuId:
+          description: The unique identifier for an optical network unit.
+          type: string
+        alarm:
+          type: string
+          description: "Indicates the alarm of the ONU:\n0  \t= \tEquipmentAlarm.\n1  \t= \tPoweringAlarm.\n2  \t= \tBatteryMissing.\n3  \t= \tBatteryFailure.\n4  \t= \tBatteryLow.\n5  \t= \tPhysicalIntrusion.\n6  \t= \tOnuSelfTestFailure.\n7  \t= \tDyingGasp.\n8  \t= \tTemperatureYellow.\n9  \t= \tTemperatureRed.\n10 \t= \tVoltageYellow.\n11 \t= \tVoltageRed.\n12 \t= \tOnuManualPowerOff.\n13 \t= \tInvImage.\n14 \t= \tPseOverloadYellow.\n15 \t= \tPseOverloadRed."
+          enum:
+          - SEE_DESCRIPTION
+      required:
+      - notificationType
+      - onuId
+      - alarm
+    DevInfoNotification:
+      x-etsi-ref: 6.4.3
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "DevInfoNotification".
+          type: string
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        deviceId:
+          description: The identifier for a device.
+          type: string
+        deviceErrStatus:
+          type: integer
+          description: 'Indicates the abnormal operational status of the device. Enumeration of:
+
+            1 = Error.
+
+            2 = Disabled.'
+          enum:
+          - SEE_DESCRIPTION
+      required:
+      - notificationType
+      - deviceId
+      - deviceErrStatus
+    CmConnNotification:
+      x-etsi-ref: 6.4.4
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "CmconnNotification".
+          type: string
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        customerPremisesInfo:
+          description: The physical location of a customer site.
+          $ref: '#/components/schemas/CpInfo'
+          type: object
+        cmIf:
+          type: array
+          items:
+            $ref: '#/components/schemas/CmIf1'
+      required:
+      - notificationType
+      - cmIf
+    ExpiryNotification:
+      x-etsi-ref: 6.4.5
+      type: object
+      properties:
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links2'
+        expiryDeadline:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - _links
+      - expiryDeadline
+    AniAlarmNotification:
+      x-etsi-ref: 6.4.6
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "AniAlarmNotification".
+          type: string
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        customerPremisesInfo:
+          description: The physical location of the related customer sites.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/CpInfo'
+        onuId:
+          description: The unique identifiers for the optical network unit.
+          type: string
+        aniId:
+          $ref: '#/components/schemas/AniId1'
+        aniIndex:
+          description: The index of an access network interface supported by the optical network unit.
+          type: string
+        alarm:
+          type: integer
+          description: 'Indicates the alarm of the ANI:
+
+            0 = LowReceivedOpticalPower.
+
+            1 = HighReceivedOpticalPower.
+
+            2 = SignalFailure.
+
+            3 = SignalDegrade.
+
+            4 = LowTransmitOpticalPower.
+
+            5 = HighTransmitOpticalPower.
+
+            6 = LaserBiasCurrent.'
+          enum:
+          - SEE_DESCRIPTION
+      required:
+      - notificationType
+      - onuId
+      - aniIndex
+      - alarm
+    TestNotification:
+      x-etsi-ref: 6.4.7
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "TestNotification".
+          type: string
+        _links:
+          $ref: '#/components/schemas/_links3'
+      required:
+      - notificationType
+      - _links
+    TimeStamp:
+      x-etsi-ref: 6.5.2
+      type: object
+      properties:
+        seconds:
+          description: The seconds part of the time. Time is defined as Unixtime since January 1, 1970, 00:00:00 UTC.
+          type: integer
+          format: uint32
+        nanoSeconds:
+          description: The nanoseconds part of the time. Time is defined as Unix-time since January 1, 1970, 00:00:00 UTC.
+          type: integer
+          format: uint32
+      required:
+      - seconds
+      - nanoSeconds
+    CpInfo:
+      x-etsi-ref: 6.5.3
+      type: object
+      properties:
+        latitude:
+          description: 'Latitude (DATUM=WGS84)
+
+            -90 to 90 in decimal degree format DDD.ddd'
+          type: number
+          format: float
+        longitude:
+          description: 'Longitude (DATUM=WGS84)
+
+            -180 to 180 in decimal degree format DDD.ddd'
+          type: number
+          format: float
+        postalCode:
+          description: Postal code for the location
+          type: string
+    IPPingDiagnostics:
+      x-etsi-ref: 6.5.4
+      type: object
+      properties:
+        diagnosticsState:
+          type: integer
+          description: 'The state of the IP ping test. Enumeration of:
+
+            1 = None.
+
+            2 = Requested.
+
+            3 = Complete.
+
+            4 = Error_CannotResolveHostName.
+
+            5 = Error_Internal.
+
+            6 = Error_Other.'
+          enum:
+          - SEE_DESCRIPTION
+        host:
+          description: Host name or address of the host to ping.
+          type: string
+        numberOfRepetitions:
+          description: Number of repetitions of the ping test to perform before reporting the results.
+          type: integer
+        timeout:
+          description: Timeout in milliseconds for the ping test.
+          type: integer
+        dataBlockSize:
+          description: Size of the data block in bytes to be sent for each ping.
+          type: integer
+        successCount:
+          description: 'Result parameter indicating the number of successful
+
+            pings (those in which a successful response was received prior to the timeout) in the most recent ping test.'
+          type: integer
+        failureCount:
+          description: Result parameter indicating the number of failed pings in the most recent ping test.
+          type: integer
+        averageResponseTime:
+          description: 'Result parameter indicating the average response time in milliseconds over all repetitions with successful responses of the most recent ping test.
+
+
+            If there were no successful responses, this value shall be zero.'
+          type: integer
+        minimumResponseTime:
+          description: 'Result parameter indicating the minimum response time in milliseconds over all repetitions with successful responses of the most recent ping test.
+
+
+            If there were no successful responses, this value shall be zero.'
+          type: integer
+        maximumResponseTime:
+          description: 'Result parameter indicating the maximum response time in milliseconds over all repetitions with successful responses of the most recent ping test.
+
+
+            If there were no successful responses, this value shall be zero.'
+          type: integer
+      required:
+      - diagnosticsState
+    TraceRouteDiagnostics:
+      x-etsi-ref: 6.5.5
+      type: object
+      properties:
+        diagnosticsState:
+          type: integer
+          description: 'The state of the IP trace-route test. Enumeration of:
+
+            1 = None.
+
+            2 = Requested.
+
+            3 = Complete.
+
+            4 = Error_CannotResolveHostName.
+
+            5 = Error_MaxHopCountExceeded.
+
+            6 = Error_Internal.
+
+            7 = Error_Other.'
+          enum:
+          - SEE_DESCRIPTION
+        host:
+          description: Host name or address of the host to find a route to.
+          type: string
+        timeout:
+          description: Timeout in milliseconds for the trace route test.
+          type: integer
+        dataBlockSize:
+          description: Size of the data block in bytes to be sent for each trace route.
+          type: integer
+        maxHopCount:
+          description: The maximum number of hop used in outgoing probe packets. The default is 30 hops.
+          type: integer
+        responseTime:
+          description: 'Result parameter indicating the response time in milliseconds the most recent trace route test.
+
+
+            If a route could not be determined, this value shall be zero.'
+          type: integer
+        numberOfRouteHops:
+          description: 'Result parameter indicating the number of hops within the discovered route.
+
+
+            If a route could not be determined, this value shall be zero.'
+          type: integer
+      required:
+      - diagnosticsState
+    DownloadDiagnostics:
+      x-etsi-ref: 6.5.6
+      type: object
+      properties:
+        diagnosticsState:
+          type: string
+          description: "The state of the HTTP and FTP download test. Enumeration of:\n1 \t= \tNone.\n2 \t= \tRequested.\n3 \t= \tCompleted.\n4 \t= \tError_InitConnectionFailed.\n5 \t= \tError_NoResponse.\n6 \t= \tError_TransferFailed.\n7 \t= \tError_PasswordRequestFailed.\n8 \t= \tError_LoginFailed.\n9 \t= \tError_NoTransferMode.\n10 \t= \tError_NoPASV.\n11 \t= \tError_IncorrectSize.\n12 \t= \tError_Timeout."
+          enum:
+          - SEE_DESCRIPTION
+        downloadURI:
+          description: The URI for the device to perform the download on.
+          type: string
+          format: uri
+        rOMTime:
+          description: Request time in UTC, which shall be specified to microsecond precision.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        bOMTime:
+          description: Begin of transmission time in UTC, which shall be specified to microsecond precision.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        eOMTime:
+          description: End of transmission in UTC, which shall be specified to microsecond precision.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        testBytesReceived:
+          description: The test traffic received in bytes during the FTP/HTTP transaction including FTP/HTTP headers, between bOMTime and eOMTime.
+          type: integer
+        totalBytesReceived:
+          description: The total number of bytes received on the Interface between bOMTime and eOMTime.
+          type: integer
+        tCPOpenRequestTime:
+          description: Request time in UTC, which shall be specified to microsecond precision.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        tCPOpenReponseTime:
+          description: Response time in UTC, which shall be specified to microsecond precision.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - diagnosticsState
+    UploadDiagnostics:
+      x-etsi-ref: 6.5.7
+      type: object
+      properties:
+        diagnosticsState:
+          type: string
+          description: "The state of the HTTP and FTP download test. Enumeration of:\n1 \t= \tNone.\n2 \t= \tRequested.\n3 \t= \tCompleted.\n4 \t= \tError_InitConnectionFailed.\n5 \t= \tError_NoResponse.\n6 \t= \tError_PasswordRequestFailed.\n7 \t= \tError_LoginFailed.\n8 \t= \tError_NoTransferMode.\n9 \t= \tError_NoPASV.\n10 \t= \tError_NoCWD.\n11 \t= \tError_NoSTOR.\n12 \t= \tError_NoTransferComplete."
+          enum:
+          - SEE_DESCRIPTION
+        uploadURI:
+          description: The URI for the device to perform the upload to.
+          type: string
+          format: uri
+        testFileLength:
+          description: The size of the file (in bytes) to be uploaded to the server.
+          type: integer
+        rOMTime:
+          description: Request time in UTC, which shall be specified to microsecond precision.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        bOMTime:
+          description: Begin of transmission time in UTC, which shall be specified to microsecond precision.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        eOMTime:
+          description: End of transmission in UTC, which shall be specified to microsecond precision.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        testBytesSent:
+          description: The test traffic sent in bytes during the FTP/HTTP transaction including FTP/HTTP headers, between bOMTime and eOMTime.
+          type: integer
+        tCPOpenRequestTime:
+          description: Request time in UTC, which shall be specified to microsecond precision.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        tCPOpenReponseTime:
+          description: Response time in UTC, which shall be specified to microsecond precision.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - diagnosticsState
+    WebsockNotifConfig:
+      x-etsi-ref: 6.5.9
+      type: object
+      properties:
+        websocketUri:
+          description: Set by FAIS to indicate to the service consumer the Websocket URI to be used for delivering notifications.
+          type: string
+          format: uri
+        requestWebsocketUri:
+          description: Set to true by the service consumer to indicate that Websocket delivery is requested.
+          type: boolean
+    CmStatus:
+      description: It provides CM connectivity status information of the CM.
+      type: object
+      properties:
+        ifIndex:
+          description: It denotes the MAC Domain interface index of the CM.
+          type: string
+        cmRegState:
+          type: string
+          description: "It defines the CM connectivity state. Enumeration of:\n1 \t= \tother.\n2 \t= \tnotReady.\n3 \t= \tnotSynchronized.\n4 \t= \tphySynchronized.\n5 \t= \tusParametersAcquired.\n6 \t= \trangingComplete.\n7 \t= \tdhcpV4Complete.\n8 \t= \ttodEstablished.\n9 \t= \tsecurityEstablished.\n10 \t= \tconfigFileDownloadComplete.\n11 \t= \tregistrationComplete.\n12 \t= \toperational.\n13 \t= \taccessDenied.\n14 \t= \teaeInProgress.\n15 \t= \tdhcpv4InProgress.\n16 \t= \tdhcpv6InProgress.\n17 \t= \tdhcpV6Complete.\n18 \t= \tregistrationInProgress.\n19 \t= \tbpiInit.\n20 \t= \tforwardingDisabled.\n21 \t= \tdsTopologyResolutionInProgress.\n22 \t= \trangingInProgress.\n23 \t= \trfMuteAll."
+          enum:
+          - SEE_DESCRIPTION
+        resets:
+          description: It denotes the number of times the CM reset or initialized this interface.
+          type: integer
+        lostSyncs:
+          description: It denotes the number of times the CM lost synchronization with the downstream channel.
+          type: integer
+        invalidRegRsps:
+          description: It denotes the number of times the CM received invalid registration response messages.
+          type: integer
+        energyMgt1x1OperStatus:
+          description: It indicates whether the CM is currently operating in Energy Management 1x1 Mode.
+          type: boolean
+        emDlsOperStatus:
+          description: It indicates whether the CM is currently operating in Energy Management DLS Mode.
+          type: boolean
+      required:
+      - ifIndex
+      - cmRegState
+      - resets
+      - lostSyncs
+      - invalidRegRsps
+      - energyMgt1x1OperStatus
+      - emDlsOperStatus
+    CmDpvStats:
+      description: It represents the DOCSIS Path Verify Statistics collected in the cable modem device.
+      type: object
+      properties:
+        ifIndex:
+          description: It represents the interface Index of the Downstream Interface where the measurements are taken.
+          type: string
+        lastMeasLatency:
+          description: The last latency measurement.
+          type: integer
+        lastMeasTime:
+          description: The last measurement time of the last latency measurement.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        minLatency:
+          description: The minimum latency measurement.
+          type: integer
+        maxLatency:
+          description: The maximum latency measurement.
+          type: integer
+        avgLatency:
+          description: The average latency measurement.
+          type: integer
+        numMeas:
+          description: The number of latency measurements made.
+          type: integer
+      required:
+      - ifIndex
+      - lastMeasLatency
+      - lastMeasTime
+      - minLatency
+      - maxLatency
+      - avgLatency
+      - numMeas
+    ServiceFlowInfo:
+      description: It represents the information of a Service Flow.
+      type: object
+      minItems: 1
+      properties:
+        serviceFlowId:
+          description: It represents an identifier assigned to a Service Flow by CMTS within a MAC Domain.
+          type: integer
+        pkts:
+          description: For outgoing Service Flows, this attribute counts the number of Packet Data PDUs forwarded to this Service Flow. For incoming upstream CMTS service flows, this attribute counts the number of Packet Data PDUs actually received on the Service Flow identified by the SID for which the packet was scheduled.
+          type: integer
+        timeCreated:
+          description: It indicates the time when the service flow was created.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        timeActive:
+          description: It indicates the number of seconds that the service flow has been active.
+          type: integer
+        policedDropPkts:
+          description: "For upstream service flows, this attribute counts the number of Packet Data PDUs classified to this service flow dropped due to:\n1)\texceeding the selected Buffer Size for the service flow; or\n2)\tUGS packets dropped due to exceeding the Unsolicited Grant Size with a Request/Transmission policy that requires such packets to be dropped."
+          type: integer
+        policedDelayPkts:
+          description: It counts only outgoing packets delayed in order to maintain the Maximum Sustained Traffic Rate.
+          type: integer
+        aqmDroppedPkts:
+          description: For upstream service flows on which AQM is enabled, this attribute counts the number of Packet Data PDUs classified to this service flow dropped due to Active Queue Management drop decisions.
+          type: integer
+      required:
+      - serviceFlowId
+      - pkts
+      - timeCreated
+      - timeActive
+      - policedDropPkts
+      - policedDelayPkts
+      - aqmDroppedPkts
+    ServiceFlowStats:
+      description: It describes statistics associated with the Service Flows in a managed device.
+      type: object
+      properties:
+        ifIndex:
+          description: It represents the interface index of the MAC Domain of the Service Flow.
+          type: string
+        serviceFlowInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceFlowInfo'
+      required:
+      - ifIndex
+      - serviceFlowInfo
+    _links:
+      description: Hyperlink related to the resource. This shall be only included in the HTTP responses and in HTTP PUT requests.
+      type: object
+      properties:
+        self:
+          description: Self-referring URI. The URI shall be unique within the FAI API as it acts as an ID for the subscription.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - self
+    FilterCriteriaOnuAlarm:
+      description: List of filtering criteria for the subscription. Any filtering criteria from below, which is included in the request, shall also be included in the response.
+      type: object
+      properties:
+        customerPremisesInfo:
+          description: 0 to N physical locations of the customer sites.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/CpInfo'
+        onuId:
+          description: '1 to N unique identifiers for the optical network units.
+
+            Typical it is the unique serial number for each ONU, which contains the vendor ID and version number. The first four bytes are an ASCII-encoded four-letter vendor ID. The second four bytes are a binary encoded serial number, under the control of the ONU vendor.'
+          type: array
+          minItems: 1
+          items:
+            type: string
+        alarms:
+          description: "In case alarms is not included in the subscription request, the default value -1 = All shall be used and included in the response:\n0  =\tEquipmentAlarm.\n\t(Functional failure on an internal interface.)\n1  =\tPoweringAlarm.\n\t(Loss of external power to battery backup unit. This alarm is typically derived through an external interface to a battery backup unit, and indicates that AC is no longer available to maintain battery charge.)\n2  =\tBatteryMissing.\n\t(Battery is provisioned but missing.)\n3  =\tBatteryFailure.\n\t(Battery is provisioned and present but cannot recharge.)\n4  =\tBatteryLow.\n\t(Battery is provisioned and present but its voltage is too low.)\n5  =\tPhysicalIntrusion.\n\t(Applies if the ONU supports detection such as door or box open.)\n6  =\tOnuSelfTestFailure.\n\t(ONU has failed autonomous self-test.)\n7  =\tDyingGasp.\n\t(ONU is powering off imminently due to loss of power to the ONU itself.)\n8  =\tTemperatureYellow.\n\t(No service shutdown at present, but the circuit pack is operating beyond its recommended range.)\n9  =\tTemperatureRed.\n\t(Some services have been shut down to avoid equipment damage.)\n10 =\tVoltageYellow.\n\t(No service shutdown at present, but the line power voltage is below its recommended minimum.)\n11 =\tVoltageRed.\n\t(Some services have been shut down to avoid power collapse.)\n12 =\tOnuManualPowerOff.\n\t(The ONU is shutting down because the subscriber has turned off its power switch.)\n13 =\tInvImage.\n\t(Software image is invalid.)\n14 =\tPseOverloadYellow.\n\t(Indicates that the ONU is nearing its maximum ability to supply the known PoE demand of the attached PDs. The thresholds for declaring and clearing this alarm are vendor-specific.)\n15 =\tPseOverloadRed.\n\t(Indicates that the ONU is unable to supply all of the PoE demand of the attached PDs and has removed or reduced power to at least one PD.)\n-1 =\tAll."
+          type: array
+          minItems: 0
+          items:
+            type: integer
+      required:
+      - onuId
+    FilterCriteriaDevInfo:
+      description: List of filtering criteria for the subscription. Any filtering criteria from below, which is included in the request, shall also be included in the response.
+      type: object
+      properties:
+        gwId:
+          description: The identifier of an Internet Gateway Device through which the customer premises device is connected.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        deviceId:
+          description: The device identifier.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        deviceErrStatus:
+          description: 'The abnormal operational status of the device. Enumeration of:
+
+            1 = Error.
+
+            2 = Disabled.'
+          type: array
+          minItems: 0
+          items:
+            type: integer
+    CmIf:
+      description: ''
+      type: object
+      minItems: 0
+      properties:
+        cmId:
+          description: The identifier of a Cable Modem at subscriber locations intended for use in conveying data communications on a cable data system.
+          type: string
+        ifIndex:
+          description: The MAC Domain interface index of the CM.
+          type: array
+          minItems: 1
+          items:
+            type: string
+        cmRegState:
+          description: "It indicates the CM connectivity state.  See note 2 for detail. Enumeration of:\n1 \t= \tnotReady.\n2 \t= \tnotSynchronized.\n3 \t= \tphySynchronized.\n4 \t= \tdsTopologyResolutionInProgress.\n5 \t= \tusParametersAcquired.\n6 \t= \trangingInProgress.\n7 \t= \trangingComplete.\n8 \t= \teaeInProgress.\n9 \t= \tdhcpv4InProgress.\n10 \t= \tdhcpv6InProgress.\n11 \t= \tdhcpV4Complete.\n12 \t= \tdhcpV6Complete.\n13 \t= \ttodEstablished.\n14 \t= \tsecurityEstablished.\n15 \t= \tconfigFileDownloadComplete.\n16 \t= \tregistrationInProgress.\n17 \t= \tregistrationComplete.\n18 \t= \taccessDenied.\n19 \t=\toperational.\n20 \t= \tbpiInit.\n21 \t= \tforwardingDisabled."
+          type: array
+          minItems: 1
+          items:
+            type: string
+      required:
+      - cmId
+      - ifIndex
+      - cmRegState
+    FilterCriteriaCmConn:
+      description: List of filtering criteria for the subscription. Any filtering criteria from below, which is included in the request, shall also be included in the response.
+      type: object
+      properties:
+        customerPremisesInfo:
+          description: The physical location of a customer site.
+          $ref: '#/components/schemas/CpInfo'
+          type: object
+        cmIf:
+          type: array
+          items:
+            $ref: '#/components/schemas/CmIf'
+    Subscriptions:
+      description: The service consumer's subscriptions.
+      type: object
+      minItems: 0
+      properties:
+        href:
+          description: The URI referring to the subscription.
+          type: string
+          format: uri
+        subscriptionType:
+          description: "Type of the subscription. The string shall be set according to the \"subscriptionType\" attribute of the associated subscription data type defined in clauses\_6.3.2, 6.3.3, 6.3.4 and 6.3.6:\n\"OnuAlarmSubscription\"\n\"DevInfoSubscription\"\n\"CmConnSubscription\"\n\"AniAlarmSubscription\""
+          type: string
+      required:
+      - href
+      - subscriptionType
+    _links1:
+      description: Hyperlinks related to the resource.
+      type: object
+      properties:
+        self:
+          description: URI of this resource.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+        subscriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscriptions'
+      required:
+      - self
+    AniId:
+      description: ''
+      type: object
+      minItems: 1
+    FilterCriteriaAniAlarm:
+      description: List of filtering criteria for the subscription. Any filtering criteria from below, which is included in the request, shall also be included in the response.
+      type: object
+      properties:
+        customerPremisesInfo:
+          description: 0 to N physical locations of the customer sites.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/CpInfo'
+        onuId:
+          description: '1 to N unique identifiers for the optical network units.
+
+            Typical it is the unique serial number for each ONU, which contains the vendor ID and version number. The first four bytes are an ASCII-encoded four-letter vendor ID. The second four bytes are a binary encoded serial number, under the control of the ONU vendor.'
+          type: array
+          minItems: 1
+          items:
+            type: string
+        aniId:
+          type: array
+          items:
+            $ref: '#/components/schemas/AniId'
+      required:
+      - onuId
+      - aniId
+    CmIf1:
+      description: ''
+      type: object
+      minItems: 1
+      properties:
+        cmId:
+          description: The Cable Modem identifier.
+          type: string
+        ifIndex:
+          description: The MAC Domain interface index of the CM.
+          type: array
+          minItems: 1
+          items:
+            type: string
+        cmRegState:
+          description: "It indicates the CM connectivity state. Enumeration of:\n1 \t= \tnotReady.\n2 \t= \tnotSynchronized.\n3 \t= \tphySynchronized.\n4 \t= \tdsTopologyResolutionInProgress.\n5 \t= \tusParametersAcquired.\n6 \t= \trangingInProgress.\n7 \t= \trangingComplete.\n8 \t= \teaeInProgress.\n9 \t= \tdhcpv4InProgress.\n10 \t= \tdhcpv6InProgress.\n11 \t= \tdhcpV4Complete.\n12 \t= \tdhcpV6Complete.\n13 \t= \ttodEstablished.\n14 \t= \tsecurityEstablished.\n15 \t= \tconfigFileDownloadComplete.\n16 \t= \tregistrationInProgress.\n17 \t= \tregistrationComplete.\n18 \t= \taccessDenied.\n19 \t= \toperational.\n20 \t= \tbpiInit.\n21 \t= \tforwardingDisabled."
+          type: array
+          minItems: 1
+          items:
+            type: string
+      required:
+      - cmId
+      - ifIndex
+      - cmRegState
+    _links2:
+      description: List of hyperlinks related to the resource.
+      type: object
+      properties:
+        self:
+          description: Self-referring URI. This shall be included in the response from the FAIS. The URI shall be unique within the FAI API as it acts as an ID for the subscription.
+          type: string
+          format: uri
+      required:
+      - self
+    AniId1:
+      description: ''
+      type: object
+    _links3:
+      description: 'Hyperlink related to the resource. '
+      type: object
+      properties:
+        subscription:
+          description: URI identifying the subscription for the test notification.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - subscription
+  responses:
+    '200':
+      description: OK
+    '204':
+      description: No Content
+    '400':
+      description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '401':
+      description: 'Unauthorized: used when the client did not submit credentials.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '403':
+      description: 'Forbidden: operation is not allowed given the current status of the resource.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '404':
+      description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '406':
+      description: 'Not Acceptable: used to indicate that the server cannot provide the any of the content formats supported by the client.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '412':
+      description: 'Precondition failed: used when a condition has failed during conditional requests, e.g. when using ETags to avoid write conflicts when using PUT'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '415':
+      description: 'Unsupported Media Type: used to indicate that the server or the client does not support the content type of the entity body.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '422':
+      description: 'Unprocessable Entity: used to indicate that the server understands the content type of the request entity and that the syntax of the request entity is correct but that the server is unable to process the contained instructions. This error condition can occur if an JSON request body is syntactically correct but semantically incorrect, for example if the target area for the request is considered too large. This error condition can also occur if the capabilities required by the request are not supported.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '429':
+      description: 'Too Many Requests: used when a rate limiter has triggered.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+  parameters:
+    Query.Customerpremisesinfo:
+      description: Comma separated list of customer premises information defined in clause 6.2.2.
+      name: customerpremisesinfo
+      in: query
+      required: false
+      x-exportParamName: Query.Customerpremisesinfo
+      schema:
+        $ref: '#/components/schemas/CpInfo'
+    Query.Lastmiletech:
+      description: "Comma separated list of last mile technologies defined in clause\_6.2.2."
+      name: lastmiletech
+      in: query
+      required: false
+      x-exportParamName: Query.Lastmiletech
+      schema:
+        type: array
+        items:
+          type: integer
+    Query.Interfacetype:
+      description: Comma separated list of interface types defined in clause 6.2.2.
+      name: interfacetype
+      in: query
+      required: false
+      x-exportParamName: Query.Interfacetype
+      schema:
+        type: array
+        items:
+          type: integer
+    Query.Dsbw:
+      description: Comma separated list of the bandwidth (in Mbps) from the network towards the customer site defined in clause 6.2.2.
+      name: dsbw
+      in: query
+      required: false
+      x-exportParamName: Query.Dsbw
+      schema:
+        type: array
+        items:
+          type: integer
+    Query.Usbw:
+      description: Comma separated list of the bandwidth (in Mbps) from the customer site towards the network defined in clause 6.2.2.
+      name: usbw
+      in: query
+      required: false
+      x-exportParamName: Query.Usbw
+      schema:
+        type: array
+        items:
+          type: integer
+    Query.Latency:
+      description: "Comma separated list of the maximum baseline latency (in ms) between customer site and service edge node defined in clause\_6.2.2."
+      name: latency
+      in: query
+      required: false
+      x-exportParamName: Query.Latency
+      schema:
+        type: array
+        items:
+          type: integer
+    Query.Gwid:
+      description: Comma separated list of gateway identifier defined in clause 6.2.3.
+      name: gwid
+      in: query
+      required: false
+      x-exportParamName: Query.Gwid
+      schema:
+        type: array
+        items:
+          type: string
+    Query.Deviceid:
+      description: Comma separated list of device identifier defined in clause 6.2.3.
+      name: deviceid
+      in: query
+      required: false
+      x-exportParamName: Query.Deviceid
+      schema:
+        type: array
+        items:
+          type: string
+    Query.Devicestatus:
+      description: Comma separated list of device status defined in clause 6.2.3.
+      name: devicestatus
+      in: query
+      required: false
+      x-exportParamName: Query.Devicestatus
+      schema:
+        type: array
+        items:
+          type: integer
+    Query.Customerpremisesinfo1:
+      description: Comma separated list of customer premises information defined in clause 6.2.4.
+      name: customerpremisesinfo
+      in: query
+      required: false
+      x-exportParamName: Query.Customerpremisesinfo1
+      schema:
+        $ref: '#/components/schemas/CpInfo'
+    Query.Cmid:
+      description: Comma separated list of Cable Modem identifiers defined in clause 6.2.4.
+      name: cmid
+      in: query
+      required: false
+      x-exportParamName: Query.Cmid
+      schema:
+        type: array
+        items:
+          type: string
+    Query.Customerpremisesinfo2:
+      description: Comma separated list of customer premises information defined in clause 6.2.5.
+      name: customerpremisesinfo
+      in: query
+      required: false
+      x-exportParamName: Query.Customerpremisesinfo2
+      schema:
+        $ref: '#/components/schemas/CpInfo'
+    Query.Ponys_id:
+      description: Comma separated list of optical system identifiers defined in clause 6.2.5.
+      name: ponys_id
+      in: query
+      required: false
+      x-exportParamName: Query.Ponys_id
+      schema:
+        type: array
+        items:
+          type: string
+    Query.Onuid:
+      description: Comma separated list of optical network unit identifiers defined in clause 6.2.5.
+      name: onuid
+      in: query
+      required: false
+      x-exportParamName: Query.Onuid
+      schema:
+        type: array
+        items:
+          type: string
+    Query.Subscription_type:
+      description: "Query parameter to filter on a specific subscription type. Permitted values:\nonu_alarm\tOptical Network Unit alarm\ndevice_abnormal_alert\tDevice abnormal alert\ncm_connectivity_state\tCable Modem connectivity state \nani_alarm\tAccess Node Interface alarm."
+      name: subscription_type
+      in: query
+      required: false
+      x-exportParamName: Query.Subscription_type
+      schema:
+        type: string
+

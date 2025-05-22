@@ -1,0 +1,200 @@
+---
+data_model_headings:
+  headings1:
+    - '6[ ]*Data Model$'
+    - '7[ ]*API definition$'
+
+api_def_headings:
+  headings1:
+    - '7[ ]*API definition$'
+    - 'Annex A \(informative\)\:\nComplementary material for API utilization$'
+    
+servers:
+  - url: https://localhost/wai/v2
+
+tags:
+  - 'queries'
+  - 'subscriptions'
+  - 'measurements'
+
+fake_data_types: False
+manual_types:
+  ProblemDetails:
+    type: object
+    properties:
+      type:
+        type: string
+        format: uri
+        description: A URI reference according to IETF RFC 3986 that identifies the problem type
+      title:
+        type: string
+        description: A short, human-readable summary of the problem type
+      status:
+        type: integer
+        format: uint32
+        description: The HTTP status code for this occurrence of the problem
+      detail:
+        type: string
+        description: A human-readable explanation specific to this occurrence of the problem
+      instance:
+        type: string
+        format: uri
+        description: A URI reference that identifies the specific occurrence of the problem
+  MeasurementConfigLinkList1_:
+    properties:
+      _links:
+        description: Hyperlink related to the resource.
+        properties:
+          self:
+            description': Self-referring URI
+            $ref: '#/components/schemas/LinkType'
+        required:
+        - self
+        type: object
+      measurementConfig:
+        description: ''
+        items:
+          type: object
+          properties:
+            href:
+              description: The URI referring to a measurement configuration.
+              format: uri
+              type: string
+            measurementId:
+              description: Unique identifier allocated by the service consumer to identify measurement reports associated with this measurement configuration.
+              type: string
+          required:
+          - href
+          - measurementId
+        type: array
+    required:
+    - _links
+    type: object
+    x-etsi-ref: 6.2.5
+  SubscriptionLinkList1_:
+    properties:
+      _links:
+        description: List of hyperlinks related to the resource.
+        properties:
+          self:
+            description': Self referring URI
+            $ref: '#/components/schemas/LinkType'
+        required:
+        - self
+        type: object
+      subscription:
+        description: ''
+        items:
+          type: object
+          properties:
+            href:
+              description: The URI referring to the subscription.
+              format: uri
+              type: string
+            subscriptionType:
+              description: "Type of the subscription. The string shall be set according to the \"subscriptionType\" attribute of the associated subscription data type defined in 6.3.2, 6.3.3. and 6.3.5:\n\u201CAssocStaSubscription\u201D\n\u201CStaDataRateSubscription\u201D\n\u201CMeasurementReportSubscription\u201D"
+              type: string
+          minItems: 0
+          required:
+          - href
+          - subscriptionType
+        type: array
+    required:
+    - _links
+    type: object
+    x-etsi-ref: 6.3.4
+  InlineNotification:
+    oneOf:
+      - $ref: '#/components/schemas/AssocStaNotification'
+      - $ref: '#/components/schemas/StaDataRateNotification'
+      - $ref: '#/components/schemas/MeasurementReportNotification'
+    discriminator:
+      propertyName: notificationType
+  InlineSubscription:  
+    oneOf:
+      - $ref: '#/components/schemas/AssocStaSubscription'
+      - $ref: '#/components/schemas/StaDataRateSubscription'
+      - $ref: '#/components/schemas/MeasurementReportSubscription'
+    discriminator:
+      propertyName: subscriptionType
+
+info:
+  contact:
+    url: https://forge.etsi.org/rep/mec/gs028-wai-api
+  title: 'ETSI GS MEC 028 MEC WLAN Information API'
+  description: The ETSI MEC ISG MEC WLAN Information API described using OpenAPI.
+  license:
+    name: BSD-3-Clause
+    url: 'https://forge.etsi.org/legal-matters'
+
+responses:
+  '200':
+    description: 'OK'
+  '204':
+    description: 'No Content'
+  '400':
+    description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '401':
+    description: 'Unauthorized: used when the client did not submit credentials.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '403':
+    description: 'Forbidden: operation is not allowed given the current status of the resource.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '404':
+    description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '406':
+    description: 'Not Acceptable: used to indicate that the server cannot provide the any of the content formats supported by the client.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '412':
+    description:
+      'Precondition failed: used when a condition has failed during conditional requests, e.g. when
+      using ETags to avoid write conflicts when using PUT'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '415':
+    description: 'Unsupported Media Type: used to indicate that the server or the client does not support the content type of the entity body.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '422':
+    description:
+      'Unprocessable Entity: used to indicate that the server understands the content type of the request entity and that the
+      syntax of the request entity is correct but that the server is unable to process the contained instructions. This error condition can occur if an
+      JSON request body is syntactically correct but semantically incorrect, for example if the target area for the request is considered too large. This
+      error condition can also occur if the capabilities required by the request are not supported.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '429':
+    description: 'Too Many Requests: used when a rate limiter has triggered.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '416':
+    description: 'The server cannot satisfy the request because the requested range is not valid.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'

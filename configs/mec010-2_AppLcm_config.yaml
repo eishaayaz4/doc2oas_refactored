@@ -1,0 +1,919 @@
+data_model_headings:
+  headings1:
+    - '^6\.2\.1\.7 Type: ServiceDescriptor$'
+    - '^6\.2\.1\.15 Type: TerminateAppInstanceOpConfig$'
+
+  headings2:
+    - '^6\.2\.1\.17 Type: ServiceDependency$'
+    - '^6\.2\.2 Application lifecycle management information model$'
+
+  headings3:
+    - '6\.2\.2 Application lifecycle management information model$'
+    - '6\.2\.3 Application package information model$'
+
+  headings4:
+    - '6\.2\.5[ ]*Common information model$'
+    - '6\.3[ ]*Interfaces$'
+
+  
+api_def_headings:
+  headings1:
+    - 'Table 7\.2\-2 summarizes the resources and associated HTTP methods for application life cycle management APIs over the Mm1 reference point\.$'
+    - 'Table 7\.2\-3 summarizes the resources and associated HTTP methods for MEO''s application package management APIs over Mm3 reference points\.$'
+
+  headings2:
+    - '7\.4[ ]*Resources of application lifecycle management on Mm1$'
+    - '7\.5[ ]*Resources of granting on Mm3$'
+  
+  headings3:
+    - '7\.7[ ]*Resources of MEPM\-V''s application lifecycle management on Mm3\*$'
+    - 'Annex A \(informative\)\:\nApplication package state model$'
+    
+servers:
+  - url: https://localhost/app_lcm/v1
+
+tags:
+- 'app-lcm'
+- 'subscriptions'
+- 'notification'
+
+fake_data_types: False
+manual_types:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+
+    VirtualMemoryData:
+      type: object
+      required:
+      - virtualMemSize
+      properties:
+        virtualMemSize:
+          type: number
+          description: Amount of virtual memory in MB.
+        virtualMemOversubscriptionPolicy:
+          type: string
+          description: |
+            The memory core oversubscription policy in terms of virtual memory to physical memory
+            on the platform. The cardinality can be 0 during the allocation request, if no particular
+            value is requested.
+        vduMemRequirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValuePairs'
+          description: Array of key-value pair requirements on the memory for the VDU.
+        numaEnabled:
+          type: boolean
+          description: Specifies the memory allocation to be cognisant of the relevant process/core allocation.
+        hugePagesRequirements:
+          type: string
+          description: Specifies requirements on the huge pages resources for the virtual memory.
+
+    BlockStorageData:
+      type: object
+      required:
+        - sizeOfStorage
+      properties:
+        sizeOfStorage:
+          type: number
+          description: Size of virtualised storage resource in GB.
+        vduStorageRequirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValuePairs'
+          description: An array of key-value pairs that articulate the storage deployment requirements.
+        rdmaEnabled:
+          type: boolean
+          description: Indicate if the storage support RDMA.
+        swImageDesc:
+          type: object
+          $ref: '#/components/schemas/SwImageDesc'
+          description: |
+            References the software image to be loaded on the VirtualStorage resource created
+            based on this VirtualStorageDesc. Shall be absent when used for virtual disks. See note
+
+    VirtualCpuData:
+      type: object
+      required:
+        - numVirtualCpu
+      properties:
+        cpuArchitecture:
+          type: string
+          description: CPU architecture type. Examples are x86, ARM.
+        numVirtualCpu:
+          type: integer
+          description: Number of virtual CPUs.
+        virtualCpuClock:
+          type: number
+          description: Minimum virtual CPU clock rate (e.g. in MHz).
+        virtualCpuOversubscriptionPolicy:
+          type: string
+          description: The CPU core oversubscription policy, e.g. the relation of virtual CPU cores to physical CPU cores/threads.
+        vduCpuRequirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValuePairs'
+          description: Array of key-value pair requirements on the Compute (CPU) for the VDU.
+        virtualCpuPinning:
+          $ref: '#/components/schemas/VirtualCpuPinningData'
+
+    RequestedAdditionalCapabilityData:
+      type: object
+      required:
+        - requestedAdditionalCapabilityName
+        - supportMandatory
+        - targetPerformanceParameters
+      properties:
+        requestedAdditionalCapabilityName:
+          type: string
+          description: Specifies a requested additional capability for the VDU
+        supportMandatory:
+          type: boolean
+          description: Indicates whether the requested additional capability is mandatory for successful operation
+        minRequestedAdditionalCapabilityVersion:
+          type: string
+          description: Specifies the minimum version of the requested additional capability
+        preferredRequestedAdditionalCapabilityVersion:
+          type: string
+          description: Specifies the preferred version of the requested additional capability
+        targetPerformanceParameters:
+          type: array
+          description: Specifies specific attributes, dependent on the requested additional capability type. 
+          items:
+            $ref: '#/components/schemas/KeyValuePairs'
+
+
+    VirtualStorageDescriptor:
+      type: object
+      required:
+        - id
+        - typeOfStorage
+      properties:
+        id:
+          type: string
+          description: Unique identifier of this VirtualStorageDesc in the VNFD.
+        typeOfStorage:
+          type: string
+          description: Type of virtualised storage resource.
+          enum:
+            - BLOCK
+            - OBJECT
+            - FILE
+        blockStorageData:
+          type: object
+          $ref: '#/components/schemas/BlockStorageData'
+          description: Details of block storage.
+        objectStorageData:
+          type: object
+          $ref: '#/components/schemas/ObjectStorageData'
+          description: Details of object storage.
+        fileStorageData:
+          type: object
+          $ref: '#/components/schemas/FileStorageData'
+          description: Details of file storage.
+        nfviMaintenanceInfo:
+          type: object
+          $ref: '#/components/schemas/NfviMaintenanceInfo'
+          description: Information on the rules to be observed during NFVI operation and maintenance.
+        perVnfcInstance:
+          type: boolean
+          description: Indicates whether the virtual storage resource shall be instantiated per VNFC instance.
+
+    FileStorageData:
+      type: object
+      required:
+        - sizeOfStorage
+        - fileSystemProtocol
+        - intVirtualLinkDesc
+      properties:
+        sizeOfStorage:
+          type: number
+          description: Size of virtualised storage resource in GB.
+        fileSystemProtocol:
+          type: string
+          description: The shared file system protocol (e.g. NFS, CIFS).
+        intVirtualLinkDesc:
+          type: object
+          $ref: '#/components/schemas/VnfVirtualLinkDesc'
+          description: Reference of the internal VLD which this file storage connects to.
+
+    VnfVirtualLinkDesc:
+      type: object
+      required:
+        - virtualLinkDescId
+        - virtualLinkDescFlavour
+        - connectivityType
+      properties:
+        virtualLinkDescId:
+          type: string
+          description: Unique identifier of this internal VLD in VNFD.
+        virtualLinkDescFlavour:
+          type: array
+          description: Describes a specific flavour of the VL with specific bitrate requirements.
+          items:
+            $ref: '#/components/schemas/VirtualLinkDescFlavour'
+        connectivityType:
+          type: object
+          description: See clause 7.1.7.3.
+          $ref: '#/components/schemas/ConnectivityType'
+        testAccess:
+          type: array
+          description: Specifies test access facilities expected on the VL.
+          items:
+            type: string
+            example: passive monitoring
+        description:
+          type: string
+          description: Provides human-readable information on the purpose of the VL.
+          example: control plane traffic
+        monitoringParameter:
+          type: array
+          description: Specifies the virtualised resource related performance metrics on VLD level to be tracked by the VNFM.
+          items:
+            $ref: '#/components/schemas/MonitoringParameter'
+        nfviMaintenanceInfo:
+          type: object
+          description: When present, provides information on the rules to be observed when an instance based on this VnfVirtualLinkDesc is impacted during NFVI operation and maintenance (e.g. NFVI resource upgrades). NfviMaintenanceInfo is defined in clause 7.1.8.17. 
+          $ref: '#/components/schemas/NfviMaintenanceInfo'
+        externallyManaged:
+          type: string
+          description: Specifies the intent of the VNF designer with respect to the internal VL instances created from this descriptor being externally managed.
+          enum:
+            - REQUIRED
+            - ALLOWED
+          default: ALLOWED
+
+    ConnectivityType:
+      type: object
+      required:
+        - layerProtocol
+      properties:
+          layerProtocol:
+            type: array
+            description: |
+              Specifies the protocols that the VL uses See note 1 and note 2.
+            items:
+              type: string
+              enum: 
+                - Ethernet
+                - MPLS
+                - ODU2
+                - IPV4
+                - IPV6
+                - Pseudo-Wire
+                - Etc
+            minItems: 1
+          flowPattern:
+            type: string
+            description: Specifies the flow pattern of the connectivity (Line, Tree, Mesh, etc.).
+      description: |
+        NOTE 1 The top layer protocol of the VL protocol stack shall always be provided. The lower layer protocols may be included when there are specific requirements on these layers. 
+        NOTE 2  If more than 1 values are present, the first value represents the highest layer protocol data, and the last value represents the lowest layer protocol data. 
+
+
+    QoS:
+      type: object
+      required:
+        - latency
+        - packetDelayVariation
+      properties:
+        latency:
+          type: number
+          description: Latency of the VL in milliseconds.
+        packetDelayVariation:
+          type: number
+          description: Packet delay variation of the VL in milliseconds.
+        packetLossRatio:
+          type: number
+          description: Packet loss ratio of the VL in percentage.
+
+    VirtualLinkDescFlavour:
+      type: object
+      required:
+        - flavourId
+      properties:
+        flavourId:
+          type: string
+          description: Identifies a flavour within a VnfVirtualLinkDesc.
+        qos:
+          type: object
+          $ref: '#/components/schemas/QoS'
+          description: QoS of the VL.
+
+    Version:
+      type: object
+      required:
+        - srcVnfdId
+        - dstVnfdId
+        - srcFlavourId
+      properties:
+        srcVnfdId:
+          type: string
+          description: Identifier of the source VNFD and the source VNF package. See note 1.
+        dstVnfdId:
+          type: string
+          description: Identifier of the destination VNFD and the destination VNF package. See note 1.
+        srcFlavourId:
+          type: string
+          description: Identifier of the deployment flavour in the source VNF package for which this modification applies. See note 2.
+      description: |
+        NOTE 1: Either the srcVnfdId or the dstVnfdId shall be equal to the vnfdId of the VNFD containing this version selector. 
+        NOTE 2: It is up to protocol design stage to decide whether there is further optimization potential to apply one modification for multiple srcFlavourIds.
+
+
+    AppInstanceSubscriptionType:
+      type: string
+      enum:
+      - AppInstanceStateChangeSubscription
+      - AppLcmOpOccStateChangeSubscription
+      - AppIdentifierCreationSubscription
+      - AppIdentifierDeletionSubscription
+      description: String representing the type of a subscription.
+
+    McioInfo:
+      type: object
+      required:
+        - mcioId
+        - mcioName
+        - mcioNamespace
+        - vduId
+        - cismId
+        - mcioType
+        - desiredInstances
+        - availableInstances
+      properties:
+        mcioId:
+          type: string
+          description: Identifier of this MCIO, created by the CISM.
+        mcioName:
+          type: string
+          description: Human readable name of this MCIO.
+        mcioNamespace:
+          type: string
+          description: Namespace of this MCIO 
+        vduId:
+          type: string
+          description: Reference to the applicable Vdu information element in the VNFD. 
+        cismId:
+          type: string
+          description: Identifier of the CISM managing this MCIO.
+        mcioType:
+          type: string
+          description: The type of MCIO. See note 1. 
+        desiredInstances:
+          type: integer
+          description: Number of desired MCIO instances.
+        availableInstances:
+          type: integer
+          description: Number of available MCIO instances 
+        additionalInfo:
+          type: string
+          description: Additional information which is specific to the MCIO, its type, and which is available from the CISM. See note 2
+      description: |
+        NOTE 1: The type of MCIO as specified in the declarative descriptor of the MCIO, and that can be read from the CISM.
+        EXAMPLE: In case of MCIOs managed by Kubernetes®, the type of MCIO corresponds to the "kind" property of the declarative descriptor.
+        NOTE 2: If the attribute additionalInfo is present, it may contain runtime information on the actual and desired state of the MCIO(s)
+
+    CommunicationInterface:
+      type: object
+      properties:
+        ipAddresses:
+          type: array
+          description: Entry point information of the service as one or more pairs of IP address and port. 
+          items:
+            $ref: '#/components/schemas/ipAddresses'
+
+    OsContainerDescriptor:
+      title: OsContainerDescriptor
+      type: object
+      required:
+        - osContainerDescId
+        - name
+        - description
+        - swImageDesc
+      properties:
+        osContainerDescId:
+          type: string
+          description: Unique identifier of this OsContainerDesc in the VNFD.
+        name:
+          type: string
+          description: Human readable name of this OS container.
+        description:
+          type: string
+          description: Human readable description of this OS container.
+        requestedCpuResources:
+          type: integer
+          description: Number of CPU resources requested for the container (e.g. in milli-CPU-s).
+        requestedMemoryResources:
+          type: number
+          description: Amount of memory resources requested for the container (e.g. in MB).
+        requestedEphemeralStorageResources:
+          type: number
+          description: Size of ephemeral storage resources requested for the container (e.g. in GB).
+        extendedResourceRequests:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValuePairs'
+          description:  An array of key-value pairs of extended resources required by the container see note.
+        cpuResourceLimit:
+          type: integer
+          description: Number of CPU resources the container can maximally use (e.g. in milli-CPU).
+        memoryResourceLimit:
+          type: number
+          description: Amount of memory resources the container can maximally use (e.g. in MB).
+        ephemeralStorageResourceLimit:
+          type: number
+          description: Size of ephemeral storage resources the container can maximally use (e.g. in GB).
+        hugePageResources:
+          type: object
+          description: Specifies HugePages resources requested for the container, which the container can maximally use.
+          additionalProperties:
+            type: string
+        cpuPinningRequirements:
+          type: object
+          $ref: '#/components/schemas/VirtualCpuPinningData'
+          description: Requirements for CPU pinning configuration for this OS container.
+        swImageDesc:
+          type: object
+          $ref: '#/components/schemas/SwImageDesc'
+          description: Describes the software image realizing this OS container. 
+        bootData:
+          type: string
+          description: Contains a string or a URL to a file contained in the VNF package used to customize a container resource at boot time. The bootData may contain variable parts that are replaced by deployment specific values before being sent.
+        monitoringParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/MonitoringParameter'
+          description: Specifies the virtualized resource related performance metrics on the OsContainerDesc level to be tracked by the VNFM.
+
+    KeyValuePairs:
+      type: object
+      additionalProperties:
+        type: object
+
+    ObjectStorageData:
+      type: object
+      properties:
+        maxSizeOfStorage:
+          type: number
+          description: Maximum size of virtualized storage resource in GB.
+
+    VirtualCpuPinningData:
+      type: object
+      properties:
+        virtualCpuPinningPolicy:
+          type: string
+          description: Indicates the policy for CPU pinning.
+          enum:
+            - STATIC
+            - DYNAMIC
+        virtualCpuPinningRule:
+          type: array
+          items:
+            type: string
+          description: List of rules that should be considered during the allocation of the virtual CPUs to logical CPUs in case of "STATIC" virtualCpuPinningPolicy.
+
+    SwImageDesc:
+      type: object
+      required:
+        - id
+        - name
+        - version
+        - containerFormat
+        - swImage
+      properties:
+        id:
+          type: string
+          description: The identifier of this software image.
+        name:
+          type: string
+          description: The name of this software image.
+        version:
+          type: string
+          description: The version of this software image.
+        checksum:
+          $ref: '#/components/schemas/ChecksumData'
+          description: The checksum of the software image file. See note 3.
+        containerFormat:
+          type: string
+          description: The container format describes the container file format in which software image is provided.
+        diskFormat:
+          type: string
+          description: The disk format of a software image is the format of the underlying disk image. See note 1.
+        minDisk:
+          type: number
+          description: The minimal disk size requirement for this software image. The value of the "size of storage" attribute of the VirtualStorageDesc referencing this SwImageDesc shall not be smaller than the value of minDisk. See note 1.
+        minRam:
+          type: number
+          description: The minimal RAM requirement for this software image. The value of the "size" attribute of VirtualMemoryData of the Vdu referencing this SwImageDesc shall not be smaller than the value of minRam. See note 2.
+        size:
+          type: number
+          description: The size of this software image file. See note 3.
+        swImage:
+          type: object
+          $ref: '#/components/schemas/SwImageDesc'
+          description: This is a reference to the actual software image. The reference can be relative to the root of the VNF Package or can be a URL.
+        operatingSystem:
+          type: string
+          description: Specifies the operating system used in the software image. This attribute may also identify if a 32 bit or 64 bit software image is used.
+        supportedVirtualisationEnvironment:
+          type: array
+          items:
+            type: string
+          description: Specifies the virtualisation environments (e.g. hypervisor) compatible with this software image.
+      description: |
+        NOTE 1: The attribute shall be present for VM-based software images referenced from a Vdu or from a VirtualStorageDesc, and shall be absent otherwise.
+        NOTE 2: The attribute may be present for VM-based software images referenced from a Vdu or from a VirtualStorageDesc, and shall be absent otherwise.
+        NOTE 3: The attribute shall be present for VM-based software images referenced from a Vdu or from a VirtualStorageDesc, and may be present otherwise. 
+
+    MonitoringParameter:
+      type: object
+      required:
+        - monitoringParameterId
+        - performanceMetric
+      properties:
+        monitoringParameterId:
+          type: string
+          description: Unique identifier of the monitoring parameter.
+        name:
+          type: string
+          description: Human readable name of the monitoring parameter.
+        performanceMetric:
+          type: string
+          description: Specifies the virtualised resource performance metric.
+        collectionPeriod:
+          type: string
+          description: An attribute that describes the periodicity at which to collect the performance information.
+
+    VirtualComputeDescriptor:
+      title: VirtualComputeDescriptor
+      type: object
+      required:
+        - virtualComputeDescId
+        - virtualMemory
+        - virtualCpu
+      properties:
+        virtualComputeDescId:
+          type: string
+          description: Unique identifier of this VirtualComputeDesc in the VNFD. 
+        logicalNode:
+          type: array
+          description: The logical node requirements.
+          items:
+            $ref: '#/components/schemas/LogicalNodeRequirements'
+        requestAdditionalCapabilities:
+          type: array
+          description: Specifies requirements for additional capabilities. These may be for a range of purposes. One example is acceleration related capabilities. See clause 7.1.9.5.
+          items:
+            $ref: '#/components/schemas/RequestedAdditionalCapabilityData'
+        computeRequirements:
+          description: Specifies compute requirements.
+          type: array
+          items:
+            type: string
+            format: not-specified
+        virtualMemory:
+          type: object
+          description:  The virtual memory of the virtualised compute. See clause 7.1.9.3.2. 
+          $ref: '#/components/schemas/VirtualMemoryData'
+        virtualCpu:
+          type: object
+          description: The virtual CPU(s) of the virtualised compute. See clause 7.1.9.2.3. 
+          $ref: '#/components/schemas/VirtualCpuData'
+        virtualDisk:
+          type: array
+          description: The local or ephemeral disk(s) of the virtualised compute. See clause 7.1.9.4.3.
+          items:
+            $ref: '#/components/schemas/BlockStorageData'
+
+    LogicalNodeRequirements:
+      type: object
+      required:
+        - id
+        - logicalNodeRequirementDetail
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Identifies this set of logical node requirements
+        logicalNodeRequirementDetail:
+          description: >
+            The logical node-level compute, memory and I/O requirements. An array of key-value pairs that
+            articulate the deployment requirements. This could include the number of CPU cores on this logical
+            node, a memory configuration specific to a logical node (e.g. such as available in the Linux kernel 
+            via the libnuma library) or a requirement related to the association of an I/O device with the logical node.
+          type: array
+          items:
+            type: string
+            format: not-specified
+
+    ChecksumData:
+      type: object
+      required:
+        - algorithm
+        - hash
+      properties:
+        algorithm:
+          type: string
+          description: Specifies the algorithm used to obtain the checksum value. See note.
+        hash:
+          type: string
+          description: |
+            Contains the result of applying the algorithm indicated by the algorithm attribute to the data to which this ChecksumData refers.
+      description: |
+        NOTE: The algorithm attribute value shall be one of the Hash Function Textual Names present in [2].
+
+
+    ipAddresses:
+      type: object
+      required:
+        - host
+        - port
+      properties:
+        host:
+          type: string
+          description: Host portion of the address.
+        port:
+          type: integer
+          description: Port portion of the address.
+
+    Polygon:
+      type: string
+      description: |
+        To specify a constraint specific to Polygons, it is useful to introduce the concept of a linear ring:
+        
+        - A linear ring is a closed LineString with four or more positions.
+        - The first and last positions are equivalent, and they MUST contain identical values; their representation SHOULD also be identical.
+        - A linear ring is the boundary of a surface or the boundary of a hole in a surface.
+        - A linear ring MUST follow the right-hand rule with respect to the area it bounds, i.e., exterior rings are counterclockwise, and holes are clockwise.
+
+        Note: The [GJ2008] specification did not discuss linear ring winding order. For backward compatibility, parsers SHOULD NOT reject Polygons that do not follow the right-hand rule.
+        
+        Though a linear ring is not explicitly represented as a GeoJSON geometry type, it leads to a canonical formulation of the Polygon geometry type definition as follows:
+        
+        - For type "Polygon", the "coordinates" member MUST be an array of linear ring coordinate arrays.
+        - For Polygons with more than one of these rings, the first MUST be the exterior ring, and any others MUST be interior rings. The exterior ring bounds the surface, and the interior rings (if present) bound holes within the surface.
+
+    TransportTypes:
+      x-etsi-ref: 8.1.6.4
+      type: string
+      enum:
+        - REST_HTTP
+        - MB_TOPIC_BASED
+        - MB_ROUTING
+        - MB_PUBSUB
+        - RPC
+        - RPC_STREAMING
+        - WEBSOCKET
+      description: The enumeration TransportType represents types of transports.
+      x-etsi-mec-extensible: true
+      x-etsi-mec-enumeration-table:
+        - value: REST_HTTP
+          description: RESTful API using HTTP (as defined in IETF RFC 9110 [11]).
+        - value: MB_TOPIC_BASED
+          description: Topic-based message bus which routes messages to receivers based on subscriptions, if a pattern passed on subscription matches the topic of the message. EXAMPLE MQTT (see [i.4]).
+        - value: MB_ROUTING
+          description: Routing-based message bus which routes messages to receivers based on subscriptions, if a key passed on subscription is equal to the key of the message.
+        - value: MB_PUBSUB
+          description: Publish-subscribe based message bus which distributes messages to all subscribers.
+        - value: RPC
+          description: Remote procedure call. EXAMPLE GRPC (see [i.5]).
+        - value: RPC_STREAMING
+          description: Remote procedure call supporting streams of requests and responses. EXAMPLE GRPC (see [i.5]).
+        - value: WEBSOCKET
+          description: Websockets as defined in IETF RFC 6455 [12].
+
+    SerializerType:
+      x-etsi-ref: 8.1.6.3
+      type: string
+      enum:
+        - JSON
+        - XML
+        - PROTOBUF3
+      x-etsi-mec-extensible: true
+      x-etsi-mec-enumeration-table:
+        - value: JSON
+          description: Javascript object notation [9]
+        - value: XML
+          description: eXtensible Mark-up Language version 1.1 [10]
+        - value: PROTOBUF3
+          description: Protocol buffers version 3 [i.3]
+
+    SecurityInfo:
+      x-etsi-ref: 8.1.5.4
+      type: object
+      properties:
+        oAuth2Info:
+          $ref: '#/components/schemas/OAuth2Info'
+        (extensions):
+          description: Extensions for alternative transport mechanisms. These
+                        extensions depend on the actual transport, and are out of
+                        scope of the present document.
+                        For instance, such extensions may be used to signal the
+                        necessary parameters for the client to use TLS-based
+                        authorization defined for alternative transports (see ETSI
+                        GS MEC 009 [5] for more information).
+
+    OAuth2Info:
+      description: Parameters related to use of OAuth 2.0. Shall be present in case OAuth 2.0 (see IETF RFC 6749 [13]) is supported
+                    to secure the provision of the service over the transport.
+      type: object
+      properties:
+        grantTypes:
+          description: 'List of supported OAuth 2.0 grant types.
+                        Each entry shall be one of the following permitted values:
+                              • OAUTH2_AUTHORIZATION_CODE
+                                (Authorization code grant type)
+                              • OAUTH2_IMPLICIT_GRANT
+                                (Implicit grant type)
+                              • OAUTH2_RESOURCE_OWNER
+                                (Resource owner password credentials grant type)
+                              • OAUTH2_CLIENT_CREDENTIALS
+                                (Client credentials grant type)
+                        Only the value "OAUTH2_CLIENT_CREDENTIALS" is supported in the present document.'
+          type: array
+          minItems: 0
+          items:
+            type: string
+            enum:
+            - SEE_DESCRIPTION
+        tokenEndpoint:
+          description: 'The token endpoint. Shall be present unless the grant type is OAUTH2_IMPLICIT_GRANT.'
+          type: string
+          format: uri
+      required:
+      - grantTypes
+
+    NfviMaintenanceInfo:
+      type: object
+      required:
+        - impactNotificationLeadTime
+      properties:
+        impactNotificationLeadTime:
+          type: number
+          description: The minimum notification lead time requested for upcoming impact of the virtualised resource or their group.
+        isImpactMitigationRequested:
+          type: boolean
+          description: When set to True, it is requested that at the time of the notification of an upcoming change that is expected to have an impact on the VNF, virtualised resource(s) of the same characteristics as the impacted ones is/are provided to compensate for the impact.
+        supportedMigrationType:
+          type: array
+          description: Applicable to VirtualComputeDesc and VirtualStorageDesc. When present, specifies the allowed migration types in the order of preference in case of an impact starting with the most preferred type. For LIVE_MIGRATION, see note 1.
+          items:
+            type: string
+            enum:
+              - NO_MIGRATION
+              - OFFLINE_MIGRATION
+              - LIVE_MIGRATION
+        maxUndetectableInterruptionTime:
+          type: number
+          description: Applicable to VirtualComputeDesc and VirtualStorageDesc. When present, it specifies the maximum interruption time that can go undetected at the VNF level and therefore which will not trigger VNF-internal recovery during live migration. (see note 1)
+        minRecoveryTimeBetweenImpacts:
+          type: number
+          description: When present, it specifies the time required by the group to recover from an impact, thus, the minimum time requested between consecutive impacts of the group. (see note 2.)
+        maxNumberOfImpactedInstances:
+          type: object
+          $ref: '#/components/schemas/MaxNumberOfImpactedInstances'
+          description: When present, specifies for different group sizes the maximum number of instances that can be impacted simultaneously within the group of virtualised resources without losing functionality. Zero cardinality indicates no constraint (see note 2). MaxNumberOfImpactedInstances is defined in clause 7.1.8.18. See note 3. 
+        minNumberOfPreservedInstances:
+          type: object
+          $ref: '#/components/schemas/MinNumberOfPreservedInstances'
+          description: When present, specifies for different group sizes the minimum number of instances which need to be preserved simultaneously within the group of virtualised resources. Zero cardinality indicates no constraint (see note 2). MinNumberOfPreservedInstances is defined in clause 7.1.8.22.See note 3.
+      description: | 
+        NOTE 1: When the maximum undetectable interruption time is specified it constrains the live migration. If it cannot be
+        guaranteed on an NFVI that the interruption caused by the live migration will be less than the indicated
+        maximum undetectable interruption time, then life migration should be downgraded according to the order of preference.
+        NOTE 2: Impacts to instances of the group happening within the minimum recovery time are considered simultaneous
+        impacts.
+        NOTE 3: Either "maxNumberOfImpactedInstances" or "minNumberOfPreservedInstances" may be provided, but not both
+
+    MaxNumberOfImpactedInstances:
+      type: object
+      required:
+        - maxNumberOfImpactedInstances
+      properties:
+        groupSize:
+          type: integer
+          description: Determines the size of the group for which the maxNumberOfImpactedInstances is specified.
+        maxNumberOfImpactedInstances:
+          type: integer
+          description: The maximum number of instances that can be impacted simultaneously within the group of the specified size.
+      description: |
+        NOTE 1: Each groupSize value specified for a group of virtual resources shall be unique, and it shall be possible to form an ascending ordered list of groupSizes. 
+        NOTE 2: The number of instances in the group for which the maxNumberOfImpactedInstances is specified may be equal to groupSize or less. When the number of instances is less than   
+                    the groupSize, it shall be at least 1 if this is the first groupSize in the ordered list of groupSizes, or it shall be greater by at least 1 than the previous groupSize in the ordered list of groupSizes.
+
+    MinNumberOfPreservedInstances:
+      type: object
+      required:
+        - minNumberOfPreservedInstances
+      properties:
+        groupSize:
+          type: integer
+          description: When present, determines the size of the group for which the minNumberOfPreservedInstances is specified. Otherwise, the size is not limited.
+        minNumberOfPreservedInstances:
+          type: integer
+          description: The minimum number of instances which need to be preserved simultaneously within the group of the specified size.
+      description: |
+        NOTE 1: Each groupSize value specified for a group of virtual resources shall be unique, and it shall be possible to form 
+                    an ascending ordered list of groupSizes. 
+        NOTE 2: The number of instances in the group for which the minNumberOfPreservedInstances is specified may be equal 
+                to groupSize or less.
+
+    CategoryRef:
+      x-etsi-ref: 8.1.5.2
+      type: object
+      properties:
+        href:
+          description: Reference of the catalogue. 
+          type: string
+        id:
+          description: Unique identifier of the category.
+          type: string
+        name:
+          description: Name of the category.
+          type: string
+        version:
+          description: Name of the category.
+          type: string
+      required:
+      - href
+      - id
+      - name
+      - version
+
+info:
+  title: 'ETSI GS MEC 010-2 - Part 2: Application lifecycle, rules and requirements management'
+  description: 'ETSI GS MEC 010-2 - Part 2: Application lifecycle, rules and requirements management described using OpenAPI.'
+  license:
+    name: BSD-3-Clause
+    url: 'https://forge.etsi.org/legal-matters'
+  contact:
+    name: ETSI Forge
+    url: https://forge.etsi.org/rep/mec/gs010-2-app-pkg-lcm-api
+    email: cti_support@etsi.org
+
+responses:
+  '200':
+    description: 'OK'
+  '204':
+    description: 'No Content'
+  '400':
+    description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '401':
+    description: 'Unauthorized: used when the client did not submit credentials.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '403':
+    description: 'Forbidden: operation is not allowed given the current status of the resource.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '404':
+    description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '406':
+    description: 'Not Acceptable: used to indicate that the server cannot provide the any of the content formats supported by the client.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '409':
+    description: 'Conflict: The operation cannot be executed currently, due to a conflict with the state of the resource. .'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '429':
+    description: 'Too Many Requests: used when a rate limiter has triggered.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'

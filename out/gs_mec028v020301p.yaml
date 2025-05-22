@@ -1,0 +1,2464 @@
+openapi: 3.1.0
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+info:
+  contact:
+    url: https://forge.etsi.org/rep/mec/gs028-wai-api
+  title: ETSI GS MEC 028 MEC WLAN Information API
+  description: The ETSI MEC ISG MEC WLAN Information API described using OpenAPI.
+  license:
+    name: BSD-3-Clause
+    url: https://forge.etsi.org/legal-matters
+  version: 2.3.1
+paths:
+  /queries/ap/ap_information:
+    get:
+      summary: Retrieve current status of Access Point information.
+      description: The GET method is used to query information about the WLAN Access Points.
+      operationId: QueriesApApinformationGET
+      tags:
+      - queries
+      parameters:
+      - $ref: '#/components/parameters/Query.Filter'
+      - $ref: '#/components/parameters/Query.All_fields'
+      - $ref: '#/components/parameters/Query.Fields'
+      - $ref: '#/components/parameters/Query.Exclude_fields'
+      - $ref: '#/components/parameters/Query.Exclude_default'
+      responses:
+        '200':
+          description: 'Shall be returned when information about zero or more Access Points has been queried successfully.
+
+
+            The response body shall contain in an array the representations of zero or more Access Points, as defined in clause 6.2.2.
+
+
+            If the "filter" URI parameter or one of the "all_fields", "fields" (if supported), "exclude_fields" (if supported) or "exclude_default" URI parameters was supplied in the request, the data in the response body shall have been transformed according to the rules specified in clauses 6.19 and 6.18 of ETSI GS MEC 009 [10], respectively.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '416':
+          $ref: '#/components/responses/416'
+        '429':
+          $ref: '#/components/responses/429'
+  /queries/sta/sta_information:
+    get:
+      summary: Retrieve current status of Station information.
+      description: The GET method is used to query information about the WLAN stations.
+      operationId: QueriesStaStainformationGET
+      tags:
+      - queries
+      parameters:
+      - $ref: '#/components/parameters/Query.Filter1'
+      - $ref: '#/components/parameters/Query.All_fields'
+      - $ref: '#/components/parameters/Query.Fields'
+      - $ref: '#/components/parameters/Query.Exclude_fields'
+      - $ref: '#/components/parameters/Query.Exclude_default'
+      responses:
+        '200':
+          description: 'Shall be returned when information about zero or more WLAN stations has been queried successfully.
+
+
+            The response body shall contain in an array the representations of zero or more WLAN stations, as defined in clause 6.2.2.
+
+
+            If the "filter" URI parameter or one of the "all_fields", "fields" (if supported), "exclude_fields" (if supported) or "exclude_default" URI parameters was supplied in the request, the data in the response body shall have been transformed according to the rules specified in clauses 6.19 and 6.18 of ETSI GS MEC 009 [10], respectively.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StaInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '416':
+          $ref: '#/components/responses/416'
+        '429':
+          $ref: '#/components/responses/429'
+  /subscriptions:
+    get:
+      summary: Retrieve a list of active subscriptions for this subscriber.
+      description: The GET method is used to request information about the subscriptions for this requestor. Upon success, the response contains entity body with the list of links to the subscriptions that are present for the requestor.
+      operationId: SubscriptionsGET
+      tags:
+      - subscriptions
+      parameters:
+      - $ref: '#/components/parameters/Query.Subscription_type'
+      responses:
+        '200':
+          description: Upon success, a response body containing the list of links to requestor's subscriptions is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  SubscriptionLinkList:
+                    $ref: '#/components/schemas/SubscriptionLinkList'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+    post:
+      summary: Create a new subscription.
+      description: The POST method is used to create a new subscription to WLAN notifications. Upon success, the response contains entity body describing the created subscription.
+      operationId: SubscriptionsPOST
+      tags:
+      - subscriptions
+      requestBody:
+        description: 'The entity body in the request contains data type of the specific WLAN event subscription that is to be created, where the data type options are listed below and defined in clauses 6.3.2, 6.3.3 and 6.3.5:
+
+          AssocStaSubscription.
+
+          StaDataRateSubscription.
+
+          MeasurementReportSubscription.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AssocStaSubscription:
+                  $ref: '#/components/schemas/AssocStaSubscription'
+      responses:
+        '201':
+          description: 'Indicates successful resource creation, where the resource URI shall be returned in the HTTP Location header field.
+
+
+            In the returned NotificationSubscription structure, the created subscription is described using the appropriate data type from the list below and as defined in clauses 6.3.2, 6.3.3 and 6.3.5:
+
+            AssocStaSubscription.
+
+            StaDataRateSubscription.
+
+            MeasurementReportSubscription.
+
+
+            The created resource is identified by its subscriptionId included in the "self" attribute (selfreferring URI).'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  AssocStaSubscription:
+                    $ref: '#/components/schemas/AssocStaSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '415':
+          $ref: '#/components/responses/415'
+      callbacks:
+        notification:
+          '{$request.body#/callbackUri}':
+            post:
+              summary: Callback POST used to send a notification
+              description: Subscription notification
+              operationId: notificationPOST
+              requestBody:
+                description: Subscription notification
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        subscriptionNotification:
+                          oneOf:
+                          - $ref: '#/components/schemas/AssocStaSubscription'
+                          - $ref: '#/components/schemas/StaDataRateSubscription'
+                          - $ref: '#/components/schemas/MeasurementReportSubscription'
+              responses:
+                '204':
+                  description: No content
+                '404':
+                  description: Not found
+      parameters: []
+  /subscriptions/{subscriptionId}:
+    get:
+      summary: Retrieve information on current specific subscription.
+      description: The GET method is used to retrieve information about this subscription. Upon success, the response contains entity body with the data type describing the subscription.
+      operationId: SubscriptionsGETSubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '200':
+          description: "Upon success, a response body containing data type describing the specific WLAN event subscription is returned. The allowed data types for subscriptions are defined in clauses\_6.3.2, 6.3.3 and 6.3.5:\nAssocStaSubscription.\nStaDataRateSubscription.\nMeasurementReportSubscription."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  AssocStaSubscription:
+                    $ref: '#/components/schemas/AssocStaSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+    put:
+      summary: Modify existing subscription by sending a new data structure.
+      description: The PUT method is used to update the existing subscription. PUT method in this case has "replace" semantics. Upon successful operation, the target resource is updated with new Data Type received within the message body of the PUT request.
+      operationId: SubscriptionsPUTSubscriptionid
+      tags:
+      - subscriptions
+      requestBody:
+        description: 'New NotificationSubscription is included as entity body of the request. The allowed data types for subscriptions are defined in clauses 6.3.2, 6.3.3 and 6.3.5:
+
+          AssocStaSubscription.
+
+          StaDataRateSubscription.
+
+          MeasurementReportSubscription.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AssocStaSubscription:
+                  $ref: '#/components/schemas/AssocStaSubscription'
+      responses:
+        '200':
+          description: 'Upon success, a response body containing data type describing the updated subscription is returned. The allowed data types for subscriptions are defined in clauses 6.3.2, 6.3.3 and 6.3.5:
+
+            AssocStaSubscription.
+
+            StaDataRateSubscription.
+
+            MeasurementReportSubscription.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  AssocStaSubscription:
+                    $ref: '#/components/schemas/AssocStaSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '412':
+          $ref: '#/components/responses/412'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+    delete:
+      summary: Cancel an existing subscription.
+      description: The DELETE method is used to cancel the existing subscription. Cancellation can be made by deleting the resource that represents existing subscription.
+      operationId: SubscriptionsDELETESubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+  /measurements:
+    get:
+      summary: Retrieve a list of configured measurements for this subscriber.
+      description: The GET method is used to request information about the measurement configurations for this requestor. Upon success, the response contains an entity body with the list of links to the measurement configurations that are present for the requestor.
+      operationId: MeasurementsGET
+      tags:
+      - measurements
+      responses:
+        '200':
+          description: Upon success, a response body containing the list of links to requestor's measurement configurations is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  MeasurementConfigLinkList:
+                    $ref: '#/components/schemas/MeasurementConfigLinkList'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters: []
+    post:
+      summary: Create a new measurement configuration.
+      description: The POST method is used to create a new WLAN measurement configuration. Upon success, the response contains an entity body describing the created measurement configuration.
+      operationId: MeasurementsPOST
+      tags:
+      - measurements
+      requestBody:
+        description: Entity body in the request contains the measurement configuration as defined in clause 6.2.4.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                MeasurementConfig:
+                  $ref: '#/components/schemas/MeasurementConfig'
+      responses:
+        '201':
+          description: "Indicates successful resource creation, where the resource URI shall be returned in the HTTP Location header field.\n\nThe returned MeasurementConfig structure describes the created configuration resource.  \n\nThe created resource is identified by its measurementConfigId included in the \"self\" attribute (self-referring URI)."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  MeasurementConfig:
+                    $ref: '#/components/schemas/MeasurementConfig'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '415':
+          $ref: '#/components/responses/415'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters: []
+  /measurements/{measurementConfigId}:
+    get:
+      summary: Retrieve information on an existing measurement configuration.
+      description: The GET method is used to retrieve information about this measurement configuration. Upon success, the response contains entity body with the data type describing the measurement configuration.
+      operationId: MeasurementsGETMeasurementconfigid
+      tags:
+      - measurements
+      responses:
+        '200':
+          description: Upon success, the response body contains the measurement configuration for the queried measurementConfigId.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  MeasurementConfig:
+                    $ref: '#/components/schemas/MeasurementConfig'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: measurementConfigId
+        in: path
+        required: true
+        description: The unique identifier of the measurementConfigId.
+        schema:
+          type: string
+    put:
+      summary: Modify an existing measurement configuration by sending a new data structure.
+      description: The PUT method is used to update the existing WAI measurement configuration. PUT method in this case has "replace" semantics. Upon successful operation, the target resource is updated with new Data Type received within the message body of the PUT request.
+      operationId: MeasurementsPUTMeasurementconfigid
+      tags:
+      - measurements
+      requestBody:
+        description: Entity body in the request contains the measurement configuration as defined in clause 6.2.4.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                MeasurementConfig:
+                  $ref: '#/components/schemas/MeasurementConfig'
+      responses:
+        '200':
+          description: Indicates successful resource update. The returned MeasurementConfig structure describes the updated measurement configuration resource.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  MeasurementConfig:
+                    $ref: '#/components/schemas/MeasurementConfig'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '412':
+          $ref: '#/components/responses/412'
+        '422':
+          $ref: '#/components/responses/422'
+      parameters:
+      - name: measurementConfigId
+        in: path
+        required: true
+        description: The unique identifier of the measurementConfigId.
+        schema:
+          type: string
+    delete:
+      summary: Cancel an existing measurement configuration.
+      description: The DELETE method is used to remove an existing measurement configuration. After the measurement configuration is removed, the configuration's associated measurementId will no longer be available in the ap_information and sta_information queries.
+      operationId: MeasurementsDELETEMeasurementconfigid
+      tags:
+      - measurements
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: measurementConfigId
+        in: path
+        required: true
+        description: The unique identifier of the measurementConfigId.
+        schema:
+          type: string
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+    MeasurementConfigLinkList1_:
+      properties:
+        _links:
+          description: Hyperlink related to the resource.
+          properties:
+            self:
+              description': Self-referring URI
+              $ref: '#/components/schemas/LinkType'
+          required:
+          - self
+          type: object
+        measurementConfig:
+          description: ''
+          items:
+            type: object
+            properties:
+              href:
+                description: The URI referring to a measurement configuration.
+                format: uri
+                type: string
+              measurementId:
+                description: Unique identifier allocated by the service consumer to identify measurement reports associated with this measurement configuration.
+                type: string
+            required:
+            - href
+            - measurementId
+          type: array
+      required:
+      - _links
+      type: object
+      x-etsi-ref: 6.2.5
+    SubscriptionLinkList1_:
+      properties:
+        _links:
+          description: List of hyperlinks related to the resource.
+          properties:
+            self:
+              description': Self referring URI
+              $ref: '#/components/schemas/LinkType'
+          required:
+          - self
+          type: object
+        subscription:
+          description: ''
+          items:
+            type: object
+            properties:
+              href:
+                description: The URI referring to the subscription.
+                format: uri
+                type: string
+              subscriptionType:
+                description: "Type of the subscription. The string shall be set according to the \"subscriptionType\" attribute of the associated subscription data type defined in 6.3.2, 6.3.3. and 6.3.5:\n\u201CAssocStaSubscription\u201D\n\u201CStaDataRateSubscription\u201D\n\u201CMeasurementReportSubscription\u201D"
+                type: string
+            minItems: 0
+            required:
+            - href
+            - subscriptionType
+          type: array
+      required:
+      - _links
+      type: object
+      x-etsi-ref: 6.3.4
+    InlineNotification:
+      oneOf:
+      - $ref: '#/components/schemas/AssocStaNotification'
+      - $ref: '#/components/schemas/StaDataRateNotification'
+      - $ref: '#/components/schemas/MeasurementReportNotification'
+      discriminator:
+        propertyName: notificationType
+    InlineSubscription:
+      oneOf:
+      - $ref: '#/components/schemas/AssocStaSubscription'
+      - $ref: '#/components/schemas/StaDataRateSubscription'
+      - $ref: '#/components/schemas/MeasurementReportSubscription'
+      discriminator:
+        propertyName: subscriptionType
+    ApInfo:
+      x-etsi-ref: 6.2.2
+      type: object
+      properties:
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        apId:
+          description: Identifier(s) to uniquely specify the Access Point whose information is exposed within this data type.
+          $ref: '#/components/schemas/ApIdentity'
+          type: object
+        channel:
+          description: Channel configured for the Access Point.
+          type: integer
+          format: uint32
+        wlanCap:
+          description: WLAN capabilities of Access Point.
+          $ref: '#/components/schemas/WlanCapabilities'
+          type: object
+        wanMetrics:
+          description: WAN Metrics element provides information about the WAN link connecting an IEEE 802.11 Access Node and the Internet. Transmission characteristics such as the speed of the WAN connection to the Internet are included in Hotspot 2.0 Technical Specification v1.0.0 [i.3].
+          $ref: '#/components/schemas/WanMetrics'
+          type: object
+        bssLoad:
+          description: BSS Load attribute contains information on the current STA population and traffic levels in the BSS as defined in IEEE 802.11-2016 [8].
+          $ref: '#/components/schemas/BssLoad'
+          type: object
+        extBssLoad:
+          description: Extended BSS Load attribute contains more detailed information on the current STA population and traffic levels in the BSS as per ETSI GS MEC 002 [i.4].
+          $ref: '#/components/schemas/ExtBssLoad'
+          type: object
+        oBssLoad:
+          description: Overlapping BSS Load attribute contains information related to the contribution of channel usage by Access Points in proximity to the reporting Access Point and operating on the same channel.
+          $ref: '#/components/schemas/OBssLoad'
+          type: object
+        apLocation:
+          description: The location on the Access Point.
+          $ref: '#/components/schemas/ApLocation'
+          type: object
+      required:
+      - apId
+    StaInfo:
+      x-etsi-ref: 6.2.3
+      type: object
+      properties:
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        staId:
+          description: Identifier(s) uniquely specify the station whose information is exposed within this data type.
+          $ref: '#/components/schemas/StaIdentity'
+          type: object
+        channel:
+          description: Channel currently used by the station to connect with its associated Access Point.
+          type: integer
+          format: uint32
+        apAssociated:
+          description: Information about the station's associated Access Point.
+          $ref: '#/components/schemas/ApAssociated'
+          type: object
+        rssi:
+          description: Receive Signal Strength Indicator.
+          $ref: '#/components/schemas/Rssi'
+          type: object
+        staDataRate:
+          description: Station Data Rate as defined in IEEE 802.11-2016 [8].
+          $ref: '#/components/schemas/StaDataRate'
+          type: object
+        staStatistics:
+          description: Statistics as defined in IEEE 802.11-2016 [8] for the client station collected over measurement duration.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/StaStatistics'
+        beaconReport:
+          description: 'Beacon Report as defined in IEEE 802.11-2016 [8]. '
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/BeaconReport'
+        neighborReport:
+          description: Information about neighbor Access Points seen by the station as defined IEEE 802.11-2016 [8].
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/NeighborReport'
+        channelLoad:
+          description: "Channel Load reports as seen by the station as defined IEEE\_802.11-2016 [8]. Channel Load reports may be configured for any channel, including the station's current channel for association."
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/ChannelLoad'
+      required:
+      - staId
+    MeasurementConfig:
+      description: ''
+      type: object
+      minItems: 0
+      properties:
+        href:
+          description: The URI referring to a measurement configuration.
+          type: string
+          format: uri
+        measurementId:
+          description: Unique identifier allocated by the service consumer to identify measurement reports associated with this measurement configuration.
+          type: string
+      required:
+      - href
+      - measurementId
+    MeasurementConfigLinkList:
+      x-etsi-ref: 6.2.5
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/_links1'
+        measurementConfig:
+          type: array
+          items:
+            $ref: '#/components/schemas/MeasurementConfig'
+      required:
+      - _links
+    AssocStaSubscription:
+      x-etsi-ref: 6.3.2
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "AssocStaSubscription".
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note 1.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: Set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as specified in ETSI GS MEC 009 [10], clause 6.12a.
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between the WAIS and the service consumer for notifications. See note 1.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links2'
+        apId:
+          description: Identifier(s) to uniquely specify the target Access Point for the subscription.
+          $ref: '#/components/schemas/ApIdentity'
+          type: object
+        notificationPeriod:
+          description: 'Set for periodic notification reporting.
+
+            Value indicates the notification period in seconds.'
+          type: integer
+          format: uint8
+        notificationEvent:
+          $ref: '#/components/schemas/NotificationEvent'
+        expiryDeadline:
+          description: The expiration time of the subscription determined by the WLAN Access Information Service.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - apId
+      description: "|-\n  NOTE 1:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to WAIS to select an alternative and return only that alternative in the response, as specified in ETSI GS MEC 009 [10], clause 6.12a.\nNOTE 2:\tAssocStaSubscription shall include either notificationPeriod or notificationEvent.\nNOTE 3:\tIf both notificationPeriod and notificationEvent attributes are set, notifications are issued periodically when the trigger threshold is satisfied."
+    StaDataRateSubscription:
+      x-etsi-ref: 6.3.3
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "StaDataRateSubscription".
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note 1.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: Set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as specified in ETSI GS MEC 009 [10], clause 6.12a.
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between the WAIS and the service consumer for notifications. See note 1.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links2'
+        staId:
+          description: Identifier(s) to uniquely specify the target client station(s) for the subscription.
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/StaIdentity'
+        notificationPeriod:
+          description: 'Set for periodic notification reporting.
+
+            Value indicates the notification period in seconds.'
+          type: integer
+          format: uint8
+        notificationEvent:
+          $ref: '#/components/schemas/NotificationEvent1'
+        expiryDeadline:
+          description: The expiration time of the subscription determined by the WLAN Access Information Service.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - staId
+      description: "|-\n  NOTE 1:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to WAIS to select an alternative and return only that alternative in the response, as specified in ETSI GS MEC 009 [10], clause 6.12a.\nNOTE 2:\tStaDataRateSubscription shall include either notificationPeriod or notificationEvent.\nNOTE 3:\tIf both notificationPeriod and notificationEvent attributes are set, notifications are issued periodically when the trigger threshold is satisfied."
+    SubscriptionLinkList:
+      x-etsi-ref: 6.3.4
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/_links3'
+        subscription:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
+      required:
+      - _links
+    MeasurementReportSubscription:
+      x-etsi-ref: 6.3.5
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "MeasurementReportSubscription".
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: Set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as specified in ETSI GS MEC 009 [10], clause 6.12a.
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between the WAIS and the service consumer for notifications. See note.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links2'
+        staId:
+          description: Identifier(s) to uniquely specify the target client station(s) for the subscription.
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/StaIdentity'
+        measurementId:
+          description: Unique identifier allocated by the service consumer to identify measurement reports associated with this measurement subscription.
+          type: string
+        measurementInfo:
+          description: Information used to configure this measurement.
+          $ref: '#/components/schemas/MeasurementInfo'
+          type: object
+        expiryDeadline:
+          description: The expiration time of the subscription determined by the WLAN Access Information Service.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - staId
+      - measurementId
+      - measurementInfo
+      description: "|-\n  NOTE:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to WAIS to select an alternative and return only that alternative in the response, as specified in ETSI GS MEC 009 [10], clause 6.12a."
+    AssocStaNotification:
+      x-etsi-ref: 6.4.2
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "AssocStaNotification".
+          type: string
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        apId:
+          description: Identifier(s) to uniquely specify the Access Point to which the client stations are associated.
+          $ref: '#/components/schemas/ApIdentity'
+          type: object
+        staId:
+          description: Identifier(s) to uniquely specify the client station(s) associated.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/StaIdentity'
+      required:
+      - notificationType
+      - apId
+    StaDataRateNotification:
+      x-etsi-ref: 6.4.3
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "StaDataRateNotification".
+          type: string
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        staDataRate:
+          description: Data rates of a client station.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/StaDataRate'
+      required:
+      - notificationType
+    ExpiryNotification:
+      x-etsi-ref: 6.4.4
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "ExpiryNotification".
+          type: string
+        _links:
+          $ref: '#/components/schemas/_links4'
+        expiryDeadline:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - notificationType
+      - _links
+      - expiryDeadline
+    MeasurementReportNotification:
+      x-etsi-ref: 6.4.5
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "MeasurementReportNotification".
+          type: string
+        timeStamp:
+          description: Time stamp of the notification.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        staStatistics:
+          description: STA Statistics Report as defined in IEEE 802.11-2016 [8].
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/StaStatistics'
+        beaconReport:
+          description: Beacon Report as defined in IEEE 802.11-2016 [8].
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/BeaconReport'
+        neighborReport:
+          description: "Neighbor Report providing information about neighbor Access Points seen by the station as defined in IEEE\_802.112016 [8]."
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/NeighborReport'
+        channelLoad:
+          description: Channel Load reports as seen by the station as defined in IEEE 802.11-2016 [8].
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/ChannelLoad'
+      required:
+      - notificationType
+      description: "|-\n  NOTE 1:\tEach MeasurementReportNotification shall include a single measurement report type (channelLoad, beaconRequest, etc.), based on the MeasurementReportSubscription.\nNOTE 2:\tA single MeasurementReportNotification may include multiple measurement reports (of the same type), if the MeasurementReportSubscription configured the measurement report for several client stations and multiple reports are available to WAIS."
+    TestNotification:
+      x-etsi-ref: 6.4.6
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "TestNotification".
+          type: string
+        _links:
+          $ref: '#/components/schemas/_links5'
+      required:
+      - notificationType
+      - _links
+    TimeStamp:
+      x-etsi-ref: 6.5.2
+      type: object
+      properties:
+        seconds:
+          description: The seconds part of the time. Time is defined as Unixtime since January 1, 1970, 00:00:00 UTC.
+          type: integer
+          format: uint32
+        nanoSeconds:
+          description: The nanoseconds part of the time. Time is defined as Unix-time since January 1, 1970, 00:00:00 UTC.
+          type: integer
+          format: uint32
+      required:
+      - seconds
+      - nanoSeconds
+    ApIdentity:
+      x-etsi-ref: 6.5.3
+      type: object
+      properties:
+        bssid:
+          description: Basic Service Set Identifier (BSSID) is a unique Identifier assigned to an Access Point (as network interface controller) for communications at the data link layer of a network segment. BSSID is typically set to an access point's MAC address.
+          type: string
+        ssid:
+          description: Service Set Identifier (SSID) to identify logical WLAN networks available via the Access Point.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        ipAddress:
+          description: IPv4 or IPv6 address allocated for the Access Point.
+          type: array
+          minItems: 0
+          items:
+            type: string
+      required:
+      - bssid
+    WlanCapabilities:
+      x-etsi-ref: 6.5.4
+      type: object
+      properties:
+        ht:
+          description: Information about Access Point HT capabilities as defined in IEEE 802.11-2016 [8].
+          $ref: '#/components/schemas/HtCapabilities'
+          type: object
+        vht:
+          description: Information about Access Point VHT capabilities as defined in IEEE 802.11-2016 [8].
+          $ref: '#/components/schemas/VhtCapabilities'
+          type: object
+        he:
+          description: Information about Access Point HE capabilities as defined in IEEE P802.11ax [i.10], clause 9.2.2.248.
+          $ref: '#/components/schemas/HeCapabilities'
+          type: object
+        dmg:
+          description: Information about Access Point DMG capabilities as defined in IEEE 802.11-2016 [8].
+          $ref: '#/components/schemas/DmgCapabilities'
+          type: object
+        edmg:
+          description: Information about Access Point EDMG capabilities as defined in draft IEEE P802.11ay [i.11].
+          $ref: '#/components/schemas/EdmgCapabilities'
+          type: object
+    WanMetrics:
+      x-etsi-ref: 6.5.6
+      type: object
+      properties:
+        wanInfo:
+          description: Info about WAN link status, link symmetricity and capacity currently used.
+          type: integer
+          format: uint8
+        downlinkSpeed:
+          description: 4-octet positive integer whose value is an estimate of the WAN Backhaul link current downlink speed in kilobits per second.
+          type: integer
+          format: uint32
+        uplinkSpeed:
+          description: 4-octet positive integer whose value is an estimate of the WAN Backhaul link's current uplink speed in kilobits per second.
+          type: integer
+          format: uint32
+        downlinkLoad:
+          description: "1-octet positive integer representing the current percentage loading of the downlink WAN connection, scaled linearly with 255 representing 100\_%, as measured over an interval the duration of which is reported in Load Measurement Duration. In cases where the downlink load is unknown to the AP, the value is set to zero."
+          type: integer
+          format: uint8
+        uplinkLoad:
+          description: "1-octet positive integer representing the current percentage loading of the uplink WAN connection, scaled linearly with 255 representing 100\_%, as measured over an interval, the duration of which is reported in Load Measurement Duration. In cases where the uplink load is unknown to the AP, the value is set to zero."
+          type: integer
+          format: uint8
+        lmd:
+          description: The LMD (Load Measurement Duration) field is a 2-octet positive integer representing the duration over which the Downlink Load and Uplink Load have been measured, in tenths of a second. When the actual load measurement duration is greater than the maximum value, the maximum value will be reported. The value of the LMD field is set to 0 when neither the uplink nor downlink load can be computed. When the uplink and downlink loads are computed over different intervals, the maximum interval is reported.
+          type: integer
+          format: uint16
+      required:
+      - wanInfo
+      - downlinkSpeed
+      - uplinkSpeed
+      - downlinkLoad
+      - uplinkLoad
+      - lmd
+    BssLoad:
+      x-etsi-ref: 6.5.7
+      type: object
+      properties:
+        staCount:
+          description: An unsigned integer that indicates the total number of STAs currently associated with this BSS.
+          type: integer
+          format: uint16
+        channelUtilization:
+          description: "The percentage of time, linearly scaled with 255 representing 100\_%, that the AP sensed the medium was busy, as indicated by either the physical or virtual Carrier Sense (CS) mechanism."
+          type: integer
+          format: uint8
+        availAdmCap:
+          description: Available Admission Capacity that specifies the remaining amount of medium time available via explicit admission control, in units of 32 s/s.
+          type: integer
+          format: uint16
+      required:
+      - staCount
+      - channelUtilization
+      - availAdmCap
+    ExtBssLoad:
+      x-etsi-ref: 6.5.8
+      type: object
+      properties:
+        muMimoStaCount:
+          description: Indicates the total number of STAs currently associated with this BSS that have a 1 in the MU Beamformee Capable field of their VHT Capabilities element.
+          type: integer
+          format: uint16
+        spatStreamUnderUtil:
+          description: "The percentage of time, linearly scaled with 255 representing 100\_%, that the AP has underutilized spatial domain resources for given busy time of the medium."
+          type: integer
+          format: uint8
+        obsSec20MhzUtil:
+          description: Observable loading on each of the secondary 20 MHz channel.
+          type: integer
+          format: uint8
+        obsSec40MhzUtil:
+          description: Observable loading on each of the secondary 40 MHz channel.
+          type: integer
+          format: uint8
+        obsSec80MhzUtil:
+          description: Observable loading on each of the secondary 80 MHz channel.
+          type: integer
+          format: uint8
+      required:
+      - muMimoStaCount
+      - spatStreamUnderUtil
+      - obsSec20MhzUtil
+      - obsSec40MhzUtil
+      - obsSec80MhzUtil
+    ApLocation:
+      x-etsi-ref: 6.5.9
+      type: object
+      properties:
+        geolocation:
+          description: Geospatial Location of the AP as defined in IEEE 802.11-2016 [8].
+          $ref: '#/components/schemas/GeoLocation'
+          type: object
+        civicLocation:
+          description: Civic Location of the AP as described in IETF RFC 4776 [7].
+          $ref: '#/components/schemas/CivicLocation'
+          type: object
+    NeighborReport:
+      x-etsi-ref: 6.5.10
+      type: object
+      properties:
+        staId:
+          description: Identifier to uniquely specify the station whose information is exposed within this Neighbor Report. If NeighborReport is contained within a data type that provides the station's identifier, this field may be omitted.
+          $ref: '#/components/schemas/StaIdentity'
+          type: object
+        measurementId:
+          description: Measurement ID of the Measurement configuration applied to this Neighbor Report.
+          type: string
+        bssid:
+          description: BSSID (MAC address) of the Access Point that is being reported.
+          type: string
+        bssidInfo:
+          description: Additional information related to Access Point that is being reported such as AP reachability, security, key scope, Mobility Domain, HT/VHT capability and Fine Time Measurements, as defined in Figure 9-296, BSSID information field, within IEEE 802.11-2016 [8].
+          $ref: '#/components/schemas/BssidInfo'
+          type: object
+        operatingClass:
+          description: Operating Class field indicates an operating class value as defined in Annex E within IEEE 802.11-2016 [8].
+          type: integer
+          format: uint8
+        channel:
+          description: Channel field indicates a channel number, which is interpreted in the context of the indicated operating class. Channel numbers are defined in Annex E within IEEE 802.11-2016 [8].
+          type: integer
+          format: uint8
+        phyType:
+          description: "PHY type of the AP indicated by this BSSID. It is an integer value coded according to the value of the dot11PHYType, Annex\_C within IEEE 802.11-2016 [8]:\n2 = dsss\n4 = ofdm\n5 = hrdsss\n6 = erp\n7 = ht\n8 = dmg\n9 = vht\n10 = tvht"
+          type: integer
+          format: uint8
+        bssTransitionCandidatePreference:
+          description: "Relative value indicating the preferred ordering for this BSS as a transition candidate for roaming. 255 indicating the most preferred candidate and 1 indicating the least preferred candidate, as defined in Table 9-152 within IEEE\_802.112016\_[8]."
+          type: integer
+          format: uint8
+      required:
+      - measurementId
+      - bssid
+      - bssidInfo
+      - operatingClass
+      - channel
+      - phyType
+    StaIdentity:
+      x-etsi-ref: 6.5.11
+      type: object
+      properties:
+        macId:
+          description: Unique identifier assigned to station (as network interface controller) for communications at the data link layer of a network segment.
+          type: string
+        ssid:
+          description: Service Set Identifier(s) to identify logical networks.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        aid:
+          description: Number which identifies a particular association between a station and an Access Point.
+          type: string
+        ipAddress:
+          description: IPv4 or IPv6 address(es) allocated for the station.
+          type: array
+          minItems: 0
+          items:
+            type: string
+      required:
+      - macId
+    ApAssociated:
+      x-etsi-ref: 6.5.12
+      type: object
+      properties:
+        bssid:
+          description: Basic Service Set Identifier (BSSID) is a unique identifier assigned to the Access Point (as network interface controller) for communications at the data link layer of a network segment. BSSID is typically set to an access point's MAC address.
+          type: string
+        ssid:
+          description: Service Set Identifier to identify logical networks.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        assocId:
+          description: Unique number which identifies a particular association between the station and Access Point.
+          type: string
+        ipAddress:
+          description: IPv4 or IPv6 address allocated for the Access Point.
+          type: array
+          minItems: 0
+          items:
+            type: string
+      required:
+      - bssid
+    StaStatistics:
+      x-etsi-ref: 6.5.13
+      type: object
+      properties:
+        staId:
+          description: Identifier to uniquely specify the station whose information is exposed within this STA Statistics Report. If StaStatistics is contained within a data type that provides the station's identifier, this field may be omitted.
+          $ref: '#/components/schemas/StaIdentity'
+          type: object
+        measurementId:
+          description: Measurement ID of the Measurement configuration applied to this STA Statistics Report.
+          type: string
+        measurementDuration:
+          description: "Duration over which the Statistics Group Data was measured in time units of 1 024 \xB5s. Duration equal to zero indicates a report of current values."
+          type: integer
+          format: uint16
+        groupIdentity:
+          description: "Indicates the requested statistics group describing the Statistics Group Data according to Table 9-114 of IEEE\_802.11-2016 [8].\nDepending on group identity, one and only one of the STA Statistics Group Data will be present."
+          type: integer
+          format: uint8
+        groupZeroData:
+          description: STA Statistics Data for Group Identity = 0.
+          $ref: '#/components/schemas/StaStatisticsGroupZeroData'
+          type: object
+        groupOneData:
+          description: STA Statistics Data for Group Identity = 1.
+          $ref: '#/components/schemas/StaStatisticsGroupOneData'
+          type: object
+        group2to9Data:
+          description: STA Statistics Data for Group Identity = 2 through 9.
+          $ref: '#/components/schemas/StaStatisticsGroup2to9Data'
+          type: object
+      required:
+      - measurementId
+      - measurementDuration
+      - groupIdentity
+    HtCapabilities:
+      x-etsi-ref: 6.5.14
+      type: object
+      properties:
+        htCapabilityInfo:
+          description: HT Capability Information as defined in IEEE 802.11-2016 [8].
+          type: integer
+          format: uint16
+        ampduParameters:
+          description: A-MPDU parameters as defined in IEEE 802.11-2016 [8].
+          type: integer
+          format: uint8
+        supportedMcsSet:
+          description: Supported MCS set as defined in IEEE 802.11-2016 [8].
+          type: integer
+          format: uint128
+        htExtendedCap:
+          description: Extended HT Capabilities as defined in IEEE 802.11-2016 [8].
+          type: integer
+          format: uint16
+        txBeamFormCap:
+          description: Transmit Beamforming Capabilities as defined in IEEE 802.11-2016 [8].
+          type: integer
+          format: uint32
+        aselCap:
+          description: ASEL capabilities as defined in IEEE 802.11-2016 [8].
+          type: integer
+          format: uint8
+      required:
+      - htCapabilityInfo
+      - ampduParameters
+      - supportedMcsSet
+      - htExtendedCap
+      - txBeamFormCap
+      - aselCap
+    VhtCapabilities:
+      x-etsi-ref: 6.5.15
+      type: object
+      properties:
+        vhtCapInfo:
+          description: VHT capabilities Info as defined in IEEE 802.11-2016 [8].
+          type: integer
+          format: uint32
+        vhtMcsNss:
+          description: "Supported VHT-MCS and NSS Set as defined in IEEE\_802.112016 [8]."
+          type: integer
+          format: uint64
+      required:
+      - vhtCapInfo
+      - vhtMcsNss
+    HeCapabilities:
+      x-etsi-ref: 6.5.16
+      type: object
+      properties:
+        heMacCapInfo:
+          description: MAC capabilities of an Access Point.
+          type: integer
+          format: uint8
+        hePhyCapinfo:
+          description: PHY capabilities of an Access Point.
+          type: integer
+          format: uint8
+        supportedHeMcsNssSet:
+          description: Supported MCS and NSS Set.
+          type: integer
+          format: uint8
+      required:
+      - heMacCapInfo
+      - hePhyCapinfo
+      - supportedHeMcsNssSet
+    DmgCapabilities:
+      x-etsi-ref: 6.5.17
+      type: object
+      properties:
+        dmgStaCapInfo:
+          description: "DMG station capabilities information as defined in IEEE\_802.11-2016 [8]. "
+          type: integer
+          format: uint64
+        dmgApOrPcpCapInfo:
+          description: 'DMG AP or PCP capabilities information as defined in IEEE 802.11-2016 [8]. '
+          type: integer
+          format: uint16
+        dmgStaBeamTrackTimeLimit:
+          description: "DMG station beam tracking time limit as defined in IEEE\_802.11-2016 [8]. "
+          type: integer
+          format: uint16
+        ExtScMcsCap:
+          description: "Extended SC MCS capabilities as defined in IEEE\_802.11-2016 [8]."
+          type: integer
+          format: uint8
+        maxNrBasicAmsduSubframes:
+          description: Number of basic A-MSDU subframes in A-MSDU as defined in IEEE 802.11-2016 [8].
+          type: integer
+          format: uint8
+        maxNrShortAmsduSubframes:
+          description: Number of short A-MSDU subframes in A-MSDU as defined in IEEE 802.11-2016 [8].
+          type: integer
+          format: uint8
+      required:
+      - dmgStaCapInfo
+      - dmgApOrPcpCapInfo
+      - dmgStaBeamTrackTimeLimit
+      - ExtScMcsCap
+      - maxNrBasicAmsduSubframes
+      - maxNrShortAmsduSubframes
+    EdmgCapabilities:
+      x-etsi-ref: 6.5.18
+      type: object
+      properties:
+        ampduParameters:
+          description: A-MPDU parameters as defined in draft IEEE P802.11ay [i.11]
+          type: integer
+          format: uint8
+        trnParameters:
+          description: Training parameters as defined in draft IEEE P802.11ay [i.11]
+          type: integer
+          format: uint16
+        supportedMcs:
+          description: Supported MCS as defined in draft IEEE P802.11ay [i.11]
+          type: integer
+          format: uint32
+      required:
+      - ampduParameters
+      - trnParameters
+      - supportedMcs
+    GeoLocation:
+      x-etsi-ref: 6.5.19
+      type: object
+      properties:
+        latUncertainty:
+          description: The uncertainty for Latitude information as defined in IETF RFC 6225 [6]
+          type: integer
+          format: uint8
+        lat:
+          description: "The latitude value of location as defined in IETF RFC\_6225 [6]"
+          type: integer
+          format: uint64
+        longUncertainty:
+          description: The uncertainty for Longitude information as defined in IETF RFC 6225 [6]
+          type: integer
+          format: uint8
+        long:
+          description: "The longitude value of location as defined in IETF RFC\_6225 [6]"
+          type: integer
+          format: uint64
+        altitudeType:
+          description: The type description for altitude information e.g. floors or meters as defined in IETF RFC 6225 [6]
+          type: integer
+          format: uint8
+        altitudeUncertainty:
+          description: The uncertainty for altitude information as defined in IETF RFC 6225 [6]
+          type: integer
+          format: uint8
+        altitude:
+          description: "The altitude value of location as defined in IETF RFC\_6225 [6]"
+          type: integer
+          format: uint32
+        datum:
+          description: The datum value to express how coordinates are organized and related to real world as defined in IETF RFC 6225 [6]
+          type: integer
+          format: uint8
+      required:
+      - latUncertainty
+      - lat
+      - longUncertainty
+      - long
+      - datum
+    CivicLocation:
+      x-etsi-ref: 6.5.20
+      type: object
+      properties:
+        country:
+          description: The two-letter ISO 3166 [i.9] country code in capital ASCII letters, e.g. DE or US, as per ISO 3166 [i.9]
+          type: string
+        ca0:
+          description: Language
+          type: string
+        ca1:
+          description: 'National subdivisions (state, canton, region, province, prefecture) '
+          type: string
+        ca2:
+          description: County, parish, gun (JP), district (IN)
+          type: string
+        ca3:
+          description: City, township, shi (JP)
+          type: string
+        ca4:
+          description: City division, borough, city district, ward, chou (JP)
+          type: string
+        ca5:
+          description: Neighborhood, block
+          type: string
+        ca6:
+          description: 'Group of streets below the neighborhood level '
+          type: string
+        ca16:
+          description: Leading street direction
+          type: string
+        ca17:
+          description: Trailing street suffix
+          type: string
+        ca18:
+          description: Street suffix or type
+          type: string
+        ca19:
+          description: House number
+          type: string
+        ca20:
+          description: House number suffix
+          type: string
+        ca21:
+          description: Landmark of vanity address
+          type: string
+        ca22:
+          description: Additional location information
+          type: string
+        ca23:
+          description: Name (residence and office occupant)
+          type: string
+        ca24:
+          description: Postal/zip code
+          type: string
+        ca25:
+          description: Building (structure)
+          type: string
+        ca26:
+          description: Unit (apartment/suite)
+          type: string
+        ca27:
+          description: Floor
+          type: string
+        ca28:
+          description: Room
+          type: string
+        ca29:
+          description: Type of place
+          type: string
+        ca30:
+          description: Postal community name
+          type: string
+        ca31:
+          description: Post office box
+          type: string
+        ca32:
+          description: Additional code
+          type: string
+        ca33:
+          description: Seat (desk, cubicle, workstation, etc.)
+          type: string
+        ca34:
+          description: Primary road name
+          type: string
+        ca35:
+          description: Road section
+          type: string
+        ca36:
+          description: Branch road name
+          type: string
+        ca37:
+          description: Sub-branch road name
+          type: string
+        ca38:
+          description: Street name pre-modifier
+          type: string
+        ca39:
+          description: Street name post-modifier
+          type: string
+        ca128:
+          description: Script
+          type: string
+      required:
+      - country
+    Rssi:
+      x-etsi-ref: 6.5.21
+      type: object
+      properties:
+        rssi:
+          description: The Received Signal Strength Indicator from a station
+          type: integer
+          format: uint8
+      required:
+      - rssi
+    StaDataRate:
+      x-etsi-ref: 6.5.22
+      type: object
+      properties:
+        staId:
+          description: Identifier to uniquely specify the station whose information is exposed within StaDataRate. If StaDataRate is contained within a data type that provides the station's identifier, this field may be omitted.
+          $ref: '#/components/schemas/StaIdentity'
+          type: object
+        staLastDataDownlinkRate:
+          description: The data transmit rate in kbps that was most recently used for transmission of data PPDUs from the access point to the station.
+          type: integer
+          format: uint32
+        staLastDataUplinkRate:
+          description: The data transmit rate in Kbps that was most recently used for transmission of data PPDUs from the associated station to the access point.
+          type: integer
+          format: uint32
+      description: "|-\n  NOTE:\tStaDataRate shall include at least one instance of either downlink rate or uplink rate and may include both."
+    LinkType:
+      x-etsi-ref: 6.5.23
+      type: object
+      properties:
+        href:
+          description: URI referring to a resource
+          type: string
+          format: uri
+      required:
+      - href
+    ChannelLoadConfig:
+      x-etsi-ref: 6.5.24
+      type: object
+      properties:
+        operatingClass:
+          description: Operating Class field indicates an operating class value as defined in Annex E within IEEE 802.11-2016 [8].
+          type: integer
+          format: uint8
+        channel:
+          description: Channel for which the channel load report is requested.
+          type: integer
+        reportingCondition:
+          description: 'Reporting condition for the Beacon Report as per Table 9-153 of IEEE 802.11-2016 [8]:
+
+            0 = Report to be issued after each measurement.
+
+            1 = Report to be issued when Channel Load is greater than or equal to the threshold.
+
+            2 = Report to be issued when Channel Load is less than or equal to the threshold.
+
+
+            If this optional field is not provided, channel load report should be issued after each measurement (reportingCondition = 0).'
+          type: integer
+          format: uint8
+        threshold:
+          description: Channel Load reference value for threshold reporting. This field shall be provided for reportingCondition values 1 and 2.
+          type: integer
+          format: uint8
+      required:
+      - operatingClass
+      - channel
+    BeaconRequestConfig:
+      x-etsi-ref: 6.5.25
+      type: object
+      properties:
+        operatingClass:
+          description: "Operating Class field indicates an operating class value as defined in Annex E within IEEE\_802.112016\_[8]."
+          type: integer
+          format: uint8
+        channelId:
+          description: "Channel number to scan. A Channel Number of 0 indicates a request to make iterative measurements for all supported channels in the Operating Class where the measurement is permitted on the channel and the channel is valid for the current regulatory domain. A\_Channel Number of 255 indicates a request to make iterative measurements for all supported channels in the current Operating Class listed in the latest AP Channel Report received from the serving AP."
+          type: integer
+          format: uint8
+        measurementMode:
+          description: '0 for passive.
+
+            1 for active.
+
+            2 for beacon table.'
+          type: integer
+          format: uint8
+        bssid:
+          description: The BSSID field indicates the BSS for which a beacon report is requested. If absent, the requested beacon reports should include all BSSs on the channel.
+          type: string
+        ssid:
+          description: The SSID subelement indicates the ESS or IBSS for which a beacon report is requested.
+          type: string
+        beaconReportingConf:
+          description: Beacon reporting configuration data field format as in Figure 9-157 in IEEE 802.11-2016 [8].
+          $ref: '#/components/schemas/BeaconReportingConfig'
+          type: object
+      required:
+      - operatingClass
+      - channelId
+      - measurementMode
+      - beaconReportingConf
+    StaStatisticsConfig:
+      x-etsi-ref: 6.5.26
+      type: object
+      properties:
+        groupIdentity:
+          description: As per Table 9-92 of IEEE 802.11-2016 [8].
+          type: integer
+          format: uint8
+        triggeredReport:
+          description: True = triggered reporting, otherwise duration.
+          type: boolean
+        measurementCount:
+          description: 'Valid if triggeredReport = true.
+
+            Specifies the number of MAC service data units or protocol data units to determine if the trigger conditions are met.'
+          type: integer
+          format: uint32
+        triggerTimeout:
+          description: "Valid if triggeredReport = true.\nThe Trigger Timeout field contains a value in units of 100 time-units of 1 024 \xB5s during which a measuring STA does not generate further triggered STA Statistics Reports after a trigger condition has been met."
+          type: integer
+          format: uint16
+        triggerCondition:
+          description: Valid if triggeredReport = true. As per Figure 9-161 of IEEE 802.11-2016 [8]. Defines what are the metrics returned by the STA Statistics Report.
+          $ref: '#/components/schemas/STACounterTriggerCondition'
+          type: object
+      required:
+      - groupIdentity
+      - triggeredReport
+    BeaconReport:
+      x-etsi-ref: 6.5.27
+      type: object
+      properties:
+        staId:
+          description: Identifier to uniquely specify the station whose information is exposed within this Beacon Report. If BeaconReport is contained within a data type that provides the station's identifier, this field may be omitted.
+          $ref: '#/components/schemas/StaIdentity'
+          type: object
+        measurementId:
+          description: Measurement ID of the Measurement configuration applied to this Beacon Report.
+          type: string
+        operatingClass:
+          description: Operating Class field indicates an operating class value as defined in Annex E within IEEE 802.11-2016 [8].
+          type: integer
+          format: uint8
+        channel:
+          description: Channel number where the beacon was received.
+          type: integer
+          format: uint8
+        reportedFrameInfo:
+          description: Information about the reported beacon frame.
+          $ref: '#/components/schemas/ReportedBeaconFrameInfo'
+          type: object
+        bssid:
+          description: Indicates the BSSID of the BSS for which a beacon report has been received.
+          type: string
+        ssid:
+          description: The SSID subelement indicates the ESS or IBSS for which a beacon report is received.
+          type: string
+        rcpi:
+          description: "RCPI indicates the received channel power of the Beacon, Measurement Pilot, or Probe Response frame, which is a logarithmic function of the received signal power, as defined in clause\_9.4.2.38 of IEEE 802.11-2016 [8]."
+          type: integer
+          format: uint8
+        rsni:
+          description: "RSNI indicates the received signal-to-noise indication for the Beacon, Measurement Pilot, or Probe Response frame, as described in clause\_9.4.2.41 of IEEE 802.11-2016 [8]."
+          type: integer
+          format: uint8
+        antennaId:
+          description: "The Antenna ID field contains the identifying number for the antenna(s) used for this measurement. Antenna ID is defined in clause\_9.4.2.40 of IEEE 802.11-2016 [8]."
+          type: integer
+          format: uint8
+        parentTsf:
+          description: The Parent TSF field contains the lower 4 octets of the measuring STA's TSF timer value at the start of reception of the first octet of the timestamp field of the reported Beacon, Measurement Pilot, or Probe Response frame at the time the Beacon, Measurement Pilot, or Probe Response frame being reported was received.
+          type: integer
+          format: uint32
+      required:
+      - measurementId
+      - operatingClass
+      - channel
+      - reportedFrameInfo
+      - bssid
+    BeaconReportingConfig:
+      x-etsi-ref: 6.5.28
+      type: object
+      properties:
+        reportingCondition:
+          description: 'Reporting condition for the Beacon Report as per Table 9-89 of IEEE 802.11-2016 [8]:
+
+            0 = Report to be issued after each measurement.
+
+            1 = measured RCPI level is greater than the threshold.
+
+            2 = measured RCPI level is less than the threshold.
+
+            3 = measured RSNI level is greater than the threshold.
+
+            4 = measured RSNI level is less than the threshold.
+
+            5 = measured RCPI level is greater than a threshold defined by an offset from the serving AP''s reference RCPI.
+
+            6 = measured RCPI level is less than a threshold defined by an offset from the serving AP''s reference RCPI.
+
+            7 = measured RSNI level is greater than a threshold defined by an offset from the serving AP''s reference RSNI.
+
+            8 = measured RSNI level is less than a threshold defined by an offset from the serving AP''s reference RSNI.
+
+            9 = measured RCPI level is in a range bound by the serving AP''s reference RCPI and an offset from the serving AP''s reference RCPI.
+
+            10 = measured RSNI level is in a range bound by the serving AP''s reference RSNI and an offset from the serving AP''s reference RSNI.'
+          type: integer
+          format: uint8
+        threshold:
+          description: "The threshold subfield contains either the threshold value or the offset value to be used for conditional reporting.\n\nFor reportingCondition subfield with values 1 and 2, the threshold value is a logarithmic function of the received signal power, as defined in clause\_9.4.2.38 of IEEE 802.11-2016 [8].\n\nFor reportingCondition subfield values 3 and 4, the threshold value is a logarithmic function of the signal-to-noise ratio, as described in clause\_9.4.2.41 of IEEE 802.11-2016 [8].\n\nFor reportingCondition subfield values 5 to 10, the offset value is an 8-bit 2s complement integer in units of 0,5 dBm. The indicated reporting condition applies individually to each measured Beacon, Measurement Pilot, or Probe Response frame."
+          type: integer
+          format: uint8
+      required:
+      - reportingCondition
+      - threshold
+    ReportedBeaconFrameInfo:
+      x-etsi-ref: 6.5.29
+      type: object
+      properties:
+        phyType:
+          description: Value between 0 and 127 coded according to dot11PHYType.
+          type: integer
+          format: uint8
+        frameType:
+          description: 'A value of 0 indicates a Beacon or Probe Response.
+
+            A value of 1 indicates a Measurement Pilot frame.'
+          type: integer
+          format: uint8
+      required:
+      - phyType
+      - frameType
+    BssidInfo:
+      x-etsi-ref: 6.5.30
+      type: object
+      properties:
+        apReachability:
+          description: 'The apReachability field indicates whether the AP identified by this BSSID is reachable by the STA that requested the neighbor report. Valid values:
+
+            0 = reserved
+
+            1 = not reachable
+
+            2 = unknown
+
+            3 = reachable.'
+          type: integer
+          format: uint8
+        security:
+          description: 'True indicates the AP identified by this BSSID supports the same security provisioning as used by the STA in its current association.
+
+
+            False indicates either that the AP does not support the same security provisioning or that the security information is not available at this time.'
+          type: boolean
+        capabilities:
+          description: Capability information for the AP indicated by this BSSID.
+          $ref: '#/components/schemas/BssCapabilities'
+          type: object
+        mobilityDomain:
+          description: True indicates the AP represented by this BSSID is including an MDE in its Beacon frames and that the contents of that MDE are identical to the MDE advertised by the AP sending the report.
+          type: boolean
+        highThroughput:
+          description: True indicates that the AP represented by this BSSID is an HT AP including the HT Capabilities element in its Beacons, and that the contents of that HT Capabilities element are identical to the HT Capabilities element advertised by the AP sending the report.
+          type: boolean
+        veryHighThroughput:
+          description: True indicates that the AP represented by this BSSID is a VHT AP and that the VHT Capabilities element, if included as a subelement in the report, is identical in content to the VHT Capabilities element included in the AP's Beacon.
+          type: boolean
+        ftm:
+          description: 'True indicates the AP represented by this BSSID is an AP that has set the Fine Timing Measurement Responder field of the Extended Capabilities element to 1.
+
+
+            False indicates either that the reporting AP has dot11FineTimingMsmtRespActivated equal to false, or the reported AP has not set the Fine Timing Measurement Responder field of the Extended Capabilities element to 1 or that the Fine Timing Measurement Responder field of the reported AP is not available to the reporting AP at this time.'
+          type: boolean
+      required:
+      - apReachability
+      - security
+      - capabilities
+      - mobilityDomain
+      - highThroughput
+      - veryHighThroughput
+      - ftm
+    BssCapabilities:
+      x-etsi-ref: 6.5.31
+      type: object
+      properties:
+        spectrumManagement:
+          description: Spectrum Management required
+          type: boolean
+        qos:
+          description: QoS Option implemented
+          type: boolean
+        apsd:
+          description: APSD Option implemented
+          type: boolean
+        radioMeasurements:
+          description: Radio Measurement Activated
+          type: boolean
+        delayedBACK:
+          description: Delayed Block Ack Option implemented
+          type: boolean
+        immediateBACK:
+          description: Immediate Block Ack Option implemented
+          type: boolean
+      required:
+      - spectrumManagement
+      - qos
+      - apsd
+      - radioMeasurements
+      - delayedBACK
+      - immediateBACK
+    NeighborReportConfig:
+      x-etsi-ref: 6.5.32
+      type: object
+      properties:
+        ssid:
+          description: The SSID field is optionally present. If present, it contains an SSID element. The presence of an SSID element in a Neighbor Report indicates a request for a neighbor list for the specified SSID in the SSID Element. The absence of an SSID element indicates neighbor report for the current ESS.
+          type: string
+        bssid:
+          description: BSSID of the neighbor AP which information is intended to obtain. If no specific BSSID is given, the information will be provided for all APs matching the ssid criteria.
+          type: string
+      description: "|-\n  NOTE:\tBoth SSID and BSSID are optional configuration parameters. BSSID is valid when a SSID setting is provided, otherwise ignored. If SSID is not included, the neighbor report will be generated for the SSID (i.e.\_current ESS) that the station is associated."
+    STACounterTriggerCondition:
+      x-etsi-ref: 6.5.33
+      type: object
+      properties:
+        failedCountThreshold:
+          description: Configure and set threshold for dot11FailedCount trigger
+          type: integer
+          format: uint32
+        fcsErrorCountThreshold:
+          description: Configure and set threshold for dot11FCSErrorCount trigger
+          type: integer
+          format: uint32
+        multipleRetryCountThreshold:
+          description: Configure and set threshold for dot11MultipleRetryCount trigger
+          type: integer
+          format: uint32
+        frameDuplicateCountThreshold:
+          description: Configure and set threshold for dot11FrameDuplicateCount trigger
+          type: integer
+          format: uint32
+        rtsFailureCountThreshold:
+          description: Configure and set threshold for dot11RTSFailureCount trigger
+          type: integer
+          format: uint32
+        ackFailureCountThreshold:
+          description: Configure and set threshold for dot11AckFailureCount trigger
+          type: integer
+          format: uint32
+        retryCountThreshold:
+          description: Configure and set threshold for dot11RetryCount trigger
+          type: integer
+          format: uint32
+    StaStatisticsGroupZeroData:
+      x-etsi-ref: 6.5.34
+      type: object
+      properties:
+        transmittedFragmentCount:
+          description: dot11TransmittedFragmentCount counter
+          type: integer
+          format: uint32
+        groupTransmittedFrameCount:
+          description: dot11GroupTransmittedFrameCount counter
+          type: integer
+          format: uint32
+        failedCount:
+          description: dot11FailedCount counter
+          type: integer
+          format: uint32
+        receivedFragmentCount:
+          description: dot11ReceivedFragmentCount counter
+          type: integer
+          format: uint32
+        groupReceivedFrameCount:
+          description: dot11GroupReceivedFrameCount counter
+          type: integer
+          format: uint32
+        fcsErrorCount:
+          description: dot11FCSErrorCount counter
+          type: integer
+          format: uint32
+        transmittedFrameCount:
+          description: dot11TransmittedFrameCount counter
+          type: integer
+          format: uint32
+        reportingReasonStaCounters:
+          description: Optionally reported reason for STA Statistics Group 0
+          $ref: '#/components/schemas/ReportingReasonStaCounters'
+          type: object
+      required:
+      - transmittedFragmentCount
+      - groupTransmittedFrameCount
+      - failedCount
+      - receivedFragmentCount
+      - groupReceivedFrameCount
+      - fcsErrorCount
+      - transmittedFrameCount
+    StaStatisticsGroupOneData:
+      x-etsi-ref: 6.5.35
+      type: object
+      properties:
+        retryCount:
+          description: dot11RetryCount counter
+          type: integer
+          format: uint32
+        multipleRetryCount:
+          description: dot11MultipleRetryCount counter
+          type: integer
+          format: uint32
+        frameDuplicateCount:
+          description: dot11FrameDuplicateCount counter
+          type: integer
+          format: uint32
+        rtsSuccessCount:
+          description: dot11RTSSuccessCount counter
+          type: integer
+          format: uint32
+        rtsFailureCount:
+          description: dot11RTSFailureCount counter
+          type: integer
+          format: uint32
+        ackFailureCount:
+          description: dot11AckFailureCount counter
+          type: integer
+          format: uint32
+        reportingReasonStaCounters:
+          description: Optionally reported reason for STA Statistics Group 1
+          $ref: '#/components/schemas/ReportingReasonStaCounters'
+          type: object
+      required:
+      - retryCount
+      - multipleRetryCount
+      - frameDuplicateCount
+      - rtsSuccessCount
+      - rtsFailureCount
+      - ackFailureCount
+    StaStatisticsGroup2to9Data:
+      x-etsi-ref: 6.5.36
+      type: object
+      properties:
+        qosTransmittedFragmentCount:
+          description: dot11QosTransmittedFragmentCount counter
+          type: integer
+          format: uint32
+        qosFailedCount:
+          description: dot11QosFailedCount counter
+          type: integer
+          format: uint32
+        qosRetryCount:
+          description: dot11QosRetryCount counter
+          type: integer
+          format: uint32
+        qosMultipleRetryCount:
+          description: dot11QosMultipleRetryCount counter
+          type: integer
+          format: uint32
+        qosFrameDuplicateCount:
+          description: dot11QosFrameDuplicateCount counter
+          type: integer
+          format: uint32
+        qosRTSSuccessCount:
+          description: dot11QosRTSSuccessCount counter
+          type: integer
+          format: uint32
+        qosRTSFailureCount:
+          description: dot11QosRTSFailureCount counter
+          type: integer
+          format: uint32
+        qosAckFailureCount:
+          description: dot11QosAckFailureCount counter
+          type: integer
+          format: uint32
+        qosReceivedFragmentCount:
+          description: dot11QosReceivedFragmentCount counter
+          type: integer
+          format: uint32
+        qosTransmittedFrameCount:
+          description: dot11QosTransmittedFrameCount counter
+          type: integer
+          format: uint32
+        qosDiscardedFrameCount:
+          description: dot11QosDiscardedFrameCount counter
+          type: integer
+          format: uint32
+        qosMPDUsReceivedCount:
+          description: dot11QosMPDUsReceivedCount counter
+          type: integer
+          format: uint32
+        qosRetriesReceivedCount:
+          description: dot11QosRetriesReceivedCount counter
+          type: integer
+          format: uint32
+        reportingReasonQoSCounters:
+          description: Optionally reported reason for STA Statistics Groups 2 to 9
+          $ref: '#/components/schemas/ReportingReasonQoSCounters'
+          type: object
+      required:
+      - qosTransmittedFragmentCount
+      - qosFailedCount
+      - qosRetryCount
+      - qosMultipleRetryCount
+      - qosFrameDuplicateCount
+      - qosRTSSuccessCount
+      - qosRTSFailureCount
+      - qosAckFailureCount
+      - qosReceivedFragmentCount
+      - qosTransmittedFrameCount
+      - qosDiscardedFrameCount
+      - qosMPDUsReceivedCount
+      - qosRetriesReceivedCount
+    ReportingReasonStaCounters:
+      x-etsi-ref: 6.5.37
+      type: object
+      properties:
+        failed:
+          description: dot11Failed
+          type: boolean
+        fcsError:
+          description: 'dot11FCSError '
+          type: boolean
+        multipleRetry:
+          description: dot11MultipleRetry
+          type: boolean
+        frameDuplicate:
+          description: 'dot11FrameDuplicate '
+          type: boolean
+        rtsFailure:
+          description: dot11RTSFailure
+          type: boolean
+        ackFailure:
+          description: dot11AckFailure
+          type: boolean
+        retry:
+          description: dot11Retry
+          type: boolean
+      required:
+      - failed
+      - fcsError
+      - multipleRetry
+      - frameDuplicate
+      - rtsFailure
+      - ackFailure
+      - retry
+    ReportingReasonQoSCounters:
+      x-etsi-ref: 6.5.38
+      type: object
+      properties:
+        qosFailed:
+          description: 'dot11QoSFailed '
+          type: boolean
+        qosRetry:
+          description: dot11QoSRetry
+          type: boolean
+        qosMultipleRetry:
+          description: dot11QoSMultipleRetry
+          type: boolean
+        qosFrameDuplicate:
+          description: dot11QoSFrameDuplicate
+          type: boolean
+        qosRtsFailure:
+          description: dot11QoSRTSFailure
+          type: boolean
+        qosAckFailure:
+          description: dot11QoSAckFailure
+          type: boolean
+        qosDiscarded:
+          description: dot11QoSDiscarded
+          type: boolean
+      required:
+      - qosFailed
+      - qosRetry
+      - qosMultipleRetry
+      - qosFrameDuplicate
+      - qosRtsFailure
+      - qosAckFailure
+      - qosDiscarded
+    ChannelLoad:
+      x-etsi-ref: 6.5.39
+      type: object
+      properties:
+        staId:
+          description: Identifier to uniquely specify the station whose information is exposed within Channel Load. If ChannelLoad is contained within a data type that provides the station's identifier, this field may be omitted.
+          $ref: '#/components/schemas/StaIdentity'
+          type: object
+        measurementId:
+          description: Measurement ID of the Measurement configuration applied to this Channel Load Report.
+          type: string
+        operatingClass:
+          description: Operating Class field indicates an operating class value as defined in Annex E within IEEE 802.11-2016 [8].
+          type: integer
+          format: uint8
+        channel:
+          description: Channel number indicates the channel number for which the measurement report applies.
+          type: integer
+          format: uint8
+        measurementDuration:
+          description: "Duration over which the Channel Load report was measured, in units of TUs of 1 024 \xB5s."
+          type: integer
+          format: uint8
+        channelLoad:
+          description: "Proportion of measurement duration for which the measuring STA determined the channel to be busy, as a percentage of time, linearly scaled with 255 representing 100\_%."
+          type: integer
+          format: uint8
+      required:
+      - measurementId
+      - operatingClass
+      - channel
+      - measurementDuration
+      - channelLoad
+    OBssLoad:
+      x-etsi-ref: 6.5.40
+      type: object
+      properties:
+        allocatedTrafficSelfMean:
+          description: "Mean of allocated traffic from this AP (BSS) in units of 32\_\xB5s per second."
+          type: integer
+          format: uint16
+        allocatedTrafficSelfStdDev:
+          description: "Standard deviation from the mean of allocation traffic from this BSS in units of 32 \xB5s per second."
+          type: integer
+          format: uint16
+        allocatedTrafficShareMean:
+          description: "Mean of the sum of allocated traffic from other APs on the overlapping channel in unit of 32 \xB5s per second."
+          type: integer
+          format: uint16
+        allocatedTrafficShareStdDev:
+          description: "Standard deviation from the mean of the sum of allocated traffic from other APs on the overlapping channel in unit of 32 \xB5s per second."
+          type: integer
+          format: uint16
+        overlap:
+          description: Indicates the number of other APs that are sharing the same channel as the reporting AP.
+          type: integer
+          format: uint8
+      required:
+      - allocatedTrafficSelfMean
+      - allocatedTrafficShareMean
+    MeasurementInfo:
+      x-etsi-ref: 6.5.41
+      type: object
+      properties:
+        measurementDuration:
+          description: "Duration of the measurement in Time Units (TUs) of 1\_024 \xB5s, as defined in clause 11.11.4 of IEEE\_802.11-2016 [8]. If not provided, the underlying system may utilize a default configuration that will be indicated in resulting measurement reports."
+          type: integer
+          format: uint16
+        randomInterval:
+          description: "Random interval to be used for starting the measurement in TUs of 1\_024 \xB5s, as specified in clause\_11.11.3 of IEEE 802.11-2016 [8]. If not provided, the underlying system may utilize a default configuration that will be indicated in resulting measurement reports."
+          type: integer
+          format: uint16
+        channelLoadConf:
+          description: Configuration related to the Channel Load.
+          $ref: '#/components/schemas/ChannelLoadConfig'
+          type: object
+        beaconRequestConf:
+          description: Configuration related to Beacon Request.
+          $ref: '#/components/schemas/BeaconRequestConfig'
+          type: object
+        staStatisticsConf:
+          description: Configuration related to the statistics provided by STAs.
+          $ref: '#/components/schemas/StaStatisticsConfig'
+          type: object
+        neighborReportConf:
+          description: Configuration related to Neighbor Reports.
+          $ref: '#/components/schemas/NeighborReportConfig'
+          type: object
+      description: "|-\n  NOTE 1:\tOnly one of channelLoadConf, beaconRequestConf, staStatisticsConf or neighborReportConf is allowed in a MeasurementInfo instance.\nNOTE 2:\tAs per IEEE 802.11-2016 [8], measurementDuration and randomInterval apply to channelLoad, beaconRequest, staStatistics, and neighborReport configurations."
+    WebsockNotifConfig:
+      x-etsi-ref: 6.5.42
+      type: object
+      properties:
+        websocketUri:
+          description: Set by WAIS to indicate to the service consumer the Websocket URI to be used for delivering notifications.
+          type: string
+          format: uri
+        requestWebsocketUri:
+          description: Set to true by the service consumer to indicate that Websocket delivery is requested.
+          type: boolean
+    _links:
+      description: Hyperlink related to the resource.
+      type: object
+      properties:
+        self:
+          description: Self-referring URI. The URI shall be unique within the WLAN Access Information API as it acts as an Id for the measurement configuration (MeasurementConfigId).
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - self
+    _links1:
+      description: Hyperlink related to the resource.
+      type: object
+      properties:
+        self:
+          description: Self-referring URI.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - self
+    _links2:
+      description: Hyperlink related to the resource. This shall be only included in the HTTP responses and in HTTP PUT requests.
+      type: object
+      properties:
+        self:
+          description: Self-referring URI. The URI shall be unique within the WLAN Access Information API as it acts as an ID for the subscription (SubscriptionId).
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - self
+    NotificationEvent:
+      description: 'Set for trigger-based event notification reporting. '
+      type: object
+      properties:
+        trigger:
+          type: integer
+          description: 'Trigger for the notification:
+
+            1 = Notification issued when the number of connected stations is greater than or equal to the threshold.
+
+            2 = Notification issued when the number of connected stations is less than or equal to the threshold.'
+          enum:
+          - SEE_DESCRIPTION
+        threshold:
+          description: Number of connected stations threshold for trigger-based event reporting.
+          type: integer
+          format: uint8
+      required:
+      - trigger
+      - threshold
+    NotificationEvent1:
+      description: Set for trigger-based event notification reporting.
+      type: object
+      properties:
+        trigger:
+          type: integer
+          description: 'Trigger event for the notification:
+
+            1 = Notification issued when the STA''s downlink data rate is greater than or equal to the downlink threshold.
+
+            2 = Notification issued when the STA''s downlink data rate is less than or equal to the downlink threshold.
+
+            3 = Notification issued when the STA''s uplink data rate is greater than or equal to the uplink threshold.
+
+            4 = Notification issued when the STA''s uplink data rate is less than or equal to the uplink threshold.
+
+            5 = Notification issued when the STA''s downlink and uplink data rate is greater than or equal to their thresholds.
+
+            6 = Notification issued when the STA''s downlink and uplink data rate is less than or equal to their thresholds.
+
+            7 = Notification issued when the STA''s downlink or uplink data rate is greater than or equal to their thresholds.
+
+            8 = Notification issued when the STA''s downlink or uplink data rate is less than or equal to their thresholds.'
+          enum:
+          - SEE_DESCRIPTION
+        downlinkRateThreshold:
+          description: Downlink data rate threshold for StaDataRate reporting.
+          type: integer
+          format: uint32
+        uplinkRateThreshold:
+          description: Uplink data rate threshold for StaDataRate reporting.
+          type: integer
+          format: uint32
+      required:
+      - trigger
+    _links3:
+      description: List of hyperlinks related to the resource.
+      type: object
+      properties:
+        self:
+          description: Self-referring URI.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - self
+    Subscription:
+      description: ''
+      type: object
+      minItems: 0
+      properties:
+        href:
+          description: The URI referring to the subscription.
+          type: string
+          format: uri
+        subscriptionType:
+          description: "Type of the subscription. The string shall be set according to the \"subscriptionType\" attribute of the associated subscription data type defined in clauses\_6.3.2, 6.3.3 and 6.3.5:\n\"AssocStaSubscription\"\n\"StaDataRateSubscription\"\n\"MeasurementReportSubscription\"."
+          type: string
+      required:
+      - href
+      - subscriptionType
+    _links4:
+      description: Hyperlink related to the resource.
+      type: object
+      properties:
+        subscription:
+          description: URI identifying the subscription which has expired.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - subscription
+    _links5:
+      description: 'Hyperlink related to the resource. '
+      type: object
+      properties:
+        subscription:
+          description: URI identifying the subscription for the test notification.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - subscription
+  responses:
+    '200':
+      description: OK
+    '204':
+      description: No Content
+    '400':
+      description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '401':
+      description: 'Unauthorized: used when the client did not submit credentials.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '403':
+      description: 'Forbidden: operation is not allowed given the current status of the resource.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '404':
+      description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '406':
+      description: 'Not Acceptable: used to indicate that the server cannot provide the any of the content formats supported by the client.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '412':
+      description: 'Precondition failed: used when a condition has failed during conditional requests, e.g. when using ETags to avoid write conflicts when using PUT'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '415':
+      description: 'Unsupported Media Type: used to indicate that the server or the client does not support the content type of the entity body.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '422':
+      description: 'Unprocessable Entity: used to indicate that the server understands the content type of the request entity and that the syntax of the request entity is correct but that the server is unable to process the contained instructions. This error condition can occur if an JSON request body is syntactically correct but semantically incorrect, for example if the target area for the request is considered too large. This error condition can also occur if the capabilities required by the request are not supported.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '429':
+      description: 'Too Many Requests: used when a rate limiter has triggered.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '416':
+      description: The server cannot satisfy the request because the requested range is not valid.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+  parameters:
+    Query.Filter:
+      description: "Attribute-based filtering expression according to clause 6.19 of ETSI GS\_MEC 009 [10].\nThe WLAN Access Information API shall support receiving this parameter as part of the URI query string.\nAll attribute names that appear in the ap_information and in data types referenced from it shall be supported by the WLAN Access Information API in the filter expression."
+      name: filter
+      in: query
+      required: false
+      x-exportParamName: Query.Filter
+      schema:
+        type: string
+    Query.All_fields:
+      description: Include all complex attributes in the response. See clause 6.18 of ETSI GS MEC 009 [10] for details. The WLAN Access Information API shall support this parameter.
+      name: all_fields
+      in: query
+      required: false
+      x-exportParamName: Query.All_fields
+      schema:
+        type: string
+    Query.Fields:
+      description: Complex attributes to be included into the response. See clause 6.18 of ETSI GS MEC 009 [10] for details. The WLAN Access Information API shall support this parameter.
+      name: fields
+      in: query
+      required: false
+      x-exportParamName: Query.Fields
+      schema:
+        type: string
+    Query.Exclude_fields:
+      description: Complex attributes to be excluded from the response. See clause 6.18 of ETSI GS MEC 009 [10] for details. The WLAN Access Information API shall support this parameter.
+      name: exclude_fields
+      in: query
+      required: false
+      x-exportParamName: Query.Exclude_fields
+      schema:
+        type: string
+    Query.Exclude_default:
+      description: 'Indicates to exclude the following complex attributes from the response. See clause 6.18 of ETSI GS MEC 009 [10] for details. The WLAN Access Information API shall support this parameter.
+
+        The following attributes shall be excluded from the ap_information structure in the response body if this parameter is provided, or none of the parameters "all_fields", "fields", "exclude_fields", "exclude_default" are provided:
+
+        Not applicable.'
+      name: exclude_default
+      in: query
+      required: false
+      x-exportParamName: Query.Exclude_default
+      schema:
+        type: string
+    Query.Filter1:
+      description: "Attribute-based filtering expression according to clause 6.19 of ETSI GS\_MEC 009 [10].\nThe WLAN Access Information API shall support receiving this parameter as part of the URI query string.\n\nAll attribute names that appear in the ap_information and in data types referenced from it shall be supported by the WLAN Access Information API in the filter expression."
+      name: filter
+      in: query
+      required: false
+      x-exportParamName: Query.Filter1
+      schema:
+        type: string
+    Query.Subscription_type:
+      description: "Query parameter to filter on a specific subscription type. Permitted values:\nassoc_sta\tAssociated Stations\nsta_data_rate\tStation Data Rate\nmeasure_report \tMeasurement Report."
+      name: subscription_type
+      in: query
+      required: false
+      x-exportParamName: Query.Subscription_type
+      schema:
+        type: string
+

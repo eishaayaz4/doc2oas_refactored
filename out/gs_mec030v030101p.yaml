@@ -1,0 +1,1680 @@
+openapi: 3.1.0
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+info:
+  contact:
+    url: https://forge.etsi.org/rep/mec/gs030-vis-api
+  title: ETSI GS MEC 030 V2X Information Service API
+  description: The ETSI MEC ISG V2X Information Service API described using OpenAPI.
+  license:
+    name: BSD-3-Clause
+    url: https://forge.etsi.org/legal-matters
+  version: 3.1.1
+paths:
+  /queries/uu_unicast_provisioning_info:
+    get:
+      summary: Retrieve provisioning information required for V2X communication over Uu unicast.
+      description: The GET method is used to query provisioning information for V2X communication over Uu unicast.
+      operationId: QueriesUuunicastprovisioninginfoGET
+      tags:
+      - queries
+      parameters:
+      - $ref: '#/components/parameters/Query.Location_info'
+      responses:
+        '200':
+          description: Upon success, a response body containing the Uu unicast provisioning information is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  UuUnicastProvisioningInfo:
+                    $ref: '#/components/schemas/UuUnicastProvisioningInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+  /queries/uu_mbms_provisioning_info:
+    get:
+      summary: Retrieve provisioning information required for V2X communication over Uu MBMS.
+      description: The GET method is used to query provisioning information for V2X communication over Uu MBMS.
+      operationId: QueriesUumbmsprovisioninginfoGET
+      tags:
+      - queries
+      parameters:
+      - $ref: '#/components/parameters/Query.Location_info1'
+      responses:
+        '200':
+          description: Upon success, a response body containing the Uu MBMS provisioning information is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  UuMbmsProvisioningInfo:
+                    $ref: '#/components/schemas/UuMbmsProvisioningInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+  /queries/pc5_provisioning_info:
+    get:
+      summary: Retrieve provisioning information required for V2X communication over PC5.
+      description: The GET method is used to query provisioning information for V2X communication over PC5.
+      operationId: QueriesPc5ProvisioninginfoGET
+      tags:
+      - queries
+      parameters:
+      - $ref: '#/components/parameters/Query.Location_info2'
+      responses:
+        '200':
+          description: Upon success, a response body containing the PC5 provisioning information is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Pc5ProvisioningInfo:
+                    $ref: '#/components/schemas/Pc5ProvisioningInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+  /provide_v2x_msg_distribution_server_info:
+    post:
+      summary: Provide V2X Message Distribution Servers information required for direct connection with a service consumer.
+      description: The POST method is used to request the information about available V2X Message Distribution Servers that can be supported by the service consumer (e.g. a MEC application).
+      operationId: Providev2XmsgdistributionserverinfoPOST
+      tags:
+      - queries
+      requestBody:
+        description: Entity body in the request contains the information of the V2X Message Distribution Servers supported by the service consumer for direct communication.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                V2xMsgDistributionServerInfo:
+                  $ref: '#/components/schemas/V2xMsgDistributionServerInfo'
+      responses:
+        '200':
+          description: The response body shall contain the connection information of the V2X Message Distribution Servers that the service consumer can use for direct connection.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  V2xMsgDistributionServerInfo:
+                    $ref: '#/components/schemas/V2xMsgDistributionServerInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+      parameters: []
+  /provide_predicted_qos:
+    post:
+      summary: Provide predicted QoS based on route information.
+      description: The POST method is used to request the predicted QoS correspondent to potential routes of a vehicular UE.
+      operationId: ProvidepredictedqosPOST
+      tags:
+      - qos
+      requestBody:
+        description: Entity body in the request contains the predicted QoS as requested by the VIS service consumer.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                PredictedQos:
+                  $ref: '#/components/schemas/PredictedQos'
+      responses:
+        '200':
+          description: The response body shall contain the predicted QoS corresponding to potential routes of a vehicular UE.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  PredictedQos:
+                    $ref: '#/components/schemas/PredictedQos'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+      parameters: []
+  /publish_v2x_message:
+    post:
+      summary: Publish a V2X message to VIS.
+      description: The POST method is used to publish a V2X message.
+      operationId: Publishv2XmessagePOST
+      tags:
+      - v2x_message
+      requestBody:
+        description: Entity body in the request contains the V2X message to be published.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                V2xMsgPublication:
+                  $ref: '#/components/schemas/V2xMsgPublication'
+      responses:
+        '204':
+          description: Upon success, a response 204 No Content without any response body is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters: []
+  /subscriptions:
+    get:
+      summary: Retrieve a list of active subscriptions for this subscriber.
+      description: The GET method is used to request information about the subscriptions for this requestor. Upon success, the response contains an entity body with the list of links to the subscriptions that are present for the requestor.
+      operationId: SubscriptionsGET
+      tags:
+      - subscriptions
+      parameters:
+      - $ref: '#/components/parameters/Query.Subscription_type'
+      responses:
+        '200':
+          description: Upon success, a response body containing the list of links to requestor's subscriptions is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  SubscriptionLinkList:
+                    $ref: '#/components/schemas/SubscriptionLinkList'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+    post:
+      summary: Create a new subscription.
+      description: The POST method is used to create a new subscription to VIS notifications. Upon success, the response contains an entity body describing the created subscription.
+      operationId: SubscriptionsPOST
+      tags:
+      - subscriptions
+      requestBody:
+        description: "The entity body in the request contains the data type of the specific VIS event subscription that is to be created, where the data type options are listed below and defined in clause 6.3:\nProvChgUuUniSubscription\nProvChgUuMbmsSubscription\nProvChgPc5Subscription\nV2xMsgSubscription \nPredQosSubscription."
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ProvChgUuUniSubscription:
+                  $ref: '#/components/schemas/ProvChgUuUniSubscription'
+      responses:
+        '201':
+          description: 'Indicates successful resource creation, where the resource URI shall be returned in the HTTP Location header field.
+
+
+            In the returned NotificationSubscription structure, the created subscription is described using the appropriate data type from the list below and as defined in clause 6.3:
+
+            ProvChgUuUniSubscription
+
+            ProvChgUuMbmsSubscription
+
+            ProvChgPc5Subscription
+
+            V2xMsgSubscription
+
+            PredQosSubscription.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ProvChgUuUniSubscription:
+                    $ref: '#/components/schemas/ProvChgUuUniSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '415':
+          $ref: '#/components/responses/415'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+      callbacks:
+        notification:
+          '{$request.body#/callbackUri}':
+            post:
+              summary: Callback POST used to send a notification
+              description: Subscription notification
+              operationId: notificationPOST
+              requestBody:
+                description: Subscription notification
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        subscriptionNotification:
+                          oneOf:
+                          - $ref: '#/components/schemas/ProvChgUuUniSubscription'
+                          - $ref: '#/components/schemas/ProvChgUuMbmsSubscription'
+                          - $ref: '#/components/schemas/ProvChgPc5Subscription'
+                          - $ref: '#/components/schemas/V2xMsgSubscription'
+                          - $ref: '#/components/schemas/PredQosSubscription'
+              responses:
+                '204':
+                  description: No content
+                '404':
+                  description: Not found
+      parameters: []
+  /subscriptions/{subscriptionId}:
+    get:
+      summary: Retrieve information on current specific subscription.
+      description: The GET method is used to retrieve information about this subscription. Upon success, the response contains an entity body with the data type describing the subscription.
+      operationId: SubscriptionsGETSubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '200':
+          description: "Upon success, a response body containing the data type describing the specific RNI event subscription is returned. The allowed data types for subscriptions are defined in clause\_6.3 and are as follows:\nProvChgUuUniSubscription\nProvChgUuMbmsSubscription\nProvChgPc5Subscription\nV2xMsgSubscription\nPredQosSubscription."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ProvChgUuUniSubscription:
+                    $ref: '#/components/schemas/ProvChgUuUniSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+    put:
+      summary: Modify existing subscription by sending a new data structure.
+      description: The PUT method is used to update the existing subscription. PUT method in this case has "replace" semantics. Upon successful operation, the target resource is updated with a new data type received within the message body of the PUT request.
+      operationId: SubscriptionsPUTSubscriptionid
+      tags:
+      - subscriptions
+      requestBody:
+        description: 'New NotificationSubscription is included as entity body of the request. The allowed data types for subscriptions are defined in clause 6.3 and are as follows:
+
+          ProvChgUuUniSubscription
+
+          ProvChgUuMbmsSubscription
+
+          ProvChgPc5Subscription
+
+          V2xMsgSubscription
+
+          PredQosSubscription.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ProvChgUuUniSubscription:
+                  $ref: '#/components/schemas/ProvChgUuUniSubscription'
+      responses:
+        '200':
+          description: "Upon success, a response body containing the data type describing the updated subscription is returned. The allowed data types for subscriptions are defined in clause\_6.3 and are as follows:\nProvChgUuUniSubscription\nProvChgUuMbmsSubscription\nProvChgPc5Subscription\nV2xMsgSubscription\nPredQosSubscription."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ProvChgUuUniSubscription:
+                    $ref: '#/components/schemas/ProvChgUuUniSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '412':
+          $ref: '#/components/responses/412'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+    delete:
+      summary: Cancel the existing subscription.
+      description: The DELETE method is used to cancel the existing subscription. Cancellation can be made by deleting the resource that represents the existing subscription.
+      operationId: SubscriptionsDELETESubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+    SystemInformationBlockType21:
+      description: V2X sidelink communication configuration, as defined in ETSI TS 136 331 [14]
+    UuUnicastProvisioningInfo:
+      x-etsi-ref: 6.2.2
+      type: object
+      properties:
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        proInfoUuUnicast:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProInfoUuUnicast'
+      required:
+      - proInfoUuUnicast
+    UuMbmsProvisioningInfo:
+      x-etsi-ref: 6.2.3
+      type: object
+      properties:
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        proInfoUuMbms:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProInfoUuMbms'
+      required:
+      - proInfoUuMbms
+    Pc5ProvisioningInfo:
+      x-etsi-ref: 6.2.4
+      type: object
+      properties:
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        proInfoPc5:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProInfoPc5'
+      required:
+      - proInfoPc5
+    V2xMsgDistributionServerInfo:
+      x-etsi-ref: 6.2.5
+      type: object
+      properties:
+        v2xMsgDistributionServer:
+          description: Describes the information of the V2X Message Distribution Servers supported by the service consumer for direct communication.
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/V2xMsgDistributionServer'
+        locationInfo:
+          description: Location information to identify a particular geographical area of interest to the service consumer for receiving V2X messages.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/LocationInfo'
+      required:
+      - v2xMsgDistributionServer
+    PredictedQos:
+      x-etsi-ref: 6.2.6
+      type: object
+      properties:
+        predictionTarget:
+          type: string
+          description: "Indicates target of QoS prediction. Valid values:\n1.\tSINGLE_UE_PREDICTION: \nThe predicted QoS is to be intended as journey-specific for a requesting vehicular UE.\n2.\tE2E_APPLICATION_INSTANCE_PREDICTION:\nThe E2E user plane link between two V2X application instances, where one instance relates to a single vehicular UE and the other instance to an application instance within another network, i.e. either another vehicular UE as in the V2N2V case, or an infrastructure element as in the V2N2I case.\nShall only be included in the request."
+          enum:
+          - SEE_DESCRIPTION
+        timeGranularity:
+          description: Time granularity of visiting a location.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        locationGranularity:
+          description: Granularity of visited location. Measured in meters.
+          type: string
+        noticePeriod:
+          description: Information on when the predicted QoS is needed at the service consumer interface. The value of the notice period depends on the application reaction that has to be triggered by the service consumer. The value of the notice period shall be equal or a multiple of the timeGranularity, if it is present. If present, it shall only be included in the request.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        predictionArea:
+          $ref: '#/components/schemas/PredictionArea'
+        routes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Routes'
+        qos:
+          $ref: '#/components/schemas/Qos'
+      required:
+      - predictionTarget
+      - locationGranularity
+      - qos
+      description: "|-\n  NOTE:\tThe data type of locationGranularity is a string which indicates the granularity of a visited location by means of latitudinal and longitudinal margins."
+    V2xMsgPublication:
+      x-etsi-ref: 6.2.7
+      type: object
+      properties:
+        msgPropertiesValues:
+          description: List of message properties that is associated to the V2X message publication that can be used for filtering messages at the reception of the V2X message.
+          $ref: '#/components/schemas/V2xMsgPropertiesValues'
+          type: object
+        msgRepresentationFormat:
+          description: The representation format of the binary V2X message, for example base64 or hexadecimal representation.
+          type: string
+        msgContent:
+          description: Published V2X message content. Its format is defined by the standardization organization indicated by the attribute stdOrganization of the msgPropertiesValues attribute.
+          type: string
+      required:
+      - msgPropertiesValues
+      - msgRepresentationFormat
+      - msgContent
+    ProvChgUuUniSubscription:
+      x-etsi-ref: 6.3.2
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "ProvChgUuUniSubscription".
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: "Shall be set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as described in ETSI GS\_MEC\_009 [9], clause 6.12a.\nDefault: FALSE."
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between VIS and the service consumer for notifications. See note.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+        filterCriteria:
+          $ref: '#/components/schemas/FilterCriteria'
+        expiryDeadline:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - filterCriteria
+      description: "|-\n  NOTE:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to VIS to choose an alternative and return only that alternative in the response, as described in ETSI GS MEC 009 [9], clause 6.12a."
+    ProvChgUuMbmsSubscription:
+      x-etsi-ref: 6.3.3
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "ProvChgUuMbmsSubscription".
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: "Shall be set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as described in ETSI GS\_MEC 009 [9], clause 6.12a.\nDefault: FALSE."
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between VIS and the service consumer for notifications. See note.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+        filterCriteria:
+          $ref: '#/components/schemas/FilterCriteria1'
+        expiryDeadline:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - filterCriteria
+      description: "|-\n  NOTE:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to VIS to choose an alternative and return only that alternative in the response, as described in ETSI GS MEC 009 [9], clause 6.12a."
+    ProvChgPc5Subscription:
+      x-etsi-ref: 6.3.4
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "ProvChgPc5Subscription".
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: "Shall be set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as described in ETSI GS MEC 009 [9], clause\_6.12a.\nDefault: FALSE."
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between VIS and the service consumer for notifications. See note.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+        filterCriteria:
+          $ref: '#/components/schemas/FilterCriteria2'
+        expiryDeadline:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - filterCriteria
+      description: "|-\n  NOTE:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to VIS to choose an alternative and return only that alternative in the response, as described in ETSI GS MEC 009 [9], clause 6.12a."
+    V2xMsgSubscription:
+      x-etsi-ref: 6.3.5
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "V2xMsgSubscription".
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: "Shall be set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as described in ETSI GS MEC 009 [9], clause 6.12a. \nDefault: FALSE."
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between VIS and the service consumer for notifications. See note.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+        filterCriteria:
+          description: List of filtering criteria aimed to filter V2X messages at the reception. Any filtering criteria which is included in the request, shall also be included in the response.
+          $ref: '#/components/schemas/V2xMsgFilterCriteria'
+          type: object
+        expiryDeadline:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - filterCriteria
+      description: "|-\n  NOTE:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to VIS to choose an alternative and return only that alternative in the response, as described in ETSI GS MEC 009 [9], clause 6.12a."
+    PredQosSubscription:
+      x-etsi-ref: 6.3.6
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "PredQosSubscription".
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: 'Shall be set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as described in ETSI GS MEC 009 [9], clause 6.12a.
+
+            Default: FALSE.'
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between VIS and the service consumer for notifications. See note.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+        filterCriteria:
+          description: List of filtering criteria aimed to filter QoS predictions at the reception. Any filtering criteria included in the request, shall also be included in the response.
+          $ref: '#/components/schemas/QosPredFilterCriteria'
+          type: object
+        expiryDeadline:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - filterCriteria
+      description: "|-\n  NOTE:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to VIS to choose an alternative and return only that alternative in the response, as described in ETSI GS MEC 009 [9], clause 6.12a."
+    SubscriptionLinkList:
+      x-etsi-ref: 6.3.7
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/_links1'
+      required:
+      - _links
+    ProvChgUuUniNotification:
+      x-etsi-ref: 6.4.2
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "ProvChgUuUniNotification".
+          type: string
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        locationInfo:
+          description: Location information to identify a cell of a base station or a particular geographical area.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+        v2xApplicationServer:
+          description: V2X Application Server address (consisting of IP address and UDP port) for unicast.
+          $ref: '#/components/schemas/V2xApplicationServer'
+          type: object
+        neighbourCellInfo:
+          description: The information of the neighbour cells in a visiting PLMN that support V2X communication over Uu unicast.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/UuUniNeighbourCellInfo'
+      required:
+      - notificationType
+      - locationInfo
+    ProvChgUuMbmsNotification:
+      x-etsi-ref: 6.4.3
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "ProvChgUuMbmsNotification".
+          type: string
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        locationInfo:
+          description: Location information to identify a cell of a base station or a particular geographical area.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+        v2xServerUsd:
+          description: User Service Description for V2X Application Server is used to configure the UE for receiving local V2X Application Server information when it is provided over MBMS.
+          $ref: '#/components/schemas/V2xServerUsd'
+          type: object
+        neighbourCellInfo:
+          description: The information of the neighbour cells in a visiting PLMN that support V2X communication over Uu MBMS.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/UuMbmsNeighbourCellInfo'
+      required:
+      - notificationType
+      - locationInfo
+    ProvChgPc5Notification:
+      x-etsi-ref: 6.4.4
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "ProvChgPc5Notification".
+          type: string
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        locationInfo:
+          description: Location information to identify a cell of a base station or a particular geographical area.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+        dstLayer2Id:
+          description: For sidelink communication, the Destination Layer-2 ID is set to the ProSe Layer-2 Group ID or Prose UE ID, see ETSI TS 136 321 [15].
+          type: string
+        neighbourCellInfo:
+          description: The information of the neighbour cells in a visiting PLMN that support V2X communication over PC5.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/Pc5NeighbourCellInfo'
+      required:
+      - notificationType
+      - locationInfo
+    V2xMsgNotification:
+      x-etsi-ref: 6.4.5
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "V2xMsgNotification".
+          type: string
+        timeStamp:
+          description: Date and time of the notification generation.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        msgPropertiesValues:
+          description: List of message properties that is associated to the V2X message.
+          $ref: '#/components/schemas/V2xMsgPropertiesValues'
+          type: object
+        msgRepresentationFormat:
+          description: The representation format of the binary V2X message, for example base64 or hexadecimal representation.
+          type: string
+        msgContent:
+          description: Published V2X message content. The format of the string is defined by the standardization organization indicated by the attribute stdOrganization of the msgPropertiesValues attribute.
+          type: string
+        _links:
+          $ref: '#/components/schemas/_links2'
+      required:
+      - notificationType
+      - timeStamp
+      - msgPropertiesValues
+      - msgRepresentationFormat
+      - msgContent
+      - _links
+    TestNotification:
+      x-etsi-ref: 6.4.6
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "TestNotification".
+          type: string
+        _links:
+          $ref: '#/components/schemas/_links3'
+      required:
+      - notificationType
+      - _links
+    TimeStamp:
+      x-etsi-ref: 6.5.2
+      type: object
+      properties:
+        seconds:
+          description: The seconds part of the time. Time is defined as Unixtime since January 1, 1970, 00:00:00 UTC.
+          type: integer
+          format: uint32
+        nanoSeconds:
+          description: The nanoseconds part of the time. Time is defined as Unix-time since January 1, 1970, 00:00:00 UTC.
+          type: integer
+          format: uint32
+      required:
+      - seconds
+      - nanoSeconds
+    LocationInfo:
+      x-etsi-ref: 6.5.3
+      type: object
+      properties:
+        ecgi:
+          description: E-UTRAN CelI Global Identifier of the serving cell
+          $ref: '#/components/schemas/Ecgi'
+          type: object
+        geoArea:
+          $ref: '#/components/schemas/GeoArea'
+      description: "|-\n  NOTE:\tEither ecgi or geoArea shall be present, but not both."
+    Plmn:
+      x-etsi-ref: 6.5.4
+      type: object
+      properties:
+        mcc:
+          description: The Mobile Country Code part of PLMN Identity.
+          type: string
+        mnc:
+          description: The Mobile Network Code part of PLMN Identity.
+          type: string
+      required:
+      - mcc
+      - mnc
+    Ecgi:
+      x-etsi-ref: 6.5.5
+      type: object
+      properties:
+        plmn:
+          description: Public Land Mobile Network Identity.
+          $ref: '#/components/schemas/Plmn'
+          type: object
+        cellId:
+          description: The E-UTRAN Cell Identity.
+          $ref: '#/components/schemas/CellId'
+          type: object
+      required:
+      - plmn
+      - cellId
+    FddInfo:
+      x-etsi-ref: 6.5.6
+      type: object
+      properties:
+        ulEarfcn:
+          description: ''
+          $ref: '#/components/schemas/Earfcn'
+          type: object
+        dlEarfcn:
+          description: ''
+          $ref: '#/components/schemas/Earfcn'
+          type: object
+        ulTransmissionBandwidth:
+          description: ''
+          $ref: '#/components/schemas/TransmissionBandwidth'
+          type: object
+        dlTransmissionBandwidth:
+          description: ''
+          $ref: '#/components/schemas/TransmissionBandwidth'
+          type: object
+      required:
+      - ulEarfcn
+      - dlEarfcn
+      - ulTransmissionBandwidth
+      - dlTransmissionBandwidth
+    TddInfo:
+      x-etsi-ref: 6.5.7
+      type: object
+      properties:
+        earfcn:
+          description: ''
+          $ref: '#/components/schemas/Earfcn'
+          type: object
+        transmissionBandwidth:
+          description: ''
+          $ref: '#/components/schemas/TransmissionBandwidth'
+          type: object
+        subframeAssignment:
+          description: Uplink-downlink subframe configuration information.
+          type: string
+      required:
+      - earfcn
+      - transmissionBandwidth
+      - subframeAssignment
+    V2xApplicationServer:
+      x-etsi-ref: 6.5.8
+      type: object
+      properties:
+        ipAddress:
+          description: ''
+          type: string
+        udpPort:
+          description: ''
+          type: string
+      required:
+      - ipAddress
+      - udpPort
+    UuUniNeighbourCellInfo:
+      x-etsi-ref: 6.5.9
+      type: object
+      properties:
+        plmn:
+          description: Public Land Mobile Network Identity.
+          $ref: '#/components/schemas/Plmn'
+          type: object
+        ecgi:
+          description: E-UTRAN CelI Global Identifier.
+          $ref: '#/components/schemas/Ecgi'
+          type: object
+        pci:
+          description: Physical Cell Identifier.
+          type: integer
+        fddInfo:
+          description: Information for FDD operation.
+          $ref: '#/components/schemas/FddInfo'
+          type: object
+        tddInfo:
+          description: Information for TDD operation.
+          $ref: '#/components/schemas/TddInfo'
+          type: object
+      required:
+      - plmn
+      - ecgi
+      - pci
+      - fddInfo
+      - tddInfo
+    V2xServerUsd:
+      x-etsi-ref: 6.5.10
+      type: object
+      properties:
+        tmgi:
+          $ref: '#/components/schemas/Tmgi'
+        serviceAreaIdentifier:
+          description: A list of service area identifier for the applicable MBMS broadcast area.
+          type: array
+          minItems: 1
+          items:
+            type: string
+        sdpInfo:
+          $ref: '#/components/schemas/SdpInfo'
+      required:
+      - tmgi
+      - serviceAreaIdentifier
+      - sdpInfo
+    UuMbmsNeighbourCellInfo:
+      x-etsi-ref: 6.5.11
+      type: object
+      properties:
+        plmn:
+          description: Public Land Mobile Network Identity.
+          $ref: '#/components/schemas/Plmn'
+          type: object
+        ecgi:
+          description: E-UTRAN CelI Global Identifier.
+          $ref: '#/components/schemas/Ecgi'
+          type: object
+        pci:
+          description: Physical Cell Identifier.
+          type: integer
+        fddInfo:
+          description: Information for FDD operation.
+          $ref: '#/components/schemas/FddInfo'
+          type: object
+        tddInfo:
+          description: Information for TDD operation.
+          $ref: '#/components/schemas/TddInfo'
+          type: object
+        mbmsServiceAreaIdentity:
+          description: Supported MBMS Service Area Identities in the cell.
+          type: array
+          minItems: 1
+          items:
+            type: string
+      required:
+      - plmn
+      - ecgi
+      - pci
+      - fddInfo
+      - tddInfo
+      - mbmsServiceAreaIdentity
+    Pc5NeighbourCellInfo:
+      x-etsi-ref: 6.5.12
+      type: object
+      properties:
+        plmn:
+          description: Public Land Mobile Network Identity.
+          $ref: '#/components/schemas/Plmn'
+          type: object
+        ecgi:
+          description: E-UTRAN CelI Global Identifier.
+          $ref: '#/components/schemas/Ecgi'
+          type: object
+        siV2xConfig:
+          description: V2X sidelink communication configuration, as defined in ETSI TS 136 331 [14].
+          $ref: '#/components/schemas/SystemInformationBlockType21'
+          type: object
+      required:
+      - plmn
+      - ecgi
+      - siV2xConfig
+    LinkType:
+      x-etsi-ref: 6.5.13
+      type: object
+      properties:
+        href:
+          description: URI referring to a resource
+          type: string
+          format: uri
+      required:
+      - href
+    V2xMsgPropertiesValues:
+      x-etsi-ref: 6.5.14
+      type: object
+      properties:
+        stdOrganization:
+          type: string
+          description: 'Standardization organization which defines the published V2X message type:
+
+            ETSI: European Telecommunications Standards Institute.
+
+            See note 1.'
+          enum:
+          - SEE_DESCRIPTION
+        msgType:
+          type: string
+          description: Published V2X message type. Its value is defined by the standardization organization indicated by the attribute stdOrganization. See note 2.
+          enum:
+          - SEE_DESCRIPTION
+        msgProtocolVersion:
+          description: Protocol version of the V2X message (0..255). See note 3.
+          type: integer
+        locationInfo:
+          description: Location information to identify a cell of a base station or a particular geographical area to which the V2X message can be associated.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+      required:
+      - stdOrganization
+      - msgType
+      - msgProtocolVersion
+      - locationInfo
+      description: "|-\n  NOTE 1:\tOther standardization organizations could be added as needed.\nNOTE 2:\tThe V2X message types of ETSI shall be used as specified in ETSI TS 102 894-2 [6], clause A.114.\nNOTE 3:\tThe message protocol version of ETSI shall be used as specified in ETSI TS 102 894-2 [6], clause A.114."
+    V2xMsgFilterCriteria:
+      x-etsi-ref: 6.5.15
+      type: object
+      properties:
+        stdOrganization:
+          type: string
+          description: "Standardization organization which defines the published V2X message type: \nETSI: European Telecommunications Standards Institute.\nSee note 1."
+          enum:
+          - SEE_DESCRIPTION
+        msgType:
+          description: Published V2X message type. Its value is defined by the standardization organization indicated by the attribute stdOrganization. See note 2.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        msgProtocolVersion:
+          description: Protocol version of the V2X message (0..255). See note 3.
+          type: array
+          minItems: 0
+          items:
+            type: integer
+        locationInfo:
+          description: Location information to identify a cell of a base station or a particular geographical area to which the V2X message can be associated.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/LocationInfo'
+      required:
+      - stdOrganization
+      description: "|-\n  NOTE 1:\tOther standardization organizations could be added as needed.\nNOTE 2:\tThe V2X message types of ETSI shall be used as specified in ETSI TS 102 894-2 [6], clause A.114.\nNOTE 3:\tThe message protocol version of ETSI shall be used as specified in ETSI TS 102 894-2 [6], clause A.114."
+    V2xMsgDistributionServer:
+      x-etsi-ref: 6.5.16
+      type: object
+      properties:
+        infoProtocol:
+          $ref: '#/components/schemas/InfoProtocol'
+        infoConnection:
+          $ref: '#/components/schemas/InfoConnection'
+      required:
+      - infoProtocol
+      description: "|-\n  NOTE:\tOther application layer protocols (and versions thereof) may be added as needed."
+    QosPredFilterCriteria:
+      x-etsi-ref: 6.5.17
+      type: object
+      properties:
+        streamId:
+          description: The predicted QoS at the related time and vehicular UE location is provided for a specific data stream. In case of 3GPP network, this is mapped to a QoS flow. Stream needs to also contain the stream ID which, in case of the 3GPP network, can be mapped on to the 5QI or QCI. See note.
+          type: string
+      description: "|-\n  NOTE:\tOther identifiers could be added as needed."
+    WebsockNotifConfig:
+      x-etsi-ref: 6.5.18
+      type: object
+      properties:
+        websocketUri:
+          description: Set by VIS to indicate to the service consumer the Websocket URI to be used for delivering notifications.
+          type: string
+          format: uri
+        requestWebsocketUri:
+          description: Set to TRUE by the service consumer to indicate that Websocket delivery is requested.
+          type: boolean
+    CellId:
+      x-etsi-ref: 6.6.2
+      type: object
+      properties:
+        cellId:
+          description: E-UTRAN Cell Identity as a bit string (size (28)).
+          type: string
+      required:
+      - cellId
+    Earfcn:
+      x-etsi-ref: 6.6.3
+      type: object
+      properties:
+        earfcn:
+          description: E-UTRA Absolute Radio Frequency Channel Number, range (0... 65535)
+          type: integer
+      required:
+      - earfcn
+    TransmissionBandwidth:
+      x-etsi-ref: 6.6.4
+      type: object
+      properties:
+        transmissionBandwidth:
+          type: integer
+          description: 'Numeric value corresponding to the transmission bandwidth expressed in units of resource blocks as follows:
+
+            1 = bw6 (6 resource blocks)
+
+            2 = bw15 (15 resource blocks)
+
+            3 = bw25 (25 resource blocks)
+
+            4 = bw50 (50 resource blocks)
+
+            5 = bw75 (75 resource blocks)
+
+            6 = bw100 (100 resource blocks)'
+          enum:
+          - SEE_DESCRIPTION
+      required:
+      - transmissionBandwidth
+    ProInfoUuUnicast:
+      description: The provisioning information per location as defined below.
+      type: object
+      minItems: 1
+      properties:
+        locationInfo:
+          description: Location information to identify a cell of a base station or a particular geographical area.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+        v2xApplicationServer:
+          description: V2X Application Server address (consisting of IP address and UDP port) for unicast.
+          $ref: '#/components/schemas/V2xApplicationServer'
+          type: object
+        neighbourCellInfo:
+          description: The information of the neighbour cells in a visiting PLMN that support V2X communication over Uu unicast.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/UuUniNeighbourCellInfo'
+      required:
+      - locationInfo
+      - v2xApplicationServer
+    ProInfoUuMbms:
+      description: The provisioning information per location as defined below.
+      type: object
+      minItems: 1
+      properties:
+        locationInfo:
+          description: Location information to identify a cell of a base station or a particular geographical area.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+        v2xServerUsd:
+          description: User Service Description for V2X Application Server is used to configure the UE for receiving local V2X Application Server information when it is provided over MBMS.
+          $ref: '#/components/schemas/V2xServerUsd'
+          type: object
+        neighbourCellInfo:
+          description: The information of the neighbour cells in a visiting PLMN that support V2X communication over Uu MBMS.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/UuMbmsNeighbourCellInfo'
+      required:
+      - locationInfo
+      - v2xServerUsd
+    ProInfoPc5:
+      description: The provisioning information per location as defined below.
+      type: object
+      minItems: 1
+      properties:
+        locationInfo:
+          description: Location information to identify a cell of a base station or a particular geographical area.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+        dstLayer2Id:
+          description: "For sidelink communication, the Destination Layer-2 ID is set to the ProSe Layer-2 Group ID or Prose UE ID, see ETSI TS\_136\_321 [15].\nPLMN operators coordinate to make sure Destination Layer-2 ID(s) for different V2X services are configured in a consistent manner."
+          type: string
+        neighbourCellInfo:
+          description: The information of the neighbour cells in a visiting PLMN that support V2X communication over PC5.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/Pc5NeighbourCellInfo'
+      required:
+      - locationInfo
+      - dstLayer2Id
+    PredictionArea:
+      description: 'Geographical area including the two ends of the user plane link between two V2X application instances.
+
+        It shall only be present when "predictionTarget" = "E2E_APPLICATION_INSTANCE_PREDICTION".'
+      type: object
+      properties:
+        center:
+          description: Center of geographical area including the two ends of the user plane link between two V2X application instances.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+        radius:
+          description: Radius of geographical area including the two ends of the user plane link between two V2X application instances. Measured in meters.
+          type: string
+      required:
+      - center
+      - radius
+    RouteInfo:
+      description: 'Information relating to a specific route.
+
+        The first structure shall relate to the route origin and the last to the route destination. Intermediate waypoint locations may also be provided.'
+      type: object
+      minItems: 1
+      properties:
+        location:
+          description: Vehicular UE location.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+        time:
+          description: Estimated time at the location.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - location
+    Routes:
+      description: Information relating to the potential routes of a vehicular UE. Shall only be present when "predictionTarget" = "SINGLE_UE_PREDICTION".
+      type: object
+      minItems: 0
+      properties:
+        routeInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/RouteInfo'
+      required:
+      - routeInfo
+    QosKpi:
+      description: This structure contains the prediction for a specific QoS KPI related to a given data stream.
+      type: object
+      minItems: 1
+      properties:
+        kpiName:
+          description: 'The name of the KPI (e.g. latency, UL bitrate, etc.).
+
+            It can be included in the request and in the response.'
+          type: string
+        kpiValue:
+          description: 'Information on the predicted value for the specific QoS KPI. It can be in different forms, such as upper bound and lower bound, CDF, actual value, etc.
+
+            Shall only be included in the response.'
+          type: string
+        confidence:
+          description: Confidence of the prediction, as returned by the relevant domain PF. The value and the measurement of the confidence depends on the SLA. Shall only be included in the response.
+          type: string
+      required:
+      - kpiName
+      - kpiValue
+    Stream:
+      description: Predicted QoS at the related time and vehicular UE location for the specific data stream. In case of 3GPP network, this is mapped to a QoS flow. Stream needs to also contain the stream ID that, in case of the 3GPP network, can be mapped on to the 5QI or QCI.
+      type: object
+      minItems: 1
+      properties:
+        qosKpi:
+          type: array
+          items:
+            $ref: '#/components/schemas/QosKpi'
+      required:
+      - qosKpi
+    Qos:
+      description: Predicted QoS at the related time and vehicular UE location. Shall only be included in the response.
+      type: object
+      properties:
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stream'
+      required:
+      - stream
+    _links:
+      description: Hyperlink related to the resource. This shall be only included in the HTTP responses and in HTTP PUT requests.
+      type: object
+      properties:
+        self:
+          description: Self-referring URI. The URI shall be unique within the VIS API as it acts as an ID for the subscription.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - self
+    FilterCriteria:
+      description: List of filtering criteria for the subscription. Any filtering criteria from below, which is included in the request, shall also be included in the response.
+      type: object
+      properties:
+        locationInfo:
+          description: Location information to identify a cell of a base station or a particular geographical area.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+        v2xApplicationServer:
+          description: V2X Application Server address (consisting of IP address and UDP port) for unicast.
+          $ref: '#/components/schemas/V2xApplicationServer'
+          type: object
+        neighbourCellInfo:
+          description: The information of the neighbour cells in a visiting PLMN that support V2X communication over Uu unicast.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/UuUniNeighbourCellInfo'
+      required:
+      - locationInfo
+      - v2xApplicationServer
+    FilterCriteria1:
+      description: List of filtering criteria for the subscription. Any filtering criteria from below, which is included in the request, shall also be included in the response.
+      type: object
+      properties:
+        locationInfo:
+          description: Location information to identify a cell of a base station or a particular geographical area.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+        v2xServerUsd:
+          description: User Service Description for V2X Application Server is used to configure the UE for receiving local V2X Application Server information when it is provided over MBMS.
+          $ref: '#/components/schemas/V2xServerUsd'
+          type: object
+        neighbourCellInfo:
+          description: The information of the neighbour cells in a visiting PLMN that support V2X communication over Uu MBMS.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/UuMbmsNeighbourCellInfo'
+      required:
+      - locationInfo
+      - v2xServerUsd
+    FilterCriteria2:
+      description: List of filtering criteria for the subscription. Any filtering criteria from below, which is included in the request, shall also be included in the response.
+      type: object
+      properties:
+        locationInfo:
+          description: Location information to identify a cell of a base station or a particular geographical area.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+        dstLayer2Id:
+          description: For sidelink communication, the Destination Layer-2 ID is set to the ProSe Layer-2 Group ID or Prose UE ID, see ETSI TS 136 321 [15].
+          type: string
+        neighbourCellInfo:
+          description: The information of the neighbour cells in a visiting PLMN that support V2X communication over PC5.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/Pc5NeighbourCellInfo'
+      required:
+      - locationInfo
+      - dstLayer2Id
+    Subscriptions:
+      description: The service consumer's subscriptions.
+      type: object
+      minItems: 0
+      properties:
+        href:
+          description: The URI referring to the subscription.
+          type: string
+          format: uri
+        subscriptionType:
+          description: Type of the subscription. The values are as defined in the "subscriptionType" attribute for each different V2X information event subscription data type.
+          type: string
+      required:
+      - href
+      - subscriptionType
+    _links1:
+      description: List of hyperlinks related to the resource.
+      type: object
+      properties:
+        self:
+          description: URI of this resource.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+        subscriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscriptions'
+      required:
+      - self
+    _links2:
+      description: Links to resources related to this notification.
+      type: object
+      properties:
+        subscription:
+          description: A link to the related subscription.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - subscription
+    _links3:
+      description: Hyperlink related to the resource.
+      type: object
+      properties:
+        subscription:
+          description: URI identifying the subscription for the test notification.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - subscription
+    GeoArea:
+      description: Information of a geographical area
+      type: object
+      properties:
+        latitude:
+          description: 'Latitude (DATUM = WGS84)
+
+            -90 to 90 in decimal degree format DDD.ddd'
+          type: number
+          format: float
+        longitude:
+          description: 'Longitude (DATUM = WGS84)
+
+            -180 to 180 in decimal degree format DDD.ddd'
+          type: number
+          format: float
+      required:
+      - latitude
+      - longitude
+    Tmgi:
+      description: Temporary Mobile Group Identity (TMGI), which is used within MBMS to uniquely identify Multicast and Broadcast bearer services.
+      type: object
+      properties:
+        mbmsServiceId:
+          description: MBMS Service ID consisting of three octets.
+          type: string
+        mcc:
+          description: The Mobile Country Code part of PLMN Identity.
+          type: string
+        mnc:
+          description: The Mobile Network Code part of PLMN Identity.
+          type: string
+      required:
+      - mbmsServiceId
+      - mcc
+      - mnc
+    SdpInfo:
+      description: SDP with IP multicast address and port number used for V2X communication via MBMS.
+      type: object
+      properties:
+        ipMulticastAddress:
+          description: ''
+          type: string
+        portNumber:
+          description: ''
+          type: string
+      required:
+      - ipMulticastAddress
+      - portNumber
+    InfoProtocol:
+      description: Specifics of the application layer protocol of V2X Message Distribution Server.
+      type: object
+      properties:
+        msgProtocol:
+          description: 'Numerical value corresponding to the application layer protocol supported by the service consumer. For the msgProtocol, the following values are currently defined (see note):
+
+            0 = MQTT v3.1.0
+
+            1 = MQTT v3.1.1
+
+            2 = MQTT v5
+
+            3 = MQTT-SN
+
+            4 = AMQP 1.0'
+          type: array
+          minItems: 1
+          items:
+            type: integer
+        protImplementation:
+          description: "Implementation specifics of application layer protocol, e.g.\_programming language."
+          type: string
+      required:
+      - msgProtocol
+      - protImplementation
+    InfoConnection:
+      description: Connection information of the V2X Message Distribution Server the service consumer can use for direct connection. Shall only be included in the response.
+      type: object
+      properties:
+        ipAddress:
+          description: IP address of the V2X Message Distribution Server.
+          type: string
+        port_number:
+          description: Port number of the V2X Message Distribution Server.
+          type: integer
+      required:
+      - ipAddress
+      - port_number
+  responses:
+    '200':
+      description: OK
+    '204':
+      description: No Content
+    '400':
+      description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '401':
+      description: 'Unauthorized: used when the client did not submit credentials.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '403':
+      description: 'Forbidden: operation is not allowed given the current status of the resource.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '404':
+      description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '406':
+      description: 'Not Acceptable: used to indicate that the server cannot provide the any of the content formats supported by the client.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '412':
+      description: 'Precondition failed: used when a condition has failed during conditional requests, e.g. when using ETags to avoid write conflicts when using PUT'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '415':
+      description: 'Unsupported Media Type: used to indicate that the server or the client does not support the content type of the entity body.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '422':
+      description: 'Unprocessable Entity: used to indicate that the server understands the content type of the request entity and that the syntax of the request entity is correct but that the server is unable to process the contained instructions. This error condition can occur if an JSON request body is syntactically correct but semantically incorrect, for example if the target area for the request is considered too large. This error condition can also occur if the capabilities required by the request are not supported.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '429':
+      description: 'Too Many Requests: used when a rate limiter has triggered.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+  parameters:
+    Query.Location_info:
+      description: "Comma separated list of locations to identify a cell of a base station or a particular geographical area, formatted as follows for the two cases:\n\n\u2026/uu_unicast_provisioning_info?location_info=ecgi,{String}\n\nWhere the String is made up of 1 to N comma separated ecgi values (reference clause 6.5.5).\n\n\u2026/uu_unicast_provisioning_info?location_info=latitude,{String},longitude,{String}\n\nWhere the two strings are made up of 1 to N comma separated latitude and longitude values respectively (reference clause\_6.5.3), such that the number of latitude and longitude values shall be equal.\n\nExamples of query formats when N=2 locations are provided below:\n\n\u2026/uu_unicast_provisioning_info?location_info=ecgi,1357924680,1357924681\n\n\u2026/uu_unicast_provisioning_info?location_info=latitude,000.000,001.000,longitude,000.000,001.000."
+      name: location_info
+      in: query
+      required: true
+      x-exportParamName: Query.Location_info
+      schema:
+        type: string
+    Query.Location_info1:
+      description: "Comma separated list of locations to identify a cell of a base station or a particular geographical area, formatted as follows for the two cases:\n\n\u2026/uu_mbms_provisioning_info?location_info=ecgi,{String}\n\nWhere the String is made up of 1 to N comma separated ecgi values (reference clause 6.5.5).\n\n\u2026/uu_mbms_provisioning_info?location_info=latitude,{String},longitude,{String}\n\nWhere the two strings are made up of 1 to N comma separated latitude and longitude values respectively (reference clause\_6.5.3), such that the number of latitude and longitude values shall be equal.\n\nExamples of query formats when N=2 locations are provided below:\n\n\u2026/uu_mbms_provisioning_info?location_info=ecgi,1357924680,1357924681\n\u2026/uu_mbms_provisioning_info?location_info=latitude,000.000,001.000,longitude,000.000,001.000."
+      name: location_info
+      in: query
+      required: true
+      x-exportParamName: Query.Location_info1
+      schema:
+        type: string
+    Query.Location_info2:
+      description: "Comma separated list of locations to identify a cell of a base station or a particular geographical area, formatted as follows for the two cases:\n\n\u2026/pc5_provisioning_info?location_info=ecgi,{String}\n\nWhere the String is made up of 1 to N comma separated ecgi values (reference clause 6.5.5).\n\n\u2026/pc5_provisioning_info?location_info=latitude,{String},longitude,{String}\n\nWhere the two strings are made up of 1 to N comma separated latitude and longitude values respectively (reference clause\_6.5.3), such that the number of latitude and longitude values shall be equal.\n\nExamples of query formats when N=2 locations are provided below:\n\n\u2026/pc5_provisioning_info?location_info=ecgi,1357924680,1357924681\n\n\u2026/pc5_provisioning_info?location_info=latitude,000.000,001.000,longitude,000.000,001.000."
+      name: location_info
+      in: query
+      required: true
+      x-exportParamName: Query.Location_info2
+      schema:
+        type: string
+    Query.Subscription_type:
+      description: "Query parameter to filter on a specific subscription type. Permitted values:\n\nprov_chg_uu_uni: provisioning information change for V2X communication over Uu unicast \n\nprov_chg_uu_mbms: provisioning information change for V2X communication over Uu MBMS\n\nprov_chg_pc5: provisioning information change for V2X communication over PC5\n\nv2x_msg: V2X interoperability message \n\npred_qos: information on the predicted QoS."
+      name: subscription_type
+      in: query
+      required: false
+      x-exportParamName: Query.Subscription_type
+      schema:
+        type: string
+

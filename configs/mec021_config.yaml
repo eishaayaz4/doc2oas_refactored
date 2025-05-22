@@ -1,0 +1,161 @@
+---
+data_model_headings:
+  headings1:
+    - '7[ ]*Data Models$'
+    - '8[ ]*API Definition$'
+
+api_def_headings:
+  headings1:
+    - '8[ ]*API Definition$'
+    - 'Annex A \(informative\)\:\nKey concepts$'
+    
+servers:
+  - url: https://localhost/amsi/v1
+
+tags:
+- 'notifications'
+- 'subscriptions'
+- 'adjacent_app_instances'
+- 'app_mobility_services'
+
+fake_data_types: False
+manual_types:
+  MobilityStatus1_:
+    description: 'Indicate the status of the UE mobility'
+    type: integer
+    enum:
+      - 1 = INTERHOST_MOVEOUT_TRIGGERED
+      - 2 = INTERHOST_MOVEOUT_COMPLETED
+      - 3 = INTERHOST_MOVEOUT_FAILED
+  AssociateId:
+    description: The data type of AssociateId is defined in ETSI GS MEC 012 [6].
+    type: string
+  AppMobilityServiceLevel1_:
+    description: 'This attribute provides an option for the application instance (server) to communicate with the application client before relocating this application instance to another MEC host.'
+    type: integer
+    enum:
+      - 1 = APP_MOBILITY_NOT_ALLOWED
+      - 2 = APP_MOBILITY_WITH_CONFIRMATION
+      - 3 = APP_MOBILITY_WITHOUT_CONFIRMATION
+    x-etsi-notes: >
+      'APP_MOBILITY_NOT_ALLOWED: the current serving application instance continues to deliver the service
+      to the device. The AMS will inform the MEP to perform the traffic steering to the device when the UE moves
+      cross MEC hosts.
+      − APP_MOBILITY_WITH_CONFIRMATION: the serving application instance is allowed to change with the
+      confirmation by the application once the device mobility happens. The AMS then will inform the MEP to
+      update the traffic routing to the target application instance and clean up the previous resource allocated to
+      the application instance serving to the device after the serving application instance has been changed.
+      − APP_MOBILITY_WITHOUT_CONFIRMATION: the serving application instance is allowed to change
+      without confirmation from the application instance when the device mobility happens. The AMS will notify to
+      the MEP to update the traffic routing to the target application instance and clean up the previous resource
+      allocated to the application instance serving to the device after the serving application instance has been
+      changed. .'
+  contextTransferState1_:
+    description: 'If present, it represents the state of transferring the user context to another application instance.'
+    type: string
+    enum:
+      - 0 = NOT_TRANSFERRED
+      - 1 = USER_CONTEXT_TRANSFER_COMPLETED
+  subscriptionType1_:
+    description: 'Numeric value (0 - 255) corresponding to specified type of subscription as following'
+    type: integer
+    enum:
+      - 0 = RESERVED.
+      - 1 = MOBILITY_PROCEDURE.
+      - 2 = ADJACENT_APPINFO.
+  ProblemDetails:
+    type: object
+    properties:
+      type:
+        type: string
+        format: uri
+        description: A URI reference according to IETF RFC 3986 that identifies the problem type
+      title:
+        type: string
+        description: A short, human-readable summary of the problem type
+      status:
+        type: integer
+        format: uint32
+        description: The HTTP status code for this occurrence of the problem
+      detail:
+        type: string
+        description: A human-readable explanation specific to this occurrence of the problem
+      instance:
+        type: string
+        format: uri
+        description: A URI reference that identifies the specific occurrence of the problem
+
+info:
+  contact:
+    url: https://forge.etsi.org/rep/mec/gs021-amsi-api
+  title: 'ETSI GS MEC 021 Application Mobility Service API'
+  description: The ETSI MEC ISG Mobility Service API described using OpenAPI.
+  license:
+    name: BSD-3-Clause
+    url: 'https://forge.etsi.org/legal-matters'
+
+responses:
+  '200':
+    description: 'OK'
+  '204':
+    description: 'No Content'
+  '400':
+    description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '401':
+    description: 'Unauthorized: used when the client did not submit credentials.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '403':
+    description: 'Forbidden: operation is not allowed given the current status of the resource.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '404':
+    description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '406':
+    description: 'Not Acceptable: used to indicate that the server cannot provide the any of the content formats supported by the client.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '412':
+    description:
+      'Precondition failed: used when a condition has failed during conditional requests, e.g. when
+      using ETags to avoid write conflicts when using PUT'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '415':
+    description: 'Unsupported Media Type: used to indicate that the server or the client does not support the content type of the entity body.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '422':
+    description:
+      'Unprocessable Entity: used to indicate that the server understands the content type of the request entity and that the
+      syntax of the request entity is correct but that the server is unable to process the contained instructions. This error condition can occur if an
+      JSON request body is syntactically correct but semantically incorrect, for example if the target area for the request is considered too large. This
+      error condition can also occur if the capabilities required by the request are not supported.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '429':
+    description: 'Too Many Requests: used when a rate limiter has triggered.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'

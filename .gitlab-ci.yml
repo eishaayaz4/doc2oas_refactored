@@ -1,0 +1,23 @@
+# CI/CD:
+#
+# BUILD triggered by:
+#  - branches
+#  
+#   
+
+Build doc2oas docker image:
+  stage: build 
+  before_script:
+    - cp ./env_example env
+    - echo "$CI_JOB_TOKEN" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+  script: 
+    - ./relaunch.sh $CI_COMMIT_BRANCH
+    - docker push forge.etsi.org:5050/cti/doc2oas:$CI_COMMIT_BRANCH
+  after_script:
+    - docker logout
+  rules:
+    - if: $CI_COMMIT_BRANCH
+      changes:
+        - Dockerfile
+        - src/**/*
+        - requirements.txt 

@@ -1,0 +1,297 @@
+---
+data_model_headings:
+  headings1:
+    - '6[ ]*Common data types$'
+    - '7[ ]*MEC application support API$'
+  headings2:
+    - '7\.1[ ]*Data model$'
+    - '7\.2[ ]*API definition$'
+  headings3:
+    - '^8\.1\.5\.2 Type: CategoryRef$'
+    - '^8\.1\.5\.4 Type: SecurityInfo$'
+
+api_def_headings:
+  headings1:
+    - '7\.2[ ]*API definition$'
+    - '8[ ]*MEC service management API$'
+    
+servers:
+  - url: https://localhost:8081/mec_app_support/v1
+
+tags:
+- 'applicationSupport'
+
+fake_data_types: false
+manual_types:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+
+    TransportDescriptor:
+      x-etsi-ref: 6.2.1.19
+      type: object
+      properties:
+        name:
+          description: The name of this transport.
+          type: string
+        description:
+          description: Human-readable description of this transport.
+          type: string
+        type:
+          description': Type of the transport, as defined in the TransportTypes type in ETSI GS MEC 011 [17].
+          $ref: '#/components/schemas/TransportTypes'
+        protocol:
+          description: The name of the protocol used. Shall be set to "HTTP" for a REST API.
+          type: string
+        version:
+          description: The version of the protocol used.
+          type: string
+        security:
+          description': Information about the security used by the transport in ETSI GS MEC 011 [17].
+          $ref: '#/components/schemas/SecurityInfo'
+        implSpecificInfo:
+          description: Additional implementation specific details of the transport.
+          type: object
+      required:
+      - name
+      - type
+      - protocol
+      - version
+      - security
+
+    SecurityInfo:
+      x-etsi-ref: 8.1.5.4
+      type: object
+      properties:
+        oAuth2Info:
+          $ref: '#/components/schemas/OAuth2Info'
+        (extensions):
+          description: Extensions for alternative transport mechanisms. These extensions depend on the actual transport, and are out of scope of the present document. For instance, such extensions may be used to signal the necessary parameters for the client to use TLS-based authorization defined for alternative transports (see ETSI GS MEC 009 [5] for more information).
+
+    SerializerType:
+      x-etsi-ref: 8.1.6.3
+      type: string
+      enum:
+      - JSON
+      - XML
+      - PROTOBUF3
+      x-etsi-mec-extensible: true
+      x-etsi-mec-enumeration-table:
+      - value: JSON
+        description: Javascript object notation [9]
+      - value: XML
+        description: eXtensible Mark-up Language version 1.1 [10]
+      - value: PROTOBUF3
+        description: Protocol buffers version 3 [i.3]
+
+    OAuth2Info:
+      description: Parameters related to use of OAuth 2.0. Shall be present in case OAuth 2.0 (see IETF RFC 6749 [13]) is supported to secure the provision of the service over the transport.
+      type: object
+      properties:
+        grantTypes:
+          description: "List of supported OAuth 2.0 grant types. Each entry shall be one of the following permitted values: \u2022 OAUTH2_AUTHORIZATION_CODE (Authorization code grant type) \u2022 OAUTH2_IMPLICIT_GRANT (Implicit grant type) \u2022 OAUTH2_RESOURCE_OWNER (Resource owner password credentials grant type) \u2022 OAUTH2_CLIENT_CREDENTIALS (Client credentials grant type) Only the value \"OAUTH2_CLIENT_CREDENTIALS\" is supported in the present document."
+          type: array
+          minItems: 0
+          items:
+            type: string
+            enum:
+            - SEE_DESCRIPTION
+        tokenEndpoint:
+          description: The token endpoint. Shall be present unless the grant type is OAUTH2_IMPLICIT_GRANT.
+          type: string
+          format: uri
+      required:
+      - grantTypes
+
+    TransportTypes:
+      x-etsi-ref: 8.1.6.4
+      type: string
+      enum:
+      - REST_HTTP
+      - MB_TOPIC_BASED
+      - MB_ROUTING
+      - MB_PUBSUB
+      - RPC
+      - RPC_STREAMING
+      - WEBSOCKET
+      description: The enumeration TransportType represents types of transports.
+      x-etsi-mec-extensible: true
+      x-etsi-mec-enumeration-table:
+      - value: REST_HTTP
+        description: RESTful API using HTTP (as defined in IETF RFC 9110 [11]).
+      - value: MB_TOPIC_BASED
+        description: Topic-based message bus which routes messages to receivers based on subscriptions, if a pattern passed on subscription matches the topic of the message. EXAMPLE MQTT (see [i.4]).
+      - value: MB_ROUTING
+        description: Routing-based message bus which routes messages to receivers based on subscriptions, if a key passed on subscription is equal to the key of the message.
+      - value: MB_PUBSUB
+        description: Publish-subscribe based message bus which distributes messages to all subscribers.
+      - value: RPC
+        description: Remote procedure call. EXAMPLE GRPC (see [i.5]).
+      - value: RPC_STREAMING
+        description: Remote procedure call supporting streams of requests and responses. EXAMPLE GRPC (see [i.5]).
+      - value: WEBSOCKET
+        description: Websockets as defined in IETF RFC 6455 [12].
+
+    AppProfile:
+      description: |
+        Can be mapped to EAS profile as defined in ETSI TS 129 558 [19].
+    TransportDependency:
+      x-etsi-ref: 6.2.1.18
+      type: object
+      properties:
+        transport:
+          description': Information about the transport in this transport binding.
+          $ref: '#/components/schemas/TransportDescriptor'
+        serializers:
+          description: Information about the serializers in this transport binding, as defined in the SerializerType type in ETSI GS MEC 011 [17]. Support for at least one of the entries is required in conjunction with the transport.
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/SerializerType'
+        labels:
+          description: Set of labels that allow to define groups of transport bindings. The mechanism of the grouping is defined below this table.
+          type: array
+          minItems: 1
+          items:
+            type: string
+      required:
+      - transport
+      - serializers
+      - labels
+
+    ServiceDependency:
+      x-etsi-ref: 6.2.1.17
+      type: object
+      properties:
+        serName:
+          description: The name of the service, for example, RNIS, LocationService, AMS, etc.
+          type: string
+        serCategory:
+          description': A Category reference of the service.
+          $ref: '#/components/schemas/CategoryRef'
+        version:
+          description: The version of the service.
+          type: string
+        serTransportDependencies:
+          description: Indicates transport and serialization format dependencies of consuming the service. Defaults to REST + JSON if absent. See note.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/TransportDependency'
+        requestedPermissions:
+          description: 'Requested permissions regarding the access of the application to the service. See clause 7.2 of ETSI GS MEC 009 [4].
+
+            The format of this attribute is left for the data model design stage.'
+      required:
+      - serName
+      - version
+      x-etsi-notes: "NOTE:\tThis attribute indicates groups of transport bindings that a service-consuming MEC application supports for the consumption of the MEC service defined by this ServiceDependency structure. If at least one of the indicated groups is supported by the service it may be consumed by the application."
+
+    Uint32:
+      type: integer
+      format: uint32
+
+    FeatureDependency:
+      x-etsi-ref: 6.2.1.8
+      type: object
+      properties:
+        featureName:
+          description: The name of the feature, for example, UserApps, UEIdentity, etc.
+          type: string
+        version:
+          description: The version of the feature.
+          type: string
+      required:
+      - featureName
+      - version
+
+info:
+  contact:
+    url: https://forge.etsi.org/rep/mec/gs011-app-enablement-api
+  title: 'ETSI GS MEC 011 Edge Platform Application Enablement'
+  description: >
+    The present document focuses on the functionalities enabled via the Mp1 reference point
+    between MEC applications and MEC platform, which allows these applications to interact with the MEC system.
+    Service management functionality includes registration/deregistration, discovery and event notifications.
+    Application support functionality includes application start-up, registration and termination, traffic rules,
+    DNS and time of day. It describes the information flows, required information, and specifies the necessary
+    operations, data models and API definitions.
+  license:
+    name: BSD-3-Clause
+    url: 'https://forge.etsi.org/legal-matters'
+
+responses:
+  '200':
+    description: 'OK'
+  '204':
+    description: 'No Content'
+  '400':
+    description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '401':
+    description: 'Unauthorized: used when the client did not submit credentials.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '403':
+    description: 'Forbidden: operation is not allowed given the current status of the resource.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '404':
+    description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '409':
+    description: 'Conflict: The operation cannot be executed currently, due to a conflict with the state of the resource. .'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '412':
+    description:
+      'Precondition failed: used when a condition has failed during conditional requests, e.g. when
+      using ETags to avoid write conflicts when using PUT'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '414':
+    description:
+      'URI Too Long: used to indicate that the server is refusing to process the request because the request URI is
+      longer than the server is willing or able to process.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '429':
+    description: 'Too Many Requests: used when a rate limiter has triggered.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'

@@ -1,0 +1,15 @@
+data_model_headings:
+  headings1:
+    - '6[ ]*Data model$'
+    - '7[ ]*API definition$'
+
+api_def_headings:
+  - '7[ ]*API definition$'
+  - '8[ ]*Authentication\, authorization and access control$'
+  
+servers:
+  - url: https://localhost/example/v1
+  
+fake_data_types: True
+manual_types:
+  - TypeA

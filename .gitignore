@@ -1,0 +1,11 @@
+**/__pycache__/
+node_modules
+oas.yaml
+**/*.pyc
+.coverage
+venv/
+env/
+virtenv/
+.vscode/
+pytestdebug.log
+**/.pytest_cache

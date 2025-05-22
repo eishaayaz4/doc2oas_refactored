@@ -1,0 +1,2773 @@
+openapi: 3.1.0
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+info:
+  contact:
+    url: https://forge.etsi.org/rep/mec/gs013-location-api
+  title: ETSI GS MEC 013 Location API
+  version: 3.1.1
+  description: The ETSI MEC ISG Location API described using OpenAPI.
+  license:
+    name: BSD-3-Clause
+    url: https://forge.etsi.org/legal-matters
+paths:
+  /queries/users:
+    get:
+      description: The GET method is used to query location information about a specific UE or a group of UEs.
+      operationId: QueriesUsersGET
+      tags:
+      - queries
+      parameters:
+      - $ref: '#/components/parameters/Query.Zoneid'
+      - $ref: '#/components/parameters/Query.Accesspointid'
+      - $ref: '#/components/parameters/Query.Address'
+      responses:
+        '200':
+          description: Upon success, a response body containing the list of user location information is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  UserList:
+                    $ref: '#/components/schemas/UserList'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+  /subscriptions/users:
+    get:
+      description: The GET method is used to request information about the subscriptions for this requestor. Upon success, the response contains entity body with the list of links to the subscriptions that are present for the requestor.
+      operationId: SubscriptionsUsersGET
+      tags:
+      - subscriptions
+      parameters:
+      - $ref: '#/components/parameters/Query.Subscription_type'
+      - $ref: '#/components/parameters/Query.Address1'
+      responses:
+        '200':
+          description: Upon success, a response body containing the list of links to requestor's subscriptions is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  NotificationSubscriptionList:
+                    $ref: '#/components/schemas/NotificationSubscriptionList'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+    post:
+      description: The POST method is used to create a new subscription to UE location notifications. Upon success, the response contains entity body describing the created subscription.
+      operationId: SubscriptionsUsersPOST
+      tags:
+      - subscriptions
+      requestBody:
+        description: 'The entity body in the request contains data type of the specific UE location event subscription that is to be created, where the data type options are listed below and defined in clauses 6.3.4 and 6.3.5:
+
+          UserLocationEventSubscription.
+
+          UserLocationPeriodicSubscription.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                UserLocationEventSubscription:
+                  $ref: '#/components/schemas/UserLocationEventSubscription'
+      responses:
+        '201':
+          description: 'Indicates successful resource creation, where the resource URI shall be returned in the HTTP Location header field.
+
+
+            In the returned NotificationSubscription structure, the created subscription is described using the appropriate data type from the list below and as defined in clauses 6.3.4, and 6.3.5:
+
+            UserLocationEventSubscription.
+
+            UserLocationPeriodicSubscription.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  UserLocationEventSubscription:
+                    $ref: '#/components/schemas/UserLocationEventSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '415':
+          $ref: '#/components/responses/415'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+      callbacks:
+        notification:
+          '{$request.body#/callbackUri}':
+            post:
+              summary: Callback POST used to send a notification
+              description: Subscription notification
+              operationId: notificationPOST
+              requestBody:
+                description: Subscription notification
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        subscriptionNotification:
+                          oneOf:
+                          - $ref: '#/components/schemas/UserLocationEventSubscription'
+                          - $ref: '#/components/schemas/UserLocationPeriodicSubscription'
+              responses:
+                '204':
+                  description: No content
+                '404':
+                  description: Not found
+      parameters: []
+  /subscriptions/users/{subscriptionId}:
+    get:
+      description: The GET method is used to query the information about a specific access point under a zone.
+      operationId: SubscriptionsUsersGETSubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '200':
+          description: Upon success, a response body containing the access point information is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  AccessPointInfo:
+                    $ref: '#/components/schemas/AccessPointInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+    put:
+      description: The PUT method is used to update the existing subscription. PUT method in this case has "replace" semantics. Upon successful operation, the target resource is updated with new Data Type received within the message body of the PUT request.
+      operationId: SubscriptionsUsersPUTSubscriptionid
+      tags:
+      - subscriptions
+      requestBody:
+        description: 'New NotificationSubscription is included as entity body of the request. The allowed data types for subscriptions are defined in clauses 6.3.4 and 6.3.5:
+
+          UserLocationEventSubscription.
+
+          UserLocationPeriodicSubscription.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                UserLocationEventSubscription:
+                  $ref: '#/components/schemas/UserLocationEventSubscription'
+      responses:
+        '200':
+          description: 'Upon success, a response body containing data type describing the updated subscription is returned. The allowed data types for subscriptions are defined in clauses 6.3.4 and 6.3.5:
+
+            UserLocationEventSubscription.
+
+            UserLocationPeriodicSubscription.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  UserLocationEventSubscription:
+                    $ref: '#/components/schemas/UserLocationEventSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '412':
+          $ref: '#/components/responses/412'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+    delete:
+      description: The DELETE method is used to cancel the existing subscription. Cancellation can be made by deleting the resource that represents existing subscription.
+      operationId: SubscriptionsUsersDELETESubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+  /subscriptions/zones:
+    get:
+      description: The GET method is used to request information about the subscriptions for this requestor. Upon success, the response contains entity body with the list of links to the subscriptions that are present for the requestor.
+      operationId: SubscriptionsZonesGET
+      tags:
+      - subscriptions
+      parameters:
+      - $ref: '#/components/parameters/Query.Subscription_type1'
+      - $ref: '#/components/parameters/Query.Zoneid1'
+      responses:
+        '200':
+          description: Upon success, a response body containing the list of links to requestor's subscriptions is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  NotificationSubscriptionList:
+                    $ref: '#/components/schemas/NotificationSubscriptionList'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+    post:
+      description: The POST method is used to create a new subscription to zone notifications. Upon success, the response contains entity body describing the created subscription.
+      operationId: SubscriptionsZonesPOST
+      tags:
+      - subscriptions
+      requestBody:
+        description: 'The entity body in the request contains data type of the specific UE location event subscription that is to be created, where the data type options are listed below and defined in clauses 6.3.6 and 6.3.7:
+
+          ZoneLocationEventSubscription.
+
+          ZoneStatusSubscription.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ZoneLocationEventSubscription:
+                  $ref: '#/components/schemas/ZoneLocationEventSubscription'
+      responses:
+        '201':
+          description: 'Indicates successful resource creation, where the resource URI shall be returned in the HTTP Location header field.
+
+
+            In the returned NotificationSubscription structure, the created subscription is described using the appropriate data type from the list below and as defined in clauses 6.3.6 and 6.3.7:
+
+            ZoneLocationEventSubscription.
+
+            ZoneStatusSubscription.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ZoneLocationEventSubscription:
+                    $ref: '#/components/schemas/ZoneLocationEventSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '415':
+          $ref: '#/components/responses/415'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+      callbacks:
+        notification:
+          '{$request.body#/callbackUri}':
+            post:
+              summary: Callback POST used to send a notification
+              description: Subscription notification
+              operationId: notificationPOST
+              requestBody:
+                description: Subscription notification
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        subscriptionNotification:
+                          oneOf:
+                          - $ref: '#/components/schemas/ZoneLocationEventSubscription'
+                          - $ref: '#/components/schemas/ZoneStatusSubscription'
+              responses:
+                '204':
+                  description: No content
+                '404':
+                  description: Not found
+      parameters: []
+  /subscriptions/zones/{subscriptionId}:
+    get:
+      description: The GET method is used to retrieve information about this subscription. Upon success, the response contains entity body with the data type describing the subscription.
+      operationId: SubscriptionsZonesGETSubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '200':
+          description: 'Upon success, a response body containing data type describing the specific zone subscription is returned. The allowed data types for subscriptions are defined in clauses 6.3.6 and 6.3.7:
+
+            ZoneLocationEventSubscription.
+
+            ZoneStatusSubscription.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ZoneLocationEventSubscription:
+                    $ref: '#/components/schemas/ZoneLocationEventSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+    put:
+      description: The PUT method is used to update the existing subscription. PUT method in this case has "replace" semantics. Upon successful operation, the target resource is updated with new Data Type received within the message body of the PUT request.
+      operationId: SubscriptionsZonesPUTSubscriptionid
+      tags:
+      - subscriptions
+      requestBody:
+        description: 'New NotificationSubscription is included as entity body of the request. The allowed data types for subscriptions are defined in clauses 6.3.6 and 6.3.7:
+
+          ZoneLocationEventSubscription.
+
+          ZoneStatusSubscription.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ZoneLocationEventSubscription:
+                  $ref: '#/components/schemas/ZoneLocationEventSubscription'
+      responses:
+        '200':
+          description: 'Upon success, a response body containing data type describing the updated subscription is returned. The allowed data types for subscriptions are defined in clauses 6.3.6 and 6.3.7:
+
+            ZoneLocationEventSubscription.
+
+            ZoneStatusSubscription.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ZoneLocationEventSubscription:
+                    $ref: '#/components/schemas/ZoneLocationEventSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '412':
+          $ref: '#/components/responses/412'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+    delete:
+      description: The DELETE method is used to cancel the existing subscription. Cancellation can be made by deleting the resource that represents existing subscription.
+      operationId: SubscriptionsZonesDELETESubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+  /queries/distance:
+    get:
+      description: The GET method is used to query information about distance from a user to a location or between two users.
+      operationId: QueriesDistanceGET
+      tags:
+      - queries
+      parameters:
+      - $ref: '#/components/parameters/Query.Address2'
+      - $ref: '#/components/parameters/Query.Location'
+      responses:
+        '200':
+          description: Upon success, a response body containing the list of distance information is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  TerminalDistance:
+                    $ref: '#/components/schemas/TerminalDistance'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+  /subscriptions/distance:
+    get:
+      description: The GET method is used to request information about the subscriptions for this requestor. Upon success, the response contains entity body with the list of links to the subscriptions that are present for the requestor.
+      operationId: SubscriptionsDistanceGET
+      tags:
+      - subscriptions
+      responses:
+        '200':
+          description: Upon success, a response body containing the list of links to requestor's subscriptions is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  NotificationSubscriptionList:
+                    $ref: '#/components/schemas/NotificationSubscriptionList'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters: []
+    post:
+      description: The POST method is used to create a new subscription to user distance notifications. Upon success, the response contains entity body describing the created subscription.
+      operationId: SubscriptionsDistancePOST
+      tags:
+      - subscriptions
+      requestBody:
+        description: 'The entity body in the request contains data type of the user distance subscription that is to be created, where the data type options are listed below and defined in clauses 6.3.9:
+
+          UserDistanceSubscription.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                UserDistanceSubscription:
+                  $ref: '#/components/schemas/UserDistanceSubscription'
+      responses:
+        '201':
+          description: 'Indicates successful resource creation, where the resource URI shall be returned in the HTTP Location header field.
+
+
+            In the returned NotificationSubscription structure, the created subscription is described using the appropriate data type from the list below and as defined in clauses 6.3.9:
+
+            UserDistanceSubscription.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  UserDistanceSubscription:
+                    $ref: '#/components/schemas/UserDistanceSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '415':
+          $ref: '#/components/responses/415'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+      callbacks:
+        notification:
+          '{$request.body#/callbackUri}':
+            post:
+              summary: Callback POST used to send a notification
+              description: Subscription notification
+              operationId: notificationPOST
+              requestBody:
+                description: Subscription notification
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        subscriptionNotification:
+                          $ref: '#/components/schemas/UserDistanceSubscription'
+              responses:
+                '204':
+                  description: No content
+                '404':
+                  description: Not found
+      parameters: []
+  /subscriptions/distance/{subscriptionId}:
+    get:
+      description: The GET method is used to retrieve information about this subscription. Upon success, the response contains entity body with the data type describing the subscription.
+      operationId: SubscriptionsDistanceGETSubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '200':
+          description: 'Upon success, a response body containing data type describing the specific distance event subscription is returned. The allowed data types for subscriptions are defined in clause 6.3.9:
+
+            UserDistanceSubscription.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  UserDistanceSubscription:
+                    $ref: '#/components/schemas/UserDistanceSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+    put:
+      description: The PUT method is used to update the existing subscription. PUT method in this case has "replace" semantics. Upon successful operation, the target resource is updated with new Data Type received within the message body of the PUT request.
+      operationId: SubscriptionsDistancePUTSubscriptionid
+      tags:
+      - subscriptions
+      requestBody:
+        description: 'New NotificationSubscription is included as entity body of the request. The allowed data types for subscriptions are defined in clause 6.3.9:
+
+          UserDistanceSubscription.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                UserDistanceSubscription:
+                  $ref: '#/components/schemas/UserDistanceSubscription'
+      responses:
+        '200':
+          description: 'Upon success, a response body containing data type describing the updated subscription is returned. The allowed data types for subscriptions are defined in clause 6.3.9:
+
+            UserDistanceSubscription.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  UserDistanceSubscription:
+                    $ref: '#/components/schemas/UserDistanceSubscription'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '412':
+          $ref: '#/components/responses/412'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+    delete:
+      description: The DELETE method is used to cancel the existing subscription. Cancellation can be made by deleting the resource that represents existing subscription.
+      operationId: SubscriptionsDistanceDELETESubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+  /subscriptions/area:
+    get:
+      description: The GET method is used to request information about the subscriptions for this requestor. Upon success, the response contains entity body with the list of links to the subscriptions that are present for the requestor.
+      operationId: SubscriptionsAreaGET
+      tags:
+      - subscriptions
+      parameters:
+      - $ref: '#/components/parameters/Query.Subscription_type2'
+      responses:
+        '200':
+          description: Upon success, a response body containing the list of links to requestor's subscriptions is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  NotificationSubscriptionList:
+                    $ref: '#/components/schemas/NotificationSubscriptionList'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+    post:
+      description: The POST method is used to create a new subscription to area notifications. Upon success, the response contains entity body describing the created subscription.
+      operationId: SubscriptionsAreaPOST
+      tags:
+      - subscriptions
+      requestBody:
+        description: 'The entity body in the request contains data type of the specific UE location event subscription that is to be created, where the data type options are listed below and defined in clause 6.3.8:
+
+          UserAreaNotification.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                UserAreaNotification:
+                  $ref: '#/components/schemas/UserAreaNotification'
+      responses:
+        '201':
+          description: 'Indicates successful resource creation, where the resource URI shall be returned in the HTTP Location header field.
+
+
+            In the returned NotificationSubscription structure, the created subscription is described using the appropriate data type from the list below and as defined in clause 6.3.8:
+
+            UserAreaNotification.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  UserAreaNotification:
+                    $ref: '#/components/schemas/UserAreaNotification'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '415':
+          $ref: '#/components/responses/415'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+      callbacks:
+        notification:
+          '{$request.body#/callbackUri}':
+            post:
+              summary: Callback POST used to send a notification
+              description: Subscription notification
+              operationId: notificationPOST
+              requestBody:
+                description: Subscription notification
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        subscriptionNotification:
+                          $ref: '#/components/schemas/UserAreaNotification'
+              responses:
+                '204':
+                  description: No content
+                '404':
+                  description: Not found
+      parameters: []
+  /subscriptions/area/{subscriptionId}:
+    get:
+      description: The GET method is used to retrieve information about this subscription. Upon success, the response contains entity body with the data type describing the subscription.
+      operationId: SubscriptionsAreaGETSubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '200':
+          description: "Upon success, a response body containing data type describing the specific zone subscription is returned. The allowed data types for subscriptions are defined in clause\_6.3.8:\nUserAreaNotification."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  UserAreaNotification:
+                    $ref: '#/components/schemas/UserAreaNotification'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+    put:
+      description: The PUT method is used to update the existing subscription. PUT method in this case has "replace" semantics. Upon successful operation, the target resource is updated with new Data Type received within the message body of the PUT request.
+      operationId: SubscriptionsAreaPUTSubscriptionid
+      tags:
+      - subscriptions
+      requestBody:
+        description: 'New NotificationSubscription is included as entity body of the request. The allowed data types for subscriptions are defined in clauses 6.3.8:
+
+          UserAreaNotification.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                UserAreaNotification:
+                  $ref: '#/components/schemas/UserAreaNotification'
+      responses:
+        '200':
+          description: 'Upon success, a response body containing data type describing the updated subscription is returned. The allowed data types for subscriptions are defined in clause 6.3.8:
+
+            UserAreaNotification.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  UserAreaNotification:
+                    $ref: '#/components/schemas/UserAreaNotification'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '412':
+          $ref: '#/components/responses/412'
+        '422':
+          $ref: '#/components/responses/422'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+    delete:
+      description: The DELETE method is used to cancel the existing subscription. Cancellation can be made by deleting the resource that represents existing subscription.
+      operationId: SubscriptionsAreaDELETESubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+    LocationInfo1_:
+      properties:
+        accuracy:
+          type: integer
+          description: Horizontal accuracy / (semi-major) uncertainty of location provided in meters, as defined in [14]. Present only if "shape" equals 4, 5 or 6
+        accuracyAltitude:
+          type: integer
+          description: Altitude accuracy / uncertainty of location provided in meters, as defined in [14]. Present only if "shape" equals 3 or 4
+        accuracySemiMinor:
+          type: integer
+          description: Horizontal accuracy / (semi-major) uncertainty of location provided in meters, as defined in [14]. Present only if "shape" equals 4, 5 or 6
+        altitude:
+          description: Location altitude relative to the WGS84 ellipsoid surface.
+          type: number
+          format: float
+        confidence:
+          type: integer
+          description: Confidence by which the position of a target entity is known to be within the shape description, expressed as a percentage and defined in [14]. Present only if "shape" equals 1, 4 or 6
+        includedAngle:
+          type: integer
+          description: Present only if "shape" equals 6
+        innerRadius:
+          type: integer
+          description: Present only if "shape" equals 6
+        latitude:
+          description: "Location latitude, expressed in the range -90\xB0 to +90\xB0. Cardinality greater than one only if \"shape\" equals 7."
+          type: array
+          items:
+            type: number
+            format: float
+          minItems: 1
+        longitude:
+          description: "Location longitude, expressed in the range -180\xB0 to +180\xB0. Cardinality greater than one only if \"shape\" equals 7."
+          type: array
+          items:
+            type: number
+            format: float
+          minItems: 1
+        offsetAngle:
+          type: integer
+          description: Present only if "shape" equals 6
+        orientationMajorAxis:
+          type: integer
+          description: "Angle of orientation of the major axis, expressed in the range 0\xB0 to 180\xB0, as defined in [14]. Present only if \"shape\" equals 4 or 6"
+        shape:
+          description: 'Shape information, as detailed in [14], associated with the reported location coordinate: <p>1 = ELLIPSOID_ARC <p>2 = ELLIPSOID_POINT <p>3 = ELLIPSOID_POINT_ALTITUDE <p>4 = ELLIPSOID_POINT_ALTITUDE_UNCERT_ELLIPSOID <p>5 = ELLIPSOID_POINT_UNCERT_CIRCLE <p>6 = ELLIPSOID_POINT_UNCERT_ELLIPSE <p>7 = POLYGON'
+          type: integer
+        uncertaintyRadius:
+          type: integer
+          description: Present only if "shape" equals 6
+        velocity:
+          description: "Structure with attributes relating to the target entity\u2019s velocity, as defined in [14]."
+          properties:
+            bearing:
+              type: integer
+              description: "Bearing, expressed in the range 0\xB0 to 360\xB0, as defined in [14]."
+            horizontalSpeed:
+              type: integer
+              description: Horizontal speed, expressed in km/h and defined in [14].
+            uncertainty:
+              type: integer
+              description: Horizontal uncertainty, as defined in [14]. Present only if "velocityType" equals 3 or 4
+            velocityType:
+              description: 'Velocity information, as detailed in [14], associated with the reported location coordinate: <p>1 = HORIZONTAL <p>2 = HORIZONTAL_VERTICAL <p>3 = HORIZONTAL_UNCERT <p>4 = HORIZONTAL_VERTICAL_UNCERT'
+              type: integer
+            verticalSpeed:
+              description: Vertical speed, expressed in km/h and defined in [14]. Present only if "velocityType" equals 2 or 4
+              type: integer
+            verticalUncertainty:
+              type: integer
+              description: Vertical uncertainty, as defined in [14]. Present only
+          required:
+          - velocityType
+          - bearing
+          - horizontalSpeed
+          type: object
+        timestamp:
+          $ref: '#/components/schemas/TimeStamp'
+          description: Date and time that location was collected.
+      required:
+      - latitude
+      - longitude
+      - shape
+      type: object
+      x-etsi-ref: 6.5.3
+    UserInfo1_:
+      properties:
+        accessPointId:
+          description: The identity of the access point the user is currently on, see note 1.
+          type: string
+        address:
+          description: Address of user (e.g. 'sip' URI, 'tel' URI, 'acr' URI) currently on the access point, see note 1.
+          format: uri
+          type: string
+        ancillaryInfo:
+          description: Reserved for future use.
+          type: string
+        contextLocationInfo:
+          description: Contextual information of a user location (e.g. aisle, floor, room number, etc.).
+          type: string
+        locationInfo:
+          $ref: '#/components/schemas/LocationInfo'
+          description: The geographical coordinates where the user is, see note 2.
+        resourceURL:
+          description: Self-referring URL, see note 1.
+          type: string
+        timestamp:
+          $ref: '#/components/schemas/TimeStamp'
+          description: Date and time that location was collected.
+        zoneId:
+          description: The identity of the zone the user is currently within, see note 1.
+          type: string
+      required:
+      - address
+      - accessPointId
+      - zoneId
+      - resourceURL
+      - timestamp
+      type: object
+      x-etsi-notes: "NOTE 1:\tAs specified in [5], clause 5.2.2.7.\nNOTE 2: \tAs specified in [5], clause 5.2.2.5."
+      x-etsi-ref: 6.2.2
+    CallbackReference:
+      type: object
+      required:
+      - notifyURL
+      properties:
+        notifyURL:
+          description: Notify Callback URL
+          type: string
+        callbackData:
+          description: Data the application can register with the server when subscribing to notifications, and that are passed back unchanged in each of the related notifications. These data can be used by the application in the processing of the notification, e.g. for correlation purposes.
+          type: string
+        notificationFormat:
+          $ref: '#/components/schemas/NotificationFormat'
+          description: Application can specify format of the resource representation in notifications that are related to this subscription. The choice is between {XML, JSON}
+    UserTrackingSubscription:
+      description: A type containing user tracking subscription.
+      type: object
+      required:
+      - callbackReference
+      - address
+      properties:
+        clientCorrelator:
+          type: string
+          description: A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server.
+        callbackReference:
+          $ref: '#/components/schemas/CallbackReference'
+          description: Notification callback definition
+        userEventCriteria:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserEventType'
+          description: List of user event values to generate notifications for (these apply to address specified). If this element is missing, a notification is requested to be generated for any change in user event.
+        resourceURL:
+          description: Self referring URL
+          type: string
+    ZonalPresenceNotification:
+      description: A type containing zonal presence notification
+      type: object
+      required:
+      - zoneId
+      - address
+      - userEventType
+      - currentAccessPointId
+      - timestamp
+      properties:
+        callbackData:
+          description: CallBackData if passed by the application during the associated ZonalTrafficSubscription and UserTrackingSubscription operation. See [REST_NetAPI_Common].
+          type: string
+        zoneId:
+          description: Identifier of zone
+          type: string
+        address:
+          description: Address of user (e.g. "sip" URI, "tel" URI, "acr" URI) to monitor
+          type: string
+        interestRealm:
+          description: Interest realm of access point (e.g. geographical area, a type of industry etc.).
+          type: string
+        userEventType:
+          $ref: '#/components/schemas/UserEventType'
+          description: User Event.
+        currentAccessPointId:
+          description: Identifier of access point.
+          type: string
+        previousAccessPointId:
+          description: Identifier of access point.
+          type: string
+        timestamp:
+          $ref: '#/components/schemas/TimeStamp'
+          description: Indicates the time of the day for zonal presence notification.
+        link:
+          description: Link to other resources that are in relationship with this notification. The server SHOULD include a link to the related subscription. No other links are required or suggested by this specification
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    UserEventType:
+      type: string
+      enum:
+      - Entering
+      - Leaving
+      - Transferring
+    Link:
+      description: Link to other resources
+      type: object
+      required:
+      - rel
+      - href
+      properties:
+        rel:
+          description: Describes the relationship between the URI and the resource.
+          type: string
+        href:
+          description: URI
+          type: string
+          format: anyURI
+    ZonalTrafficSubscription:
+      description: A type containing zonal traffic subscription
+      type: object
+      required:
+      - callbackReference
+      - zoneId
+      properties:
+        clientCorrelator:
+          description: A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server.
+          type: string
+        callbackReference:
+          $ref: '#/components/schemas/CallbackReference'
+          description: Notification callback definition
+        zoneId:
+          description: Identifier of zone
+          type: string
+        interestRealm:
+          description: Interest realm of access point (e.g. geographical area, a type of industry etc.).
+          type: array
+          items:
+            type: string
+        userEventCriteria:
+          $ref: '#/components/schemas/UserEventType'
+          description: List of user event values to generate notifications for (these apply to address specified). If this element is missing, a notification is requested to be generated for any change in user event.
+        duration:
+          description: Period (in seconds) of time notifications are provided for. If set to "0" (zero), a default duration time, which is specified by the service policy, will be used. If the parameter is omitted, the notifications will continue until the maximum duration time, which is specified by the service policy, unless the notifications are stopped by deletion of subscription for notifications. This element MAY be given by the client during resource creation in order to signal the desired lifetime of the subscription. The server MUST return in this element the   period of time for which the subscription will still be valid.
+          type: integer
+        resourceURL:
+          type: string
+          description: Self referring URL
+    OperationStatus:
+      type: string
+      enum:
+      - Serviceable
+      - Unserviceable
+      - Unknown
+    ZoneStatusSubscription:
+      x-etsi-ref: 6.3.7
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "ZoneStatusSubscription".
+          type: string
+        clientCorrelator:
+          description: A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server. See note 2.
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note 1.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: "Set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as specified in ETSI GS\_MEC 009 [4], clause 6.12a."
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between the location server and the service consumer for notifications. See note 1.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+        zoneId:
+          description: Identifier of zone (e.g. zone001) to monitor.
+          type: string
+        upperNumberOfUsersZoneThreshold:
+          description: Threshold number of users in a zone which if crossed upward shall cause a notification.
+          type: integer
+        lowerNumberOfUsersZoneThreshold:
+          description: Threshold number of users in a zone which if crossed downward shall cause a notification.
+          type: integer
+        upperNumberOfUsersAPThreshold:
+          description: Threshold number of users in an access point which if crossed upward shall cause a notification.
+          type: integer
+        lowerNumberOfUsersAPThreshold:
+          description: Threshold number of users in an access point which if crossed downward shall cause a notification.
+          type: integer
+        operationStatus:
+          description: List of operation status values to generate notifications for (these apply to all access points within a zone). See note 3.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/OperationStatus'
+        reportingCtrl:
+          description: Provides parameters that ctrl the reporting.
+          $ref: '#/components/schemas/ReportingCtrl'
+          type: object
+        expiryDeadline:
+          description: The expiration time of the subscription determined by the Zone Status Service.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - zoneId
+      description: "|-\n  NOTE 1:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to location server to select an alternative and return only that alternative in the response, as specified in ETSI GS MEC 009 [4], clause 6.12a.\nNOTE 2:\tThis allows the client to recover from communication failures during resource creation and therefore avoids duplicate subscription creation in such situations. In case the element is present, the server shall not alter its value, and shall provide it as part of the representation of this resource. In case the element is not present, the server shall not generate it.\nNOTE 3:\tAs specified in [5], clause 5.2.3.2."
+    PeriodicEventInfo:
+      x-etsi-notes: "NOTE 3:\tAs specified in [17], clause 6.1.6.2.24."
+    LocationEventType:
+      x-etsi-ref: 8.1.6.3
+      type: string
+      enum:
+      - ENTERING_AREA_EVENT
+      - LEAVING_AREA_EVENT
+      x-etsi-mec-extensible: true
+      x-etsi-mec-enumeration-table:
+      - value: ENTERING_AREA_EVENT
+        description: Entering area reporting event.
+      - value: LEAVING_AREA_EVENT
+        description: Leaving area reporting event.
+    Uri:
+      type: string
+      format: uri
+      description: Uniform Resource Identifier (URI)
+    CivicAddress:
+      x-etsi-notes: "NOTE 3:\tAs specified in [17], clause 6.1.6.2.14."
+    NotificationResult:
+      x-etsi-notes: "NOTE 3:\tIf the result is SUCCESS, at least one of locationInfo, civicInfo and relativeLocationInfo shall be present. "
+    OccurrenceInfo:
+      x-etsi-notes: "NOTE 3:\tAs specified in [17], clause 6.1.6.3.16."
+    ZoneStatusNotification:
+      x-etsi-ref: 6.4.7
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "ZoneStatusNotification".
+          type: string
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        userNumEvent:
+          type: integer
+          description: 'Shall be present when ZoneStatusSubscription includes upperNumberOfUsersZoneThreshold, lowerNumberOfUsersZoneThreshold, upperNumberOfUsersAPThreshold or lowerNumberOfUsersAPThreshold, and the number of users in a zone or an access point crosses the threshold defined in the subscription:
+
+            1 = OVER_ZONE_UPPER_THD.
+
+            2 = UNDER_ZONE_LOWER_THD.
+
+            3 = OVER_AP_UPPER_THD.
+
+            4 = UNDER_AP_LOWER_THD.'
+          enum:
+          - SEE_DESCRIPTION
+        operationStatus:
+          description: Shall be present when ZoneStatusSubscription includes operationStatus and the operation status value of an access point meets Serviceable or Unserviceable or Unknown defined in the subscription. See note 1.
+          $ref: '#/components/schemas/OperationStatus'
+          type: object
+        zoneId:
+          description: 'The identity of the zone. '
+          type: string
+        accessPointId:
+          description: Identifier of an access point (e.g. ap01). Shall be included when userNumEvent related with access point or operationStatus is included.
+          type: string
+        _links:
+          $ref: '#/components/schemas/_links3'
+      required:
+      - notificationType
+      - zoneId
+      - _links
+      description: "|-\n  NOTE:\tAs specified in [5], clause 5.2.3.2."
+    UserList:
+      x-etsi-ref: 6.2.5
+      type: object
+      properties:
+        user:
+          description: 'Collection of the user location information list. '
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/UserInfo'
+        resourceURL:
+          description: Self referring URL. This shall be only included in the procedure of UE Location Lookup.
+          type: string
+          format: uri
+    AccessPointList:
+      description: A type containing list of access points.
+      type: object
+      required:
+      - zoneId
+      - resourceURL
+      properties:
+        zoneId:
+          description: Identifier of zone
+          type: string
+        accessPoint:
+          description: Collection of the access point information list.
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessPointInfo'
+        resourceURL:
+          description: Self referring URL
+          type: string
+    ConnectionType:
+      description: The connection type for the access point
+      type: string
+      enum:
+      - Femto
+      - LTE-femto
+      - Smallcell
+      - LTE-smallcell
+      - Wifi
+      - Pico
+      - Micro
+      - Macro
+      - Wimax
+      - Unknown
+    AccessPointInfo:
+      description: A type containing access point information.
+      type: object
+      required:
+      - accessPointId
+      - connectionType
+      - operationStatus
+      - numberOfUsers
+      - resourceURL
+      properties:
+        accessPointId:
+          description: Identifier of access point.
+          type: string
+        locationInfo:
+          $ref: '#/components/schemas/LocationInfo'
+          description: The coordinates of the access point.
+        connectionType:
+          $ref: '#/components/schemas/ConnectionType'
+          description: Connection type of access point.
+        operationStatus:
+          $ref: '#/components/schemas/OperationStatus'
+          description: Operation status of access point.
+        numberOfUsers:
+          description: Number of users currently on the access point.
+          type: integer
+        timezone:
+          description: Time zone of access point.
+          type: string
+        interestRealm:
+          description: Interest realm of access point.
+          type: string
+        resourceURL:
+          description: Self referring URL
+          type: string
+    ZoneInfo:
+      description: A type containing zone information.
+      type: object
+      required:
+      - zoneId
+      - numberOfAccessPoints
+      - numberOfUnserviceableAccessPoints
+      - numberOfUsers
+      - resourceURL
+      properties:
+        zoneId:
+          description: Identifier of zone
+          type: string
+        numberOfAccessPoints:
+          description: The number of access points within the zone
+          type: integer
+        numberOfUnserviceableAccessPoints:
+          description: Number of inoperable access points within the zone.
+          type: integer
+        numberOfUsers:
+          description: The number of users currently on the access point.
+          type: integer
+        resourceURL:
+          description: Self referring URL
+          type: string
+    ZoneList:
+      description: A type containing a list of zones.
+      type: object
+      required:
+      - resourceURL
+      properties:
+        zone:
+          description: Collection of the zone information list.
+          type: array
+          items:
+            $ref: '#/components/schemas/ZoneInfo'
+        resourceURL:
+          description: Self referring URL
+          type: string
+    TerminalDistance:
+      description: A type containing information about the distance from a terminal to a location or between two terminals, in addition the accuracy and a timestamp of the information are provided.
+      type: object
+      required:
+      - distance
+      properties:
+        accuracy:
+          description: Accuracy of the provided distance in meters
+          type: integer
+        distance:
+          description: Distance from terminal to a location or between two terminals specified in meters
+          type: integer
+        timestamp:
+          $ref: '#/components/schemas/TimeStamp'
+          description: Date and time that location from which distance is calculated was collected.
+    CircleNotificationSubscription:
+      description: A type containing data for notifications, when the area is defined as a circle.
+      type: object
+      required:
+      - callbackReference
+      - address
+      - latitude
+      - longitude
+      - radius
+      - trackingAccuracy
+      - enteringLeavingCriteria
+      - checkImmediate
+      - frequency
+      properties:
+        clientCorrelator:
+          description: A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server.
+          type: string
+        resourceURL:
+          description: Self referring URL
+          type: string
+        link:
+          description: Link to other resources that are in relationship with the resource.
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        callbackReference:
+          $ref: '#/components/schemas/CallbackReference'
+          description: Notification callback definition
+        requester:
+          description: Identifies the entity that is requesting the information (e.g. "sip" URI, "tel" URI, "acr" URI)
+          type: string
+        address:
+          description: Address of terminals to monitor (e.g. "sip" URI, "tel" URI, "acr" URI)
+          type: array
+          items:
+            type: string
+        latitude:
+          description: Latitude of center point.
+          type: number
+          format: float
+        longitude:
+          description: Longitude of center point.
+          type: number
+          format: float
+        radius:
+          description: Radius circle around center point in meters.
+          type: number
+          format: float
+        trackingAccuracy:
+          description: Number of meters of acceptable error in tracking distance.
+          type: number
+          format: float
+        enteringLeavingCriteria:
+          $ref: '#/components/schemas/EnteringLeavingCriteria'
+          description: Indicates whether the notification should occur when the terminal enters or leaves the target area.
+        checkImmediate:
+          description: Check location immediately after establishing notification.
+          type: boolean
+        frequency:
+          description: Maximum frequency (in seconds) of notifications per subscription (can also be considered minimum time between notifications).
+          type: integer
+        duration:
+          description: "Period of time (in seconds) notifications are provided for. If set to \u201C0\u201D (zero), a default duration time, which is specified by the service policy, will be used. If the parameter is omitted, the notifications will continue until the maximum duration time, which is specified by the service policy, unless the notifications are stopped by deletion of subscription for notifications."
+          type: integer
+        count:
+          description: Maximum number of notifications per individual address. For no maximum, either do not include this element or specify a value of zero. Default value is 0.
+          type: integer
+    PeriodicNotificationSubscription:
+      description: A type containing data for periodic subscription.
+      type: object
+      required:
+      - callbackReference
+      - address
+      - requestedAccuracy
+      - frequency
+      properties:
+        clientCorrelator:
+          description: A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server.
+          type: string
+        resourceURL:
+          description: Self referring URL
+          type: string
+        link:
+          description: Link to other resources that are in relationship with the resource.
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        callbackReference:
+          $ref: '#/components/schemas/CallbackReference'
+          description: Notification callback definition
+        requester:
+          description: Identifies the entity that is requesting the information (e.g. "sip" URI, "tel" URI, "acr" URI)
+          type: string
+        address:
+          description: Address of terminals to monitor (e.g. "sip" URI, "tel" URI, "acr" URI)
+          type: array
+          items:
+            type: string
+        requestedAccuracy:
+          description: Accuracy of the provided distance in meters.
+          type: integer
+        frequency:
+          description: Maximum frequency (in seconds) of notifications (can also be considered minimum time between notifications) per subscription.
+          type: integer
+        duration:
+          description: "Period of time (in seconds) notifications are provided for. If set to \u201C0\u201D (zero), a default duration time, which is specified by the service policy, will be used. If the parameter is omitted, the notifications will continue until the maximum duration time, which is specified by the service policy, unless the notifications are stopped by deletion of subscription for notifications."
+          type: integer
+    DistanceNotificationSubscription:
+      description: A type containing data for distance subscription, with reference to other devices.
+      type: object
+      required:
+      - callbackReference
+      - monitoredAddress
+      - distance
+      - trackingAccuracy
+      - criteria
+      - checkImmediate
+      - frequency
+      properties:
+        clientCorrelator:
+          description: A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server.
+          type: string
+        resourceURL:
+          description: Self referring URL
+          type: string
+        link:
+          description: Link to other resources that are in relationship with the resource.
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        callbackReference:
+          $ref: '#/components/schemas/CallbackReference'
+          description: Notification callback definition
+        requester:
+          description: Identifies the entity that is requesting the information (e.g. "sip" URI, "tel" URI, "acr" URI)
+          type: string
+        referenceAddress:
+          description: Indicates address of each device that will be used as reference devices from which the distances towards monitored devices indicated in the Addresses will be monitored (e.g., 'sip' URI, 'tel' URI, 'acr' URI)
+          type: array
+          items:
+            type: string
+        monitoredAddress:
+          description: Contains addresses of devices to monitor (e.g., 'sip' URI, 'tel' URI, 'acr' URI)
+          type: array
+          items:
+            type: string
+        distance:
+          description: Distance between devices that shall be monitored.
+          type: number
+          format: float
+        trackingAccuracy:
+          description: Number of meters of acceptable error in tracking distance.
+          type: number
+          format: float
+        criteria:
+          $ref: '#/components/schemas/DistanceCriteria'
+          description: Indicates whether the notification should occur when the geographical relationship between monitored and referenced devices changes.
+        checkImmediate:
+          description: Check location immediately after establishing notification.
+          type: boolean
+        frequency:
+          description: Maximum frequency (in seconds) of notifications per subscription (can also be considered minimum time between notifications).
+          type: integer
+        duration:
+          description: "Period of time (in seconds) notifications are provided for. If set to \u201C0\u201D (zero), a default duration time, which is specified by the service policy, will be used. If the parameter is omitted, the notifications will continue until the maximum duration time, which is specified by the service policy, unless the notifications are stopped by deletion of subscription for notifications."
+          type: integer
+        count:
+          description: Maximum number of notifications per individual address. For no maximum, either do not include this element or specify a value of zero. Default value is 0.
+          type: integer
+    EnteringLeavingCriteria:
+      type: string
+      enum:
+      - Entering = 'Terminal is entering an area'
+      - Leaving = 'Terminal is leaving an area'
+    DistanceCriteria:
+      type: string
+      enum:
+      - AllWithinDistance = 'All monitored devices are within the specified distance'
+      - AnyWithinDistance = 'Any of monitored devices gets within the specified distance'
+      - AllBeyondDistance = 'All monitored devices are beyond the specified distance'
+      - AnyBeyondDistance = 'Any of monitored devices gets beyond the specified distance'
+    NotificationFormat:
+      type: string
+      enum:
+      - XML
+      - JSON
+    SubscriptionNotification:
+      description: A type containing the notification subscription.
+      type: object
+      required:
+      - terminalLocation
+      properties:
+        callbackData:
+          description: CallbackData if passed by the application in the receiptRequest element during the associated subscription operation
+          type: string
+        terminalLocation:
+          description: Collection of the terminal locations.
+          type: array
+          items:
+            $ref: '#/components/schemas/TerminalLocation'
+        enteringLeavingCriteria:
+          $ref: '#/components/schemas/EnteringLeavingCriteria'
+          description: Indicates whether the notification was caused by the terminal entering or leaving the target area.
+        distanceCriteria:
+          $ref: '#/components/schemas/DistanceCriteria'
+          description: Indicates which distance criteria that caused the notification.
+        isFinalNotification:
+          description: Set to true if it is a final notification about location change.
+          type: boolean
+        link:
+          description: Link to other resources that are in relationship with the resource.
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    SubscriptionCancellationNotification:
+      description: A type containing the subscription cancellation notification.
+      type: object
+      required:
+      - terminalLocation
+      properties:
+        callbackData:
+          description: CallbackData if passed by the application in the receiptRequest element during the associated subscription operation
+          type: string
+        address:
+          description: Address of terminal if the error applies to an individual terminal.
+          type: string
+        reason:
+          $ref: '#/components/schemas/ServiceError'
+          description: Reason notification is being discontinued.
+        link:
+          description: Link to other resources that are in relationship with the resource.
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    TerminalLocation:
+      description: A type containing device address, retrieval status and location information.
+      type: object
+      required:
+      - address
+      - locationRetrievalStatus
+      properties:
+        address:
+          description: Address of the terminal to which the location information applies (e.g., 'sip' URI, 'tel' URI, 'acr' URI).
+          type: string
+        locationRetrievalStatus:
+          $ref: '#/components/schemas/RetrievalStatus'
+          description: Status of retrieval for this terminal address.
+        currentLocation:
+          $ref: '#/components/schemas/LocationInfo'
+          description: Location of terminal.
+        errorInformation:
+          $ref: '#/components/schemas/ServiceError'
+          description: This is the reason for error.
+    TerminalLocationList:
+      description: Collection of the terminal locations.
+      type: array
+      items:
+        $ref: '#/components/schemas/TerminalLocation'
+    RetrievalStatus:
+      type: string
+      enum:
+      - Retrieved
+      - NotRetrieved
+      - Error
+    ServiceError:
+      description: used to indicate a notification termination or cancellation.
+      type: object
+      required:
+      - messageId
+      - text
+      properties:
+        messageId:
+          description: Message identifier, either with prefix SVC or with prefix POL
+          type: string
+        text:
+          description: Message text, with replacement variables marked with %n, where n is an index into the list of <variables> elements, starting at 1
+          type: string
+        variables:
+          description: Variables to substitute into text string
+          type: array
+          items:
+            type: string
+    UserInfo:
+      x-etsi-ref: 6.2.2
+      type: object
+      properties:
+        address:
+          description: Address of user (e.g. 'sip' URI, 'tel' URI, 'acr' URI) currently on the access point, see note 1.
+          type: string
+          format: uri
+        AccessPointId:
+          description: The identity of the access point the user is currently on, see note 1.
+          type: string
+        zoneId:
+          description: The identity of the zone the user is currently within, see note 1.
+          type: string
+        resourceURL:
+          description: Self-referring URL, see note 1. This shall be only included in the procedure of UE Location Lookup.
+          type: string
+          format: uri
+        timeStamp:
+          description: Date and time that location was collected.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        locationInfo:
+          description: The geographical coordinates where the user is.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+        civicInfo:
+          description: Contextual information of a user location (e.g. aisle, floor, room number, etc.). See note 3.
+          $ref: '#/components/schemas/CivicAddress'
+          type: object
+        ancillaryInfo:
+          description: Reserved for future use.
+          type: string
+        relativeLocationInfo:
+          description: The relative location in a reference system.
+          $ref: '#/components/schemas/RelativeLocationInfo'
+          type: object
+      required:
+      - address
+      - AccessPointId
+      - zoneId
+      - timeStamp
+      description: "|-\n  NOTE 1:\tAs specified in [5], clause 5.2.2.7.\nNOTE 2:\tVoid.\nNOTE 3:\tAs specified in [17], clause 6.1.6.2.14."
+    RelativeLocationInfo:
+      x-etsi-ref: 6.2.3
+      type: object
+      properties:
+        mapInfo:
+          description: Indicates a map corresponding to a location area.
+          $ref: '#/components/schemas/MapInfo'
+          type: object
+        X:
+          description: 'Indicates the value (in the unit of meters) on x-axis of the relative location in the Cartesian system.
+
+
+            Positive value represents easting from origin.'
+          type: number
+          format: float
+        Y:
+          description: 'Indicates the value (in the unit of meters) on y-axis of the relative location in the Cartesian system.
+
+
+            Positive value represents northing from origin.'
+          type: number
+          format: float
+        Z:
+          description: 'Indicates the value (in the unit of meters) on z-axis of the relative location in the Cartesian system for a 3DPoint.
+
+
+            Positive value represents height above origin.'
+          type: number
+          format: float
+      required:
+      - mapInfo
+      - X
+      - Y
+    MapInfo:
+      x-etsi-ref: 6.2.4
+      type: object
+      properties:
+        mapId:
+          description: 'Indicates the ID of the map. '
+          type: string
+        origin:
+          $ref: '#/components/schemas/Origin'
+        ancillaryMapInfo:
+          description: Ancillary map information may be used to convert coordinates between different coordinate systems.
+          type: object
+      required:
+      - mapId
+    NotificationSubscriptionList:
+      x-etsi-ref: 6.3.3
+      type: object
+      properties:
+        subscription:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
+        resourceURL:
+          description: Self-referring URL.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - resourceURL
+      description: "|-\n  NOTE 1:\tVoid.\nNOTE 2:\tVoid."
+    UserLocationEventSubscription:
+      x-etsi-ref: 6.3.4
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "UserLocationEventSubscription".
+          type: string
+        clientCorrelator:
+          description: A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server. See note 2.
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note 1.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: "Set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as specified in ETSI GS\_MEC 009 [4], clause 6.12a."
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between the location server and the service consumer for notifications. See note 1.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+        address:
+          description: Address of user (e.g. 'sip' URI, 'tel' URI, 'acr' URI) to monitor.
+          type: string
+          format: uri
+        userEventPara:
+          description: Requirements for user event reporting.
+          $ref: '#/components/schemas/UserEventPara'
+          type: object
+        locationEventCriteria:
+          description: 'List of user event values to generate notifications for (these apply to address specified). '
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/LocationEventType'
+        expiryDeadline:
+          description: The expiration time of the subscription determined by the UE Location Subscribe Service.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - address
+      description: "|-\n  NOTE 1:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to location server to select an alternative and return only that alternative in the response, as specified in ETSI GS MEC 009 [4], clause 6.12a.\nNOTE 2:\tThis allows the client to recover from communication failures during resource creation and therefore avoids duplicate subscription creation in such situations. In case the element is present, the server shall not alter its value, and shall provide it as part of the representation of this resource. In case the element is not present, the server shall not generate it."
+    UserLocationPeriodicSubscription:
+      x-etsi-ref: 6.3.5
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "UserLocationPeriodicSubscription".
+          type: string
+        clientCorrelator:
+          description: A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server. See note 2.
+          type: string
+        callbackReference:
+          description: "URI exposed by the client on which to receive notifications via HTTP. See note\_1."
+          type: string
+          format: uri
+        requestTestNotification:
+          description: Set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as specified in ETSI GS MEC 009 [4], clause 6.12a.
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between the location server and the service consumer for notifications. See note 1.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+        address:
+          description: Address of user (e.g. 'sip' URI, 'tel' URI, 'acr' URI) to monitor.
+          type: string
+          format: uri
+        periodicEventInfo:
+          description: Information for periodic event reporting. See note 3.
+          $ref: '#/components/schemas/PeriodicEventInfo'
+          type: object
+        expiryDeadline:
+          description: The expiration time of the subscription determined by the UE Location Subscribe Service.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - address
+      - periodicEventInfo
+      description: "|-\n  NOTE 1:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to location server to select an alternative and return only that alternative in the response, as specified in ETSI GS MEC 009 [4], clause 6.12a.\nNOTE 2:\tThis allows the client to recover from communication failures during resource creation and therefore avoids duplicate subscription creation in such situations. In case the element is present, the server shall not alter its value, and shall provide it as part of the representation of this resource. In case the element is not present, the server shall not generate it.\nNOTE 3:\tAs specified in [17], clause 6.1.6.2.24."
+    ZoneLocationEventSubscription:
+      x-etsi-ref: 6.3.6
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "ZoneLocationEventSubscription".
+          type: string
+        clientCorrelator:
+          description: A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server. See note 2.
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note 1.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: "Set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as specified in ETSI GS\_MEC 009 [4], clause 6.12a."
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between the location server and the service consumer for notifications. See note 1.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+        zoneId:
+          description: Identifier of zone (e.g. zone001) to monitor.
+          type: string
+        addressList:
+          description: List of the users to be monitored. If not present, all the users need to be monitored.
+          type: array
+          format: uri
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/Uri'
+        locationEventCriteria:
+          description: 'List of user event values to generate notifications for. '
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/LocationEventType'
+        reportingCtrl:
+          description: Provides parameters that ctrl the reporting.
+          $ref: '#/components/schemas/ReportingCtrl'
+          type: object
+        expiryDeadline:
+          description: The expiration time of the subscription determined by the Zone Location Event Service.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - zoneId
+      description: "|-\n  NOTE 1:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to location server to select an alternative and return only that alternative in the response, as specified in ETSI GS MEC 009 [4], clause 6.12a.\nNOTE 2:\tThis allows the client to recover from communication failures during resource creation and therefore avoids duplicate subscription creation in such situations. In case the element is present, the server shall not alter its value, and shall provide it as part of the representation of this resource. In case the element is not present, the server shall not generate it."
+    UserAreaSubscription:
+      x-etsi-ref: 6.3.8
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "UserAreaSubscription".
+          type: string
+        clientCorrelator:
+          description: A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server. See note 2.
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note 1.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: "Set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as specified in ETSI GS\_MEC 009 [4], clause 6.12a."
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between the location server and the service consumer for notifications. See note 1.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+        areaDefine:
+          description: The parameters describing the area to subscribe.
+          $ref: '#/components/schemas/AreaInfo'
+          type: object
+        addressList:
+          description: 'List of the users to be monitored. '
+          type: array
+          format: uri
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Uri'
+        trackingAccuracy:
+          description: Number of meters of acceptable error.
+          type: number
+          format: float
+        locationEventCriteria:
+          description: 'List of user event values to generate notifications for (these apply to address specified). '
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/LocationEventType'
+        reportingCtrl:
+          description: Provides parameters that ctrl the reporting.
+          $ref: '#/components/schemas/ReportingCtrl'
+          type: object
+        reportingLocationReq:
+          description: This IE shall be set to true if a location estimate is required for each event report.
+          type: boolean
+        expiryDeadline:
+          description: The expiration time of the subscription determined by the UE Area Subscribe Service.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - areaDefine
+      - addressList
+      - trackingAccuracy
+      description: "|-\n  NOTE 1:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to location server to select an alternative and return only that alternative in the response, as specified in ETSI GS MEC 009 [4], clause 6.12a.\nNOTE 2:\tThis allows the client to recover from communication failures during resource creation and therefore avoids duplicate subscription creation in such situations. In case the element is present, the server shall not alter its value, and shall provide it as part of the representation of this resource. In case the element is not present, the server shall not generate it."
+    UserDistanceSubscription:
+      x-etsi-ref: 6.3.9
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "UserDistanceSubscription".
+          type: string
+        clientCorrelator:
+          description: A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server. See note 2.
+          type: string
+        callbackReference:
+          description: URI exposed by the client on which to receive notifications via HTTP. See note 1.
+          type: string
+          format: uri
+        requestTestNotification:
+          description: Set to TRUE by the service consumer to request a test notification via HTTP on the callbackReference URI, as specified in ETSI GS MEC 009 [4], clause 6.12a.
+          type: boolean
+        websockNotifConfig:
+          description: Provides details to negotiate and signal the use of a Websocket connection between the location server and the service consumer for notifications. See note 1.
+          $ref: '#/components/schemas/WebsockNotifConfig'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links1'
+        referenceAddress:
+          description: If specified, indicates address of each user that will be used as reference users from which the distances towards monitored users indicated in the Addresses will be monitored (e.g., 'sip' URI, 'tel' URI, 'acr' URI). Reference to a group could be provided here if supported by implementation.
+          type: array
+          format: uri
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/Uri'
+        monitoredAddress:
+          description: 'Contains addresses of users to monitor (e.g. ''sip'' URI, ''tel'' URI, ''acr'' URI). Reference to a group could be provided here if supported by implementation.
+
+            If the ReferenceAddress is specified, then the distance between each monitored user and reference user(s) will be monitored.
+
+            If the ReferenceAddress is not present, then the distance between each pair of the monitored users will be monitored. Note that in that case there shall be at least two addresses specified here.'
+          type: array
+          format: uri
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Uri'
+        distance:
+          description: Distance between users that shall be monitored. The unit is meter.
+          type: number
+          format: float
+        trackingAccuracy:
+          description: Number of meters of acceptable error in tracking distance.
+          type: number
+          format: float
+        criteria:
+          description: Indicates whether the notification should occur when the geographical relationship between monitored and referenced users' changes. See note 3.
+          $ref: '#/components/schemas/DistanceCriteria'
+          type: object
+        checkImmediate:
+          description: Check location immediately after establishing notification.
+          type: boolean
+        reportingCtrl:
+          description: Provides parameters that ctrl the reporting.
+          $ref: '#/components/schemas/ReportingCtrl'
+          type: object
+        expiryDeadline:
+          description: The expiration time of the subscription determined by the UE Distance Subscribe Service.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+      required:
+      - subscriptionType
+      - monitoredAddress
+      - distance
+      - trackingAccuracy
+      - criteria
+      - checkImmediate
+      description: "|-\n  NOTE 1:\tAt least one of callbackReference and websockNotifConfig shall be provided by the service consumer. If both are provided, it is up to location server to select an alternative and return only that alternative in the response, as specified in ETSI GS MEC 009 [4], clause 6.12a.\nNOTE 2:\tThis allows the client to recover from communication failures during resource creation and therefore avoids duplicate subscription creation in such situations. In case the element is present, the server shall not alter its value, and shall provide it as part of the representation of this resource. In case the element is not present, the server shall not generate it.\nNOTE 3:\tAs specified in [6], clause 5.2.3.2."
+    TestNotification:
+      x-etsi-ref: 6.4.3
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "TestNotification".
+          type: string
+        _links:
+          $ref: '#/components/schemas/_links2'
+      required:
+      - notificationType
+      - _links
+    UserLocationEventNotification:
+      x-etsi-ref: 6.4.4
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "UserLocationEventNotification".
+          type: string
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        address:
+          description: Address of user (e.g. 'sip' URI, 'tel' URI, 'acr' URI).
+          type: string
+          format: uri
+        userLocationEvent:
+          description: The specific event triggering this notification, e.g. "ENTERING_AREA_EVENT", "LEAVING_AREA_EVENT".
+          $ref: '#/components/schemas/LocationEventType'
+          type: object
+        locationInfo:
+          description: The geographical coordinates where the user is. See note 3.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+        civicInfo:
+          description: Contextual information of a user location (e.g. aisle, floor, room number, etc.). See note 1 and note 3.
+          $ref: '#/components/schemas/CivicAddress'
+          type: object
+        relativeLocationInfo:
+          description: The relative location in a reference system. See note 3.
+          $ref: '#/components/schemas/RelativeLocationInfo'
+          type: object
+        zoneId:
+          description: "The identity of the zone. \nFor the events of \"ENTERING_AREA_EVENT\", it is the zone that the user is currently within. \nFor the event of \"LEAVING_AREA_EVENT\", it is the zone that the user used to be within.\nSee note 2."
+          type: string
+        accessPointId:
+          description: "The identity of the access point.\nFor the events of \"ENTERING_AREA_EVENT\", it indicates the access point that the user is currently within. \nFor the event of \"LEAVING_AREA_EVENT\", it indicates the access point that the user used to be within.\nSee note 2."
+          type: string
+        _links:
+          $ref: '#/components/schemas/_links3'
+      required:
+      - notificationType
+      - userLocationEvent
+      - _links
+      description: "|-\n  NOTE 1:\tAs specified in [17], clause 6.1.6.2.14.\nNOTE 2:\tAs specified in [5], clause 5.2.2.7.\nNOTE 3:\tAt least one of these attributes shall be present only when reportingLocationReq is set to TRUE in the UserLocationEventSubscription."
+    UserLocationPeriodicNotification:
+      x-etsi-ref: 6.4.5
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "UserLocationPeriodicNotification".
+          type: string
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        address:
+          description: Address of user (e.g. 'sip' URI, 'tel' URI, 'acr' URI).
+          type: string
+          format: uri
+        result:
+          description: The result of Localization. See note 3.
+          $ref: '#/components/schemas/NotificationResult'
+          type: object
+        locationInfo:
+          description: The geographical coordinates where the user is.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+        civicInfo:
+          description: Contextual information of a user location (e.g. aisle, floor, room number, etc.). See note 1.
+          $ref: '#/components/schemas/CivicAddress'
+          type: object
+        relativeLocationInfo:
+          description: The relative location in a reference system.
+          $ref: '#/components/schemas/RelativeLocationInfo'
+          type: object
+        zoneId:
+          description: "The identity of the zone that the user is currently within. \nSee note 2."
+          type: string
+        accessPointId:
+          description: "The identity of the access point that the user is currently within. \nSee note 2."
+          type: string
+        isFinalNotification:
+          description: Shall be set to true if it is a final notification.
+          type: boolean
+        _links:
+          $ref: '#/components/schemas/_links3'
+      required:
+      - notificationType
+      - result
+      - _links
+      description: "|-\n  NOTE 1:\tAs specified in [17], clause 6.1.6.2.14.\nNOTE 2:\tAs specified in [5], clause 5.2.2.7.\nNOTE 3:\tIf the result is SUCCESS, at least one of locationInfo, civicInfo and relativeLocationInfo shall be present."
+    ZoneLocationEventNotification:
+      x-etsi-ref: 6.4.6
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "ZoneLocationEventNotification".
+          type: string
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        address:
+          description: Address of user (e.g. 'sip' URI, 'tel' URI, 'acr' URI).
+          type: string
+          format: uri
+        userLocationEvent:
+          description: The specific event triggering this notification, e.g. "ENTERING_AREA_EVENT","LEAVING_AREA_EVENT".
+          $ref: '#/components/schemas/LocationEventType'
+          type: object
+        zoneId:
+          description: 'The identity of the zone. '
+          type: string
+        _links:
+          $ref: '#/components/schemas/_links3'
+      required:
+      - notificationType
+      - address
+      - userLocationEvent
+      - zoneId
+      - _links
+    UserAreaNotification:
+      x-etsi-ref: 6.4.8
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "UserAreaNotification".
+          type: string
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        address:
+          description: Address of user (e.g. 'sip' URI, 'tel' URI, 'acr' URI).
+          type: string
+          format: uri
+        locationInfo:
+          description: The geographical coordinates where the user is. See note 2.
+          $ref: '#/components/schemas/LocationInfo'
+          type: object
+        civicInfo:
+          description: Contextual information of a user location (e.g. aisle, floor, room number, etc.). See note 1 and note 2.
+          $ref: '#/components/schemas/CivicAddress'
+          type: object
+        relativeLocationInfo:
+          description: The relative location in a reference system. See note 2.
+          $ref: '#/components/schemas/RelativeLocationInfo'
+          type: object
+        userLocationEvent:
+          description: The specific event triggering this notification, e.g. "ENTERING_AREA_EVENT", "LEAVING_AREA_EVENT".
+          $ref: '#/components/schemas/LocationEventType'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links3'
+      required:
+      - notificationType
+      - address
+      - userLocationEvent
+      - _links
+      description: "|-\n  NOTE 1:\tAs specified in [17], clause 6.1.6.2.14.\nNOTE 2:\tAt least one of these attributes shall be present only when reportingLocationReq is set to TRUE in the UserAreaSubscription."
+    UserDistanceNotification:
+      x-etsi-ref: 6.4.9
+      type: object
+      properties:
+        notificationType:
+          description: Shall be set to "UserDistanceNotification".
+          type: string
+        timeStamp:
+          description: Time stamp.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        monitoredUsers:
+          description: Indicates the location information related to monitored users.
+          $ref: '#/components/schemas/UserList'
+          type: object
+        distanceEvent:
+          description: Indicates the distance event triggering the notification. See note.
+          $ref: '#/components/schemas/DistanceCriteria'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links3'
+      required:
+      - notificationType
+      - monitoredUsers
+      - distanceEvent
+      - _links
+      description: "|-\n  NOTE:\tAs specified in [6], clause 5.2.3.2."
+    TimeStamp:
+      x-etsi-ref: 6.5.2
+      type: object
+      properties:
+        seconds:
+          description: 'The seconds part of the time. Time is defined as
+
+            Unix-time since January 1, 1970, 00:00:00 UTC.'
+          type: integer
+          format: uint32
+        nanoSeconds:
+          description: 'The nanoseconds part of the time. Time is defined as
+
+            Unix-time since January 1, 1970, 00:00:00 UTC.'
+          type: integer
+          format: uint32
+      required:
+      - seconds
+      - nanoSeconds
+    LocationInfo:
+      x-etsi-ref: 6.5.3
+      type: object
+      properties:
+        latitude:
+          description: "Location latitude, expressed in the range -90\xB0 to +90\xB0. Cardinality greater than one only if \"shape\" equals 7."
+          type: number
+          format: float
+        longitude:
+          description: "Location longitude, expressed in the range -180\xB0 to +180\xB0. Cardinality greater than one only if \"shape\" equals 7."
+          type: number
+          format: float
+        altitude:
+          description: Location altitude relative to the WGS84 ellipsoid surface.
+          type: number
+          format: float
+        accuracy:
+          description: Horizontal accuracy/(semi-major) uncertainty of location provided in meters, as defined in [14]. Present only if "shape" equals 4, 5 or 6.
+          type: integer
+        accuracySemiMinor:
+          description: Horizontal accuracy/(semi-major) uncertainty of location provided in meters, as defined in [14]. Present only if "shape" equals 4, 5 or 6.
+          type: integer
+        accuracyAltitude:
+          description: Altitude accuracy/uncertainty of location provided in meters, as defined in [14]. Present only if "shape" equals 3 or 4.
+          type: integer
+        orientationMajorAxis:
+          description: "Angle of orientation of the major axis, expressed in the range 0\xB0 to 180\xB0, as defined in [14]. Present only if \"shape\" equals 4 or 6."
+          type: integer
+        confidence:
+          description: Confidence by which the position of a target entity is known to be within the shape description, expressed as a percentage and defined in [14]. Present only if "shape" equals 1, 4 or 6.
+          type: integer
+        innerRadius:
+          description: Present only if "shape" equals 6.
+          type: integer
+        uncertaintyRadius:
+          description: Present only if "shape" equals 6.
+          type: integer
+        offsetAngle:
+          description: Present only if "shape" equals 6.
+          type: integer
+        includedAngle:
+          description: Present only if "shape" equals 6.
+          type: integer
+        shape:
+          type: integer
+          description: 'Shape information, as detailed in [14], associated with the reported location coordinate:
+
+            1 = Ellipsoid_Arc
+
+            2 = ellipsoid_Point
+
+            3 = ellipsoid_Point_Altitude
+
+            4 = ellipsoid_Point_Altitude_Uncert_Ellipsoid
+
+            5 = ellipsoid_Point_Uncert_Circle
+
+            6 = ellipsoid_Point_Uncert_Ellipse
+
+            7 = polygon'
+          enum:
+          - SEE_DESCRIPTION
+        velocity:
+          $ref: '#/components/schemas/Velocity'
+      required:
+      - latitude
+      - longitude
+      - shape
+    WebsockNotifConfig:
+      x-etsi-ref: 6.5.4
+      type: object
+      properties:
+        websocketUri:
+          description: Set by location server to indicate to the service consumer the Websocket URI to be used for delivering notifications.
+          type: string
+          format: uri
+        requestWebsocketUri:
+          description: Set to true by the service consumer to indicate that Websocket delivery is requested.
+          type: boolean
+    UserEventPara:
+      x-etsi-ref: 6.5.5
+      type: object
+      properties:
+        reportingLocationReq:
+          description: This IE shall be set to true if a location estimate is required for each event report.
+          type: boolean
+        accessPointList:
+          description: One or more access points forming a monitoring area that could be any shape. See note 1.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        zoneId:
+          description: "Identifier of zone (e.g. zone001) to monitor. See note\_1."
+          type: string
+        occurrenceInfo:
+          description: One time only report indication. See note 2.
+          $ref: '#/components/schemas/OccurrenceInfo'
+          type: object
+      description: "|-\n  NOTE 1:\tOnly one of accessPointList and zoneId may be present.\nNOTE 2:\tAs specified in [17], clause 6.1.6.3.16."
+    ReportingCtrl:
+      x-etsi-ref: 6.5.6
+      type: object
+      properties:
+        minimumInterval:
+          description: Minimum interval between reports in case frequently reporting. Unit is second.
+          type: integer
+        maximumFrequency:
+          description: Maximum frequency (in seconds) of notifications per subscription.
+          type: integer
+        maximumCount:
+          description: Maximum number of notifications. For no maximum, either do not include this element or specify a value of zero. Default value is 0.
+          type: integer
+    AreaInfo:
+      x-etsi-ref: 6.5.7
+      type: object
+      properties:
+        shape:
+          type: integer
+          description: 'The shape of the area monitored:
+
+            1 = CIRCLE.
+
+            2 = POLYGON.'
+          enum:
+          - SEE_DESCRIPTION
+        points:
+          description: Shall include one point if the shape is CIRCLE. Shall include 3-15 points if the shape is POLYGON.
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Point'
+        radius:
+          description: Shall be present if the shape is CIRCLE.
+          type: integer
+      required:
+      - shape
+      - points
+    Point:
+      x-etsi-ref: 6.5.8
+      type: object
+      properties:
+        latitude:
+          description: "Location latitude, expressed in the range -90\xB0 to +90\xB0."
+          type: number
+          format: float
+        longitude:
+          description: "Location longitude, expressed in the range -180\xB0 to +180\xB0."
+          type: number
+          format: float
+      required:
+      - latitude
+      - longitude
+    LinkType:
+      x-etsi-ref: 6.7.2
+      type: object
+      properties:
+        href:
+          description: URI referring to a resource.
+          type: string
+          format: uri
+      required:
+      - href
+    Origin:
+      description: Indicates the location of the map origin in the local Cartesian coordinate system.
+      type: object
+      properties:
+        latitude:
+          description: "Location latitude, expressed in the range -90\xB0 to +90\xB0."
+          type: number
+          format: float
+        longitude:
+          description: "Location longitude, expressed in the range -180\xB0 to +180\xB0."
+          type: number
+          format: float
+        altitude:
+          description: Location altitude relative to the WGS84 ellipsoid surface.
+          type: number
+          format: float
+      required:
+      - latitude
+      - longitude
+    Subscription:
+      description: ''
+      type: object
+      minItems: 0
+      properties:
+        href:
+          description: The URI referring to the subscription.
+          type: string
+          format: uri
+        subscriptionType:
+          description: "Type of the subscription. The string shall be set according to the \"subscriptionType\" attribute of the associated subscription data type defined in clauses\_6.3.4, 6.3.5, 6.3.6, 6.3.7 6.3.8 and 6.3.9:\n\"UserLocationEventSubscription\"\n\"UserLocationPeriodicSubscription\"\n\"ZoneLocationEventSubscription\"\n\"ZoneStatusSubscription\"\n\"UserAreaSubscription\"\n\"UserDistanceSubscription\""
+          type: string
+      required:
+      - href
+      - subscriptionType
+    _links:
+      description: Hyperlink related to the resource. This shall be only included in the HTTP responses and in HTTP PUT requests.
+      type: object
+      properties:
+        self:
+          description: Self-referring URI. The URI shall be unique within the UE Location Subscribe as it acts as an ID for the subscription.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - self
+    _links1:
+      description: Hyperlink related to the resource. This shall be only included in the HTTP responses and in HTTP PUT requests.
+      type: object
+      properties:
+        self:
+          description: Self-referring URI. The URI shall be unique within the User Distance Subscribe as it acts as an ID for the subscription.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - self
+    _links2:
+      description: 'Hyperlink related to the resource. '
+      type: object
+      properties:
+        subscription:
+          description: URI identifying the subscription for the test notification.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - subscription
+    _links3:
+      description: Object containing hyperlinks related to the resource.
+      type: object
+      properties:
+        subscription:
+          description: A link to the related subscription.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - subscription
+    Velocity:
+      description: Structure with attributes relating to the target entity's velocity, as defined in [14].
+      type: object
+      properties:
+        velocityType:
+          type: integer
+          description: 'Velocity information, as detailed in [14], associated with the reported location coordinate:
+
+            1 = Horizontal
+
+            2 = Horizontal_Vertical
+
+            3 = Horizontal_Uncert
+
+            4 = Horizontal_Vertical_Uncert'
+          enum:
+          - SEE_DESCRIPTION
+        bearing:
+          description: "Bearing, expressed in the range 0\xB0 to 360\xB0, as defined in [14]."
+          type: integer
+        horizontalSpeed:
+          description: Horizontal speed, expressed in km/h and defined in [14].
+          type: integer
+        uncertainty:
+          description: Horizontal uncertainty, as defined in [14]. Present only if "velocityType" equals 3 or 4.
+          type: integer
+        verticalSpeed:
+          description: Vertical speed, expressed in km/h and defined in [14]. Present only if "velocityType" equals 2 or 4.
+          type: integer
+        verticalUncertainty:
+          description: Vertical uncertainty, as defined in [14]. Present only if "velocityType" equals 4.
+          type: integer
+      required:
+      - velocityType
+      - bearing
+      - horizontalSpeed
+  responses:
+    '200':
+      description: OK
+    '204':
+      description: No Content
+    '400':
+      description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '401':
+      description: 'Unauthorized: used when the client did not submit credentials.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '403':
+      description: 'Forbidden: operation is not allowed given the current status of the resource.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '404':
+      description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '406':
+      description: 'Not Acceptable: used to indicate that the server cannot provide the any of the content formats supported by the client.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '412':
+      description: 'Precondition failed: used when a condition has failed during conditional requests, e.g. when using ETags to avoid write conflicts when using PUT'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '415':
+      description: 'Unsupported Media Type: used to indicate that the server or the client does not support the content type of the entity body.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '422':
+      description: 'Unprocessable Entity: used to indicate that the server understands the content type of the request entity and that the syntax of the request entity is correct but that the server is unable to process the contained instructions. This error condition can occur if an JSON request body is syntactically correct but semantically incorrect, for example if the target area for the request is considered too large. This error condition can also occur if the capabilities required by the request are not supported.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '429':
+      description: 'Too Many Requests: used when a rate limiter has triggered.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+  parameters:
+    Query.Zoneid:
+      description: Identifier of zone (e.g. zone001).
+      name: zoneid
+      in: query
+      required: false
+      x-exportParamName: Query.Zoneid
+      schema:
+        type: array
+        items:
+          type: string
+    Query.Accesspointid:
+      description: Identifier of access point (e.g. 001010000000000000000000000000001).
+      name: accesspointid
+      in: query
+      required: false
+      x-exportParamName: Query.Accesspointid
+      schema:
+        type: array
+        items:
+          type: string
+    Query.Address:
+      description: Address of users (e.g. 'sip' URI, 'tel' URI, 'acr' URI). See note.
+      name: address
+      in: query
+      required: false
+      x-exportParamName: Query.Address
+      schema:
+        type: array
+        items:
+          type: string
+    Query.Subscription_type:
+      description: 'Query parameter to filter on a specific subscription type. Permitted values:
+
+        event
+
+        periodic.'
+      name: subscription_type
+      in: query
+      required: false
+      x-exportParamName: Query.Subscription_type
+      schema:
+        type: string
+    Query.Address1:
+      description: Address of user (e.g. 'sip' URI, 'tel' URI, 'acr' URI).
+      name: address
+      in: query
+      required: false
+      x-exportParamName: Query.Address1
+      schema:
+        type: string
+    Query.Subscription_type1:
+      description: 'Query parameter to filter on a specific subscription type. Permitted values:
+
+        event
+
+        status.'
+      name: subscription_type
+      in: query
+      required: false
+      x-exportParamName: Query.Subscription_type1
+      schema:
+        type: string
+    Query.Zoneid1:
+      description: The identity of the zone. .
+      name: zoneid
+      in: query
+      required: false
+      x-exportParamName: Query.Zoneid1
+      schema:
+        type: string
+    Query.Address2:
+      description: "One or two addresses of user to check.\nThe second \"address\" parameter shall not be included when the distance between a user and a location is requested. \nThe second \"address\" parameter shall be included when a location is not provided."
+      name: address
+      in: query
+      required: true
+      x-exportParamName: Query.Address2
+      schema:
+        type: array
+        items:
+          type: string
+    Query.Location:
+      description: Shall not be included when the distance between two terminals is requested.
+      name: location
+      in: query
+      required: false
+      x-exportParamName: Query.Location
+      schema:
+        $ref: '#/components/schemas/Point'
+    Query.Subscription_type2:
+      description: 'Query parameter to filter on a specific subscription type. Permitted values:
+
+        event.'
+      name: subscription_type
+      in: query
+      required: false
+      x-exportParamName: Query.Subscription_type2
+      schema:
+        type: string
+

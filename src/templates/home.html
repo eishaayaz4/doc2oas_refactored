@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+<title>ETSI CTI - DOC2OAS Tools</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<div class="container-fluid">
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+   <div class="alert alert-warning" role="alert">
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+   </div>
+  {% endif %}
+{% endwith %}
+
+<center>
+<h1>DOC2OAS tool</h1>
+<h5 style="margin-bottom: 50px">v {{ VERSION }}</h5>
+
+<p>
+The tools available on this page are provided with NO GUARANTEES and shall be used ONLY for validation of ETSI Specifications. 
+<br/>
+<br/>
+To report bugs, questions or feature request, please use the <a href="https://forge.etsi.org/rep/cti/doc2oas/-/issues">the doc2oas issue tracker</a> at ETSI Forge.
+<br/>
+{% if last_rev %}
+		Current revision is <a href="{{rev_link}}">{{last_rev}}</a>
+{% endif %}
+<br/>
+For any other inquiry, contact <a href="mailto:cti_support@etsi.org">ETSI CTI</a></p>
+</center>
+<div class="row">
+
+	<div class="col-sm">
+		<div class="jumbotron">
+			<h2 class="display-4"  style="text-align:center;">doc2oas</h2>
+			<p class="lead">Upload a Docx document to get the OpenAPI definitions in YAML files.</p>
+			<hr class="my-4">
+				<ol>
+					<li>Load a MEC specification in docx format. </li>
+					<li>Load the corresponding configuration file for the MEC specification in yaml format. </li>
+					<li>Download a zip file containing OpenAPI definitions in YAML.</li>
+				</ol>
+				<center>
+					<a href="doc2oas-info">Details</a>
+				</center>
+				<form action="doc2oas" id="doc2oas-form" name="doc2oas-form" method="post" enctype="multipart/form-data">
+					Docx file:<br />
+					<input type="file" name="file" /></br></br>
+					Config file:<br />
+					<input type="file" name="configfile" /></br></br>
+
+					<br /><br />
+					<center>
+						<input type="submit" class="btn btn-primary" value="Upload" />
+					</center>
+				</form>
+		</div>
+	</div>
+
+</div>
+
+<center>
+	<p><a href="https://forge.etsi.org/rep/cti/doc2oas">Source code</a></p>
+	<small>Copyright &copy; ETSI 2019. All rights reserved.</small>
+</center>
+</body>
+
+</html>

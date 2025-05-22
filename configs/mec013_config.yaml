@@ -1,0 +1,907 @@
+---
+data_model_headings:
+  headings1:
+    - '6[ ]*Data Model$'
+    - '7[ ]*API definition$'
+
+api_def_headings:
+  headings1:
+    - '7[ ]*API definition$'
+    - 'Annex A \(informative\)\:\nComplementary material for API utilization$'
+    
+servers:
+  - url: https://localhost/location/v2
+
+tags:
+  - 'queries'
+  - 'subscriptions'
+
+fake_data_types: False
+manual_types:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+    LocationInfo1_:
+      properties:
+        accuracy:
+          type: integer
+          description: Horizontal accuracy / (semi-major) uncertainty of location
+            provided in meters, as defined in [14]. Present only if "shape" equals
+            4, 5 or 6
+        accuracyAltitude:
+          type: integer
+          description: Altitude accuracy / uncertainty of location provided in meters,
+            as defined in [14]. Present only if "shape" equals 3 or 4
+        accuracySemiMinor:
+          type: integer
+          description: Horizontal accuracy / (semi-major) uncertainty of location
+            provided in meters, as defined in [14]. Present only if "shape" equals
+            4, 5 or 6
+        altitude:
+          description: Location altitude relative to the WGS84 ellipsoid surface.
+          type: number
+          format: float
+        confidence:
+          type: integer
+          description: Confidence by which the position of a target entity is known
+            to be within the shape description, expressed as a percentage and defined
+            in [14]. Present only if "shape" equals 1, 4 or 6
+        includedAngle:
+          type: integer
+          description: Present only if "shape" equals 6
+        innerRadius:
+          type: integer
+          description: Present only if "shape" equals 6
+        latitude:
+          description: "Location latitude, expressed in the range -90\xB0 to +90\xB0\
+            . Cardinality greater than one only if \"shape\" equals 7."
+          type: array
+          items:
+            type: number
+            format: float
+          minItems: 1
+        longitude:
+          description: "Location longitude, expressed in the range -180\xB0 to +180\xB0\
+            . Cardinality greater than one only if \"shape\" equals 7."
+          type: array
+          items:
+            type: number
+            format: float
+          minItems: 1
+        offsetAngle:
+          type: integer
+          description: Present only if "shape" equals 6
+        orientationMajorAxis:
+          type: integer
+          description: "Angle of orientation of the major axis, expressed in the range\
+            \ 0\xB0 to 180\xB0, as defined in [14]. Present only if \"shape\" equals\
+            \ 4 or 6"
+        shape:
+          description: 'Shape information, as detailed in [14], associated with the
+            reported location coordinate:
+            <p>1 = ELLIPSOID_ARC
+            <p>2 = ELLIPSOID_POINT
+            <p>3 = ELLIPSOID_POINT_ALTITUDE
+            <p>4 = ELLIPSOID_POINT_ALTITUDE_UNCERT_ELLIPSOID
+            <p>5 = ELLIPSOID_POINT_UNCERT_CIRCLE
+            <p>6 = ELLIPSOID_POINT_UNCERT_ELLIPSE
+            <p>7 = POLYGON'
+          type: integer
+        uncertaintyRadius:
+          type: integer
+          description: Present only if "shape" equals 6
+        velocity:
+          description: "Structure with attributes relating to the target entity\u2019\
+            s velocity, as defined in [14]."
+          properties:
+            bearing:
+              type: integer
+              description: "Bearing, expressed in the range 0\xB0 to 360\xB0, as defined\
+                \ in [14]."
+            horizontalSpeed:
+              type: integer
+              description: Horizontal speed, expressed in km/h and defined in [14].
+            uncertainty:
+              type: integer
+              description: Horizontal uncertainty, as defined in [14]. Present only
+                if "velocityType" equals 3 or 4
+            velocityType:
+              description: 'Velocity information, as detailed in [14], associated
+                with the reported location coordinate:
+                <p>1 = HORIZONTAL
+                <p>2 = HORIZONTAL_VERTICAL
+                <p>3 = HORIZONTAL_UNCERT
+                <p>4 = HORIZONTAL_VERTICAL_UNCERT'
+              type: integer
+            verticalSpeed:
+              description: Vertical speed, expressed in km/h and defined in [14].
+                Present only if "velocityType" equals 2 or 4
+              type: integer
+            verticalUncertainty:
+              type: integer
+              description: Vertical uncertainty, as defined in [14]. Present only
+          required:
+          - velocityType
+          - bearing
+          - horizontalSpeed
+          type: object
+        timestamp:
+          $ref: '#/components/schemas/TimeStamp'
+          description: Date and time that location was collected.
+      required:
+      - latitude
+      - longitude
+      - shape
+      type: object
+      x-etsi-ref: 6.5.3
+    UserInfo1_:
+      properties:
+        accessPointId:
+          description: The identity of the access point the user is currently on,
+            see note 1.
+          type: string
+        address:
+          description: Address of user (e.g. 'sip' URI, 'tel' URI, 'acr' URI) currently
+            on the access point, see note 1.
+          format: uri
+          type: string
+        ancillaryInfo:
+          description: Reserved for future use.
+          type: string
+        contextLocationInfo:
+          description: Contextual information of a user location (e.g. aisle, floor,
+            room number, etc.).
+          type: string
+        locationInfo:
+          $ref: '#/components/schemas/LocationInfo'
+          description: The geographical coordinates where the user is, see note 2.
+        resourceURL:
+          description: Self-referring URL, see note 1.
+          type: string
+        timestamp:
+          $ref: '#/components/schemas/TimeStamp'
+          description: Date and time that location was collected.
+        zoneId:
+          description: The identity of the zone the user is currently within, see
+            note 1.
+          type: string
+      required:
+      - address
+      - accessPointId
+      - zoneId
+      - resourceURL
+      - timestamp
+      type: object
+      x-etsi-notes: "NOTE 1:\tAs specified in [5], clause 5.2.2.7.\nNOTE 2: \tAs specified\
+        \ in [5], clause 5.2.2.5."
+      x-etsi-ref: 6.2.2
+    CallbackReference:
+      type: object
+      required:
+        - notifyURL
+      properties:
+        notifyURL:
+          description: Notify Callback URL
+          type: string
+        callbackData:
+          description: Data the application can register with the server when subscribing to notifications, and that are passed back unchanged in each of the related notifications. These data can be used by the application in the processing of the notification, e.g. for correlation purposes.
+          type: string
+        notificationFormat:
+          $ref: '#/components/schemas/NotificationFormat'
+          description: Application can specify format of the resource representation in notifications that are related to this subscription. The choice is between {XML, JSON}     
+    UserTrackingSubscription:
+      description: 'A type containing user tracking subscription.'
+      type: object
+      required:
+        - callbackReference
+        - address
+      properties:
+        clientCorrelator:
+          type: string
+          description: 'A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server.'
+        callbackReference:
+          $ref: '#/components/schemas/CallbackReference'
+          description: 'Notification callback definition'
+        userEventCriteria:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserEventType'
+          description: 'List of user event values to generate notifications for (these apply to address specified). If this element is missing, a notification is requested to be generated for any change in user event.'
+        resourceURL:
+          description: 'Self referring URL'
+          type: string
+    ZonalPresenceNotification:
+      description: 'A type containing zonal presence notification'
+      type: object
+      required:
+        - zoneId
+        - address
+        - userEventType
+        - currentAccessPointId
+        - timestamp
+      properties:
+        callbackData:
+          description: 'CallBackData if passed by the application during the associated ZonalTrafficSubscription and UserTrackingSubscription operation. See [REST_NetAPI_Common].'
+          type: string
+        zoneId:
+          description: 'Identifier of zone'
+          type: string
+        address:
+          description: 'Address of user (e.g. "sip" URI, "tel" URI, "acr" URI) to monitor'
+          type: string
+        interestRealm:
+          description: 'Interest realm of access point (e.g. geographical area, a type of industry etc.).'
+          type: string
+        userEventType:
+          $ref: '#/components/schemas/UserEventType'
+          description: 'User Event.'
+        currentAccessPointId:
+          description: 'Identifier of access point.'
+          type: string
+        previousAccessPointId:
+          description: 'Identifier of access point.'
+          type: string
+        timestamp:
+          $ref: '#/components/schemas/TimeStamp'
+          description: 'Indicates the time of the day for zonal presence notification.'
+        link:
+          description: 'Link to other resources that are in relationship with this notification. The server SHOULD include a link to the related subscription. No other links are required or suggested by this specification'
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    UserEventType:
+      type: string
+      enum:
+        - Entering
+        - Leaving
+        - Transferring
+    Link:
+      description: Link to other resources
+      type: object
+      required:
+        - rel
+        - href
+      properties:
+        rel:
+          description: Describes the relationship between the URI and the resource.
+          type: string
+        href:
+          description: URI
+          type: string
+          format: anyURI
+    ZonalTrafficSubscription:
+      description: 'A type containing zonal traffic subscription'
+      type: object
+      required:
+        - callbackReference
+        - zoneId
+      properties:
+        clientCorrelator:
+          description: 'A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server.'
+          type: string
+  
+        callbackReference:
+          $ref: '#/components/schemas/CallbackReference'
+          description: 'Notification callback definition'
+        zoneId:
+          description: 'Identifier of zone'
+          type: string
+        interestRealm:
+          description: 'Interest realm of access point (e.g. geographical area, a type of industry etc.).'
+          type: array
+          items:
+            type: string
+        userEventCriteria:
+          $ref: '#/components/schemas/UserEventType'
+          description: 'List of user event values to generate notifications for (these apply to address specified). If this element is missing, a notification is requested to be generated for any change in user event.'
+        duration:
+          description: 'Period (in seconds) of time notifications are provided for. If set to "0" (zero), a default duration time, which is specified by the service policy, will be used. If the parameter is omitted, the notifications will continue until the maximum duration time, which is specified by the service policy, unless the notifications are stopped by deletion of subscription for notifications. This element MAY be given by the client during resource creation in order to signal the desired lifetime of the subscription. The server MUST return in this element the   period of time for which the subscription will still be valid.'
+          type: integer
+        resourceURL:
+          type: string
+          description: 'Self referring URL'
+    OperationStatus:
+      type: string
+      enum:
+        - Serviceable
+        - Unserviceable
+        - Unknown
+    ZoneStatusSubscription:
+      description: 'A type containing zone status subscription.'
+      type: object
+      required:
+        - callbackReference
+        - zoneId
+      properties:
+        clientCorrelator:
+          description: 'A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server.'
+          type: string
+        callbackReference:
+          $ref: '#/components/schemas/CallbackReference'
+          description: 'Notification callback definition'
+        zoneId:
+          description: 'Identifier of zone'
+          type: string
+        numberOfUsersZoneThreshold:
+          description: 'Threshold number of users in a zone which if crossed shall cause a notification'
+          type: integer
+        numberOfUsersAPThreshold:
+          description: 'Threshold number of users in an access point which if crossed shall cause a notification'
+          type: integer
+        operationStatus:
+          type: array
+          items:
+            $ref: '#/components/schemas/OperationStatus'
+          description: 'List of operation status values to generate notifications for (these apply to all access points within a zone).'
+        resourceURL:
+          description: 'Self referring URL'
+          type: string
+    PeriodicEventInfo:
+      x-etsi-notes: "NOTE 3:\tAs specified in [17], clause 6.1.6.2.24." 
+    LocationEventType:
+      x-etsi-ref: 8.1.6.3
+      type: string
+      enum:
+        - ENTERING_AREA_EVENT
+        - LEAVING_AREA_EVENT
+      x-etsi-mec-extensible: true
+      x-etsi-mec-enumeration-table:
+        - value: ENTERING_AREA_EVENT
+          description: Entering area reporting event.
+        - value: LEAVING_AREA_EVENT
+          description: Leaving area reporting event.
+    Uri:
+      type: string
+      format: uri
+      description: Uniform Resource Identifier (URI)
+    CivicAddress:
+      x-etsi-notes: "NOTE 3:\tAs specified in [17], clause 6.1.6.2.14."
+    NotificationResult:
+      x-etsi-notes: "NOTE 3:\tIf the result is SUCCESS, at least one of locationInfo, civicInfo and relativeLocationInfo shall be present. "
+    OccurrenceInfo:
+      x-etsi-notes: "NOTE 3:\tAs specified in [17], clause 6.1.6.3.16."
+    ZoneStatusNotification:
+      description: 'A type containing zone status notification.'
+      type: object
+      required:
+        - zoneId
+        - timestamp
+      properties:
+        callbackData:
+          description: 'CallBackData if passed by the application during the associated ZoneStatusSubscription operation. See [REST_NetAPI_Common].'
+          type: string
+        zoneId:
+          description: 'Identifier of zone'
+          type: string
+
+        accessPointId:
+          description: 'Identifier of an access point.'
+          type: string
+        numberOfUsersInZone:
+          description: 'This element shall be present when ZoneStatusSubscription includes numberOfUsersZoneThreshold element and the number of users in a zone exceeds the threshold defined in this subscription.'
+          type: integer
+        numberOfUsersInAP:
+          description: 'This element shall be present when ZoneStatusSubscription includes numberOfUsersAPThreshold element and the number of users in an access point exceeds the threshold defined in the subscription.'
+          type: integer
+        operationStatus:
+          $ref: '#/components/schemas/OperationStatus'
+          description: 'This element shall be present when ZoneStatusSubscription includes operationStatus element and the operation status value of an access point meets Serviceable or Unserviceable or Unknown defined in the subscription.'
+        timestamp:
+          $ref: '#/components/schemas/TimeStamp'
+          description: 'Indicates the timeof day for zone status notification.'
+        link:
+          description: 'Link to other resources that are in relationship with this notification. The server SHOULD include a link to the related subscription. No other links are required or suggested by this specification'
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+    UserList:
+      description: 'A type containing list of users.'
+      type: object
+      required:
+        - resourceURL
+      properties:
+        user:
+          description: 'Collection of the zone information list.'
+          type: array
+          items:
+            $ref: '#/components/schemas/UserInfo'
+        resourceURL:
+          description: 'Self referring URL'
+          type: string
+    AccessPointList:
+      description: 'A type containing list of access points.'
+      type: object
+      required:
+        - zoneId
+        - resourceURL
+      properties:
+        zoneId:
+          description: 'Identifier of zone'
+          type: string
+        accessPoint:
+          description: 'Collection of the access point information list.'
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessPointInfo'
+        resourceURL:
+          description: 'Self referring URL'
+          type: string
+    ConnectionType:
+      description: 'The connection type for the access point'
+      type: string
+      enum:
+        - Femto
+        - LTE-femto
+        - Smallcell
+        - LTE-smallcell
+        - Wifi
+        - Pico
+        - Micro
+        - Macro
+        - Wimax
+        - Unknown
+    AccessPointInfo:
+      description: 'A type containing access point information.'
+      type: object
+      required:
+        - accessPointId
+        - connectionType
+        - operationStatus
+        - numberOfUsers
+        - resourceURL
+      properties:
+        accessPointId:
+          description: 'Identifier of access point.'
+          type: string
+        locationInfo:
+          $ref: '#/components/schemas/LocationInfo'
+          description: 'The coordinates of the access point.'
+        connectionType:
+          $ref: '#/components/schemas/ConnectionType'
+          description: 'Connection type of access point.'
+
+        operationStatus:
+          $ref: '#/components/schemas/OperationStatus'
+          description: 'Operation status of access point.'
+        numberOfUsers:
+          description: 'Number of users currently on the access point.'
+          type: integer
+        timezone:
+          description: 'Time zone of access point.'
+          type: string
+        interestRealm:
+          description: 'Interest realm of access point.'
+          type: string
+        resourceURL:
+          description: 'Self referring URL'
+          type: string
+    ZoneInfo:
+      description: A type containing zone information.
+      type: object
+      required:
+        - zoneId
+        - numberOfAccessPoints
+        - numberOfUnserviceableAccessPoints
+        - numberOfUsers
+        - resourceURL
+      properties:
+        zoneId:
+          description: 'Identifier of zone'
+          type: string
+        numberOfAccessPoints:
+          description: 'The number of access points within the zone'
+          type: integer
+        numberOfUnserviceableAccessPoints:
+          description: 'Number of inoperable access points within the zone.'
+          type: integer
+        numberOfUsers:
+          description: 'The number of users currently on the access point.'
+          type: integer
+        resourceURL:
+          description: 'Self referring URL'
+          type: string
+    ZoneList:
+      description: 'A type containing a list of zones.'
+      type: object
+      required:
+        - resourceURL
+      properties:
+        zone:
+          description: 'Collection of the zone information list.'
+          type: array
+          items:
+            $ref: '#/components/schemas/ZoneInfo'
+        resourceURL:
+          description: 'Self referring URL'
+          type: string
+    TerminalDistance:
+      description: 'A type containing information about the distance from a terminal to a location or between two terminals, in addition the accuracy and a timestamp of the information are provided.'
+      type: object
+      required:
+      - distance
+      properties:
+        accuracy:
+          description: 'Accuracy of the provided distance in meters'
+          type: integer
+        distance:
+          description: 'Distance from terminal to a location or between two terminals specified in meters'
+          type: integer
+        timestamp:
+          $ref: '#/components/schemas/TimeStamp'
+          description: 'Date and time that location from which distance is calculated was collected.'
+    CircleNotificationSubscription:
+      description: 'A type containing data for notifications, when the area is defined as a circle.'
+      type: object
+      required:
+        - callbackReference
+        - address
+        - latitude
+        - longitude
+        - radius
+        - trackingAccuracy
+        - enteringLeavingCriteria
+        - checkImmediate
+        - frequency
+      properties:
+        clientCorrelator:
+          description: 'A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server.'
+          type: string
+        resourceURL:
+          description: 'Self referring URL'
+          type: string
+        link:
+          description: 'Link to other resources that are in relationship with the resource.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'        
+        callbackReference:
+          $ref: '#/components/schemas/CallbackReference'
+          description: 'Notification callback definition'
+        requester:
+          description: 'Identifies the entity that is requesting the information (e.g. "sip" URI, "tel" URI, "acr" URI)'
+          type: string
+        address:
+          description: 'Address of terminals to monitor (e.g. "sip" URI, "tel" URI, "acr" URI)'
+          type: array
+          items:
+            type: string
+        latitude:
+          description: 'Latitude of center point.'
+          type: number
+          format: float
+        longitude:
+          description: 'Longitude of center point.'
+          type: number
+          format: float
+        radius:
+          description: 'Radius circle around center point in meters.'
+          type: number
+          format: float
+        trackingAccuracy:
+          description: 'Number of meters of acceptable error in tracking distance.'
+          type: number
+          format: float
+        enteringLeavingCriteria:
+          $ref: '#/components/schemas/EnteringLeavingCriteria'
+          description: 'Indicates whether the notification should occur when the terminal enters or leaves the target area.'
+        checkImmediate:
+          description: 'Check location immediately after establishing notification.'
+          type: boolean
+        frequency:
+          description: 'Maximum frequency (in seconds) of notifications per subscription (can also be considered minimum time between notifications).'
+          type: integer
+        duration:
+          description: 'Period of time (in seconds) notifications are provided for. If set to “0” (zero), a default duration time, which is specified by the service policy, will be used. If the parameter is omitted, the notifications will continue until the maximum duration time, which is specified by the service policy, unless the notifications are stopped by deletion of subscription for notifications.'
+          type: integer
+        count:
+          description: 'Maximum number of notifications per individual address. For no maximum, either do not include this element or specify a value of zero. Default value is 0.'
+          type: integer         
+    PeriodicNotificationSubscription:
+      description: 'A type containing data for periodic subscription.'
+      type: object
+      required:
+        - callbackReference
+        - address
+        - requestedAccuracy
+        - frequency
+      properties:
+        clientCorrelator:
+          description: 'A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server.'
+          type: string
+        resourceURL:
+          description: 'Self referring URL'
+          type: string
+        link:
+          description: 'Link to other resources that are in relationship with the resource.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'       
+        callbackReference:
+          $ref: '#/components/schemas/CallbackReference'
+          description: 'Notification callback definition'
+        requester:
+          description: 'Identifies the entity that is requesting the information (e.g. "sip" URI, "tel" URI, "acr" URI)'
+          type: string
+        address:
+          description: 'Address of terminals to monitor (e.g. "sip" URI, "tel" URI, "acr" URI)'
+          type: array
+          items:
+            type: string
+        requestedAccuracy:
+          description: 'Accuracy of the provided distance in meters.'
+          type: integer      
+        frequency:
+          description: 'Maximum frequency (in seconds) of notifications (can also be considered minimum time between notifications) per subscription.'
+          type: integer
+        duration:
+          description: 'Period of time (in seconds) notifications are provided for. If set to “0” (zero), a default duration time, which is specified by the service policy, will be used. If the parameter is omitted, the notifications will continue until the maximum duration time, which is specified by the service policy, unless the notifications are stopped by deletion of subscription for notifications.'
+          type: integer
+    DistanceNotificationSubscription:
+      description: 'A type containing data for distance subscription, with reference to other devices.'
+      type: object
+      required:
+        - callbackReference
+        - monitoredAddress
+        - distance
+        - trackingAccuracy
+        - criteria
+        - checkImmediate
+        - frequency
+      properties:
+        clientCorrelator:
+          description: 'A correlator that the client can use to tag this particular resource representation during a request to create a resource on the server.'
+          type: string
+        resourceURL:
+          description: 'Self referring URL'
+          type: string
+        link:
+          description: 'Link to other resources that are in relationship with the resource.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'      
+        callbackReference:
+          $ref: '#/components/schemas/CallbackReference'
+          description: 'Notification callback definition'
+        requester:
+          description: 'Identifies the entity that is requesting the information (e.g. "sip" URI, "tel" URI, "acr" URI)'
+          type: string
+        referenceAddress:
+          description: Indicates address of each device that will be used as reference devices from which the distances towards monitored devices indicated in the Addresses will be monitored (e.g., 'sip' URI, 'tel' URI, 'acr' URI)
+          type: array
+          items:
+            type: string
+        monitoredAddress:
+          description: Contains addresses of devices to monitor (e.g., 'sip' URI, 'tel' URI, 'acr' URI)
+          type: array
+          items:
+            type: string        
+        distance:
+          description: 'Distance between devices that shall be monitored.'
+          type: number
+          format: float
+        trackingAccuracy:
+          description: 'Number of meters of acceptable error in tracking distance.'
+          type: number
+          format: float
+        criteria:
+          $ref: '#/components/schemas/DistanceCriteria'
+          description: 'Indicates whether the notification should occur when the geographical relationship between monitored and referenced devices changes.'
+        checkImmediate:
+          description: 'Check location immediately after establishing notification.'
+          type: boolean
+        frequency:
+          description: 'Maximum frequency (in seconds) of notifications per subscription (can also be considered minimum time between notifications).'
+          type: integer
+        duration:
+          description: 'Period of time (in seconds) notifications are provided for. If set to “0” (zero), a default duration time, which is specified by the service policy, will be used. If the parameter is omitted, the notifications will continue until the maximum duration time, which is specified by the service policy, unless the notifications are stopped by deletion of subscription for notifications.'
+          type: integer
+        count:
+          description: 'Maximum number of notifications per individual address. For no maximum, either do not include this element or specify a value of zero. Default value is 0.'
+          type: integer        
+    EnteringLeavingCriteria:
+      type: string
+      enum:
+      - Entering = 'Terminal is entering an area'
+      - Leaving = 'Terminal is leaving an area'
+    DistanceCriteria:
+      type: string
+      enum:
+        - AllWithinDistance = 'All monitored devices are within the specified distance'
+        - AnyWithinDistance = 'Any of monitored devices gets within the specified distance'
+        - AllBeyondDistance = 'All monitored devices are beyond the specified distance'
+        - AnyBeyondDistance = 'Any of monitored devices gets beyond the specified distance'
+    NotificationFormat:
+      type: string
+      enum:
+        - XML
+        - JSON
+    SubscriptionNotification:
+      description: 'A type containing the notification subscription.'
+      type: object
+      required:
+        - terminalLocation
+      properties:
+        callbackData:
+          description: 'CallbackData if passed by the application in the receiptRequest element during the associated subscription operation'
+          type: string
+        terminalLocation:
+          description: 'Collection of the terminal locations.'
+          type: array
+          items:
+            $ref: '#/components/schemas/TerminalLocation'                   
+        enteringLeavingCriteria:
+          $ref: '#/components/schemas/EnteringLeavingCriteria'
+          description: 'Indicates whether the notification was caused by the terminal entering or leaving the target area.'
+        distanceCriteria:
+          $ref: '#/components/schemas/DistanceCriteria'
+          description: 'Indicates which distance criteria that caused the notification.'
+        isFinalNotification:
+          description: 'Set to true if it is a final notification about location change.'
+          type: boolean
+        link:
+          description: 'Link to other resources that are in relationship with the resource.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'       
+    SubscriptionCancellationNotification:
+      description: 'A type containing the subscription cancellation notification.'
+      type: object
+      required:
+        - terminalLocation
+      properties:
+        callbackData:
+          description: 'CallbackData if passed by the application in the receiptRequest element during the associated subscription operation'
+          type: string
+        address:
+          description: 'Address of terminal if the error applies to an individual terminal.'
+          type: string
+        reason:
+          $ref: '#/components/schemas/ServiceError'
+          description: 'Reason notification is being discontinued.'
+        link:
+          description: 'Link to other resources that are in relationship with the resource.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'       
+    TerminalLocation:
+      description: 'A type containing device address, retrieval status and location information.'
+      type: object
+      required:
+        - address
+        - locationRetrievalStatus
+      properties:
+        address:
+          description: Address of the terminal to which the location information applies (e.g., 'sip' URI, 'tel' URI, 'acr' URI).
+          type: string
+        locationRetrievalStatus:
+          $ref: '#/components/schemas/RetrievalStatus'
+          description: 'Status of retrieval for this terminal address.'
+        currentLocation:
+          $ref: '#/components/schemas/LocationInfo'
+          description: 'Location of terminal.'
+        errorInformation:
+          $ref: '#/components/schemas/ServiceError'
+          description: 'This is the reason for error.'
+    TerminalLocationList:
+      description: 'Collection of the terminal locations.'
+      type: array
+      items:
+        $ref: '#/components/schemas/TerminalLocation'
+    RetrievalStatus:
+      type: string
+      enum:
+        - Retrieved
+        - NotRetrieved
+        - Error
+    ServiceError:
+      description: 'used to indicate a notification termination or cancellation.'
+      type: object
+      required:
+        - messageId
+        - text
+      properties:
+        messageId:
+          description: 'Message identifier, either with prefix SVC or with prefix POL'
+          type: string
+        text:
+          description: 'Message text, with replacement variables marked with %n, where n is an index into the list of <variables> elements, starting at 1'
+          type: string
+        variables:
+          description: 'Variables to substitute into text string'
+          type: array
+          items:
+            type: string
+
+info:
+  contact:
+    url: https://forge.etsi.org/rep/mec/gs013-location-api
+  title: 'ETSI GS MEC 013 Location API'
+  version: 2.1.1
+  description: The ETSI MEC ISG Location API described using OpenAPI.
+  license:
+    name: BSD-3-Clause
+    url: 'https://forge.etsi.org/legal-matters'
+
+responses:
+  '200':
+    description: 'OK'
+  '204':
+    description: 'No Content'
+  '400':
+    description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '401':
+    description: 'Unauthorized: used when the client did not submit credentials.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '403':
+    description: 'Forbidden: operation is not allowed given the current status of the resource.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '404':
+    description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '406':
+    description: 'Not Acceptable: used to indicate that the server cannot provide the any of the content formats supported by the client.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '412':
+    description:
+      'Precondition failed: used when a condition has failed during conditional requests, e.g. when
+      using ETags to avoid write conflicts when using PUT'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '415':
+    description: 'Unsupported Media Type: used to indicate that the server or the client does not support the content type of the entity body.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '422':
+    description:
+      'Unprocessable Entity: used to indicate that the server understands the content type of the request entity and that the
+      syntax of the request entity is correct but that the server is unable to process the contained instructions. This error condition can occur if an
+      JSON request body is syntactically correct but semantically incorrect, for example if the target area for the request is considered too large. This
+      error condition can also occur if the capabilities required by the request are not supported.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '429':
+    description: 'Too Many Requests: used when a rate limiter has triggered.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'

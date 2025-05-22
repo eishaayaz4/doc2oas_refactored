@@ -1,0 +1,100 @@
+---
+data_model_headings:
+  headings1:
+    - '6[ ]*Data model$'
+    - '7[ ]*API definition$'
+
+api_def_headings:
+  headings1:
+    - '7[ ]*API definition$'
+    - '8[ ]*Authentication\, authorization and access control$'
+    
+servers:
+  - url: https://localhost/dev_app/v1
+
+tags:
+  - 'dev_app'
+
+fake_data_types: False
+manual_types:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+    Polygon:
+      type: object
+      properties:
+        coordinates:
+          type: array
+          items:
+            type: array
+            items:
+              type: array
+              items:
+                type: number
+                format: float
+          minItems: 1
+    InlineNotification:
+      oneOf:
+        - $ref: '#/components/schemas/AddressChangeNotification'
+        - $ref: '#/components/schemas/ApplicationContextDeleteNotification'
+        - $ref: '#/components/schemas/ApplicationContextUpdateNotification'
+        - $ref: '#/components/schemas/ApplicationLocationAvailabilityNotification'
+      discriminator:
+        propertyName: notificationType    
+
+info:
+  contact:
+    url: https://forge.etsi.org/rep/mec/gs016-dev-app-api
+  title: 'ETSI GS MEC 016 UE Application Interface API'
+  description: The ETSI MEC ISG UE Application Interface API described using OpenAPI.
+  license:
+    name: BSD-3-Clause
+    url: 'https://forge.etsi.org/legal-matters'
+
+responses:
+  '200':
+    description: 'OK'
+  '204':
+    description: 'No Content'
+  '400':
+    description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '401':
+    description: 'Unauthorized: used when the client did not submit credentials.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '403':
+    description: 'Forbidden: operation is not allowed given the current status of the resource.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '404':
+    description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'

@@ -1,0 +1,3349 @@
+openapi: 3.1.0
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+info:
+  title: 'ETSI GS MEC 010-2 - Part 2: Application lifecycle, rules and requirements management'
+  description: 'ETSI GS MEC 010-2 - Part 2: Application lifecycle, rules and requirements management described using OpenAPI.'
+  license:
+    name: BSD-3-Clause
+    url: https://forge.etsi.org/legal-matters
+  contact:
+    name: ETSI Forge
+    url: https://forge.etsi.org/rep/mec/gs010-2-app-pkg-lcm-api
+    email: cti_support@etsi.org
+  version: 3.1.1
+paths:
+  /app_instances:
+    post:
+      summary: Create an application instance resource.
+      description: The POST method is used to create an application instance resource, which refers to the procedure of "creating application instance resource operation" described in clause 6.3.
+      operationId: AppinstancesPOST
+      tags:
+      - app-lcm
+      requestBody:
+        description: The POST method is used to create an application instance resource.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                CreateAppInstanceRequest:
+                  $ref: '#/components/schemas/CreateAppInstanceRequest'
+      responses:
+        '201':
+          description: 'An application instance identifier and the related resource has been created successfully.
+
+
+            The response message content shall contain a representation of the created resource.
+
+
+            The HTTP response shall include a "Location" HTTP header that contains the resource URI of the created application instance.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  AppInstanceInfo:
+                    $ref: '#/components/schemas/AppInstanceInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters: []
+    get:
+      summary: Query multiple application instance resources.
+      description: The GET method retrieves information about the application instances resources. This refers to the procedure of "query application instance information operation" as described in clause 6.3.1.5.
+      operationId: AppinstancesGET
+      tags:
+      - app-lcm
+      parameters:
+      - $ref: '#/components/parameters/Query.Filter'
+      - $ref: '#/components/parameters/Query.All_fields'
+      - $ref: '#/components/parameters/Query.Fields'
+      - $ref: '#/components/parameters/Query.Exclude_fields'
+      - $ref: '#/components/parameters/Query.Exclude_default'
+      responses:
+        '200':
+          description: 'Information about zero or more application instances was queried successfully.
+
+
+            The response message content shall contain in an array the representations of zero or more application instances.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppInstanceInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+  /app_instances/{appInstanceId}:
+    get:
+      summary: Read an application instance resource.
+      description: "The GET method retrieves the information of an individual application instance via reading an individual application instance resource, which is used by the procedure of \"query application instance information operation\" as described in clause\_6.3.1.5."
+      operationId: AppinstancesGETAppinstanceid
+      tags:
+      - app-lcm
+      responses:
+        '200':
+          description: 'Information about an individual application instance was read successfully.
+
+
+            The response message content shall contain a representation of the read resource.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  AppInstanceInfo:
+                    $ref: '#/components/schemas/AppInstanceInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: appInstanceId
+        in: path
+        required: true
+        description: The unique identifier of the appInstanceId.
+        schema:
+          type: string
+    delete:
+      summary: Delete individual application instance resource.
+      description: The DELETE method deletes an individual application instance resource, which refers to the procedure of "delete application instance identifier operation" as described in clause 6.3.1.8.
+      operationId: AppinstancesDELETEAppinstanceid
+      tags:
+      - app-lcm
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: appInstanceId
+        in: path
+        required: true
+        description: The unique identifier of the appInstanceId.
+        schema:
+          type: string
+  /subscriptions:
+    post:
+      summary: Subscribe to notifications related to application instances' lifecycle change.
+      description: The POST method is to subscribe to the notification of application instance related change, which is mapped to the procedure of "subscription operation".
+      operationId: SubscriptionsPOST
+      tags:
+      - subscriptions
+      requestBody:
+        description: 'The subscription request message content contains the data type of the specific subscription to application instance state change event that is to be created:
+
+          AppInstSubscriptionRequest
+
+          AppLcmOpOccSubscriptionRequest
+
+          AppInstIdCreationSubscriptionRequest
+
+          AppInstIdDeletionSubscriptionRequest.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AppInstSubscriptionRequest:
+                  $ref: '#/components/schemas/AppInstSubscriptionRequest'
+      responses:
+        '201':
+          description: 'Upon success, a response message content representing the created subscription is returned.
+
+
+            The response message content shall contain a representation of the created SubscriptionInfo with the appropriate data type:
+
+            AppInstSubscriptionInfo
+
+            AppLcmOpOccSubscriptionInfo
+
+            AppInstIdCreationSubscriptionInfo
+
+            AppInstIdDeletionSubscriptionInfo
+
+
+            The HTTP response shall include a "Location" HTTP header that contains the resource URI of the created subscription resource.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  AppLcmOpOccSubscriptionRequest:
+                    $ref: '#/components/schemas/AppLcmOpOccSubscriptionRequest'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      callbacks:
+        notification:
+          '{$request.body#/callbackUri}':
+            post:
+              summary: Callback POST used to send a notification
+              description: Subscription notification
+              operationId: notificationPOST
+              requestBody:
+                description: Subscription notification
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        subscriptionNotification:
+                          oneOf:
+                          - $ref: '#/components/schemas/AppInstSubscriptionRequest'
+                          - $ref: '#/components/schemas/AppLcmOpOccSubscriptionRequest'
+                          - $ref: '#/components/schemas/AppInstIdCreationSubscriptionRequest'
+                          - $ref: '#/components/schemas/AppInstIdDeletionSubscriptionRequest'
+              responses:
+                '204':
+                  description: No content
+                '404':
+                  description: Not found
+      parameters: []
+    get:
+      summary: Query multiple subscriptions.
+      description: The GET method retrieves the information of multiple subscriptions to notifications related to an application instance.
+      operationId: SubscriptionsGET
+      tags:
+      - subscriptions
+      parameters:
+      - $ref: '#/components/parameters/Query.Subscriptiontype'
+      responses:
+        '200':
+          description: Upon success, a response message content containing a list of all subscriptions is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  AppInstanceSubscriptionLinkList:
+                    $ref: '#/components/schemas/AppInstanceSubscriptionLinkList'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+  /subscriptions/{subscriptionId}:
+    get:
+      summary: Read an individual subscription resource.
+      description: The GET method retrieves the individual subscription information by reading an individual subscription resource. This method shall comply with the URI query parameters, request and response data structures, and response codes, as specified in tables 7.4.4.3.2-1 and 7.4.4.3.2-2.
+      operationId: SubscriptionsGETSubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '200':
+          description: 'Upon success, a response message content containing a representation of the individual subscription resource shall be returned.
+
+
+            The allowed data types for the SubscriptionInfo are:
+
+            AppInstSubscriptionInfo
+
+            AppLcmOpOccSubscriptionInfo
+
+            AppInstIdCreationSubscriptionInfo
+
+            AppInstIdDeletionSubscriptionInfo.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  AppLcmOpOccSubscriptionRequest:
+                    $ref: '#/components/schemas/AppLcmOpOccSubscriptionRequest'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+    delete:
+      summary: Terminate an individual subscription.
+      description: The DELETE method is used to delete an individual subscription to notifications related to application instances.
+      operationId: SubscriptionsDELETESubscriptionid
+      tags:
+      - subscriptions
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: subscriptionId
+        in: path
+        required: true
+        description: The unique identifier of the subscriptionId.
+        schema:
+          type: string
+  /user_defined_notification:
+    post:
+      description: The POST method delivers a notification from the application lifecycle management resource to the subscriber.
+      operationId: UserdefinednotificationPOST
+      tags:
+      - notification
+      requestBody:
+        description: 'A notification of an event related to an application instance.
+
+          The allowed data types of application state change notification are:
+
+          AppInstNotification
+
+          AppLcmOpOccNotification
+
+          AppInstanceIdentifierCreationNotification
+
+          AppInstanceIdentifierDeletionNotification.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                AppInstNotification:
+                  $ref: '#/components/schemas/AppInstNotification'
+      responses:
+        '204':
+          description: The notification was delivered successfully. The response message content shall be empty.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters: []
+  /app_instances/{appInstanceId}/instantiate:
+    post:
+      summary: Instantiate the application instance.
+      description: The POST method is to instantiate the application instance.
+      operationId: AppinstancesInstantiatePOSTAppinstanceid
+      tags:
+      - app-lcm
+      requestBody:
+        description: The request message content contains the information necessary to instantiate an application instance.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                InstantiateAppRequest:
+                  $ref: '#/components/schemas/InstantiateAppRequest'
+      responses:
+        '202':
+          description: 'The request was accepted for processing, but the processing has not yet been completed.
+
+
+            The response message content shall be empty.
+
+
+            The HTTP response shall include a "Location" HTTP header that contains the URI of the newly-created "application LCM operation occurrence" resource that corresponds to this application instance instantiation operation.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: appInstanceId
+        in: path
+        required: true
+        description: The unique identifier of the appInstanceId.
+        schema:
+          type: string
+  /app_instances/{appInstanceId}/terminate:
+    post:
+      summary: Terminate the application instance.
+      description: The POST method is used to terminate an application instance.
+      operationId: AppinstancesTerminatePOSTAppinstanceid
+      tags:
+      - app-lcm
+      requestBody:
+        description: Parameters for the termination, as defined in clause 6.2.2.9.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                TerminateAppRequest:
+                  $ref: '#/components/schemas/TerminateAppRequest'
+      responses:
+        '202':
+          description: 'The request was accepted for processing, but the processing has not yet been completed.
+
+
+            The response message content shall be empty.
+
+
+            The HTTP response shall include a "Location" HTTP header that contains the URI of the newlycreated "application LCM operation occurrence" resource that corresponds to this operation.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: appInstanceId
+        in: path
+        required: true
+        description: The unique identifier of the appInstanceId.
+        schema:
+          type: string
+  /app_instances/{appInstanceId}/operate:
+    post:
+      summary: Start or stop the application instance.
+      description: The POST method is used to change the operational state, i.e. start or stop, of the application instance.
+      operationId: AppinstancesOperatePOSTAppinstanceid
+      tags:
+      - app-lcm
+      requestBody:
+        description: The request message content contains the information necessary to change the operational state of application instance, as described in clause 6.2.2.8.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                OperateAppRequest:
+                  $ref: '#/components/schemas/OperateAppRequest'
+      responses:
+        '202':
+          description: 'The request was accepted for processing, but it is possible that the processing is not yet completed.
+
+
+            The response message content shall be empty.
+
+
+            The HTTP response shall include a "Location" HTTP header that contains the URI of the newlycreated "application LCM operation occurrence" resource that corresponds to this application instance instantiation operation.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: appInstanceId
+        in: path
+        required: true
+        description: The unique identifier of the appInstanceId.
+        schema:
+          type: string
+  /app_lcm_op_occs:
+    get:
+      summary: Query multiple application lifecycle operation occurrences.
+      description: The GET method retrieves information of operation status about multiple application instance lifecycle management operation occurrences.
+      operationId: ApplcmopoccsGET
+      tags:
+      - app-lcm
+      parameters:
+      - $ref: '#/components/parameters/Query.Filter1'
+      - $ref: '#/components/parameters/Query.All_fields'
+      - $ref: '#/components/parameters/Query.Fields1'
+      - $ref: '#/components/parameters/Query.Exclude_fields1'
+      - $ref: '#/components/parameters/Query.Exclude_default1'
+      responses:
+        '200':
+          description: 'Status information for zero or more application instance lifecycle management operation occurrences was queried successfully.
+
+
+            The response message content shall contain in an array the status information about zero or more application lifecycle operation occurrences.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppLcmOpOcc'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+  /app_lcm_op_occs/{appLcmOpOccId}:
+    get:
+      summary: Read the operation state of the individual application lifecycle operation occurrence.
+      description: The GET method reads the status information of an individual application LCM operation occurrence, which is used by the procedure of "query application lifecycle operation status" as described in clause 6.3.1.6.
+      operationId: ApplcmopoccsGETApplcmopoccid
+      tags:
+      - app-lcm
+      responses:
+        '200':
+          description: 'Information about an application LCM operation occurrence was read successfully.
+
+
+            The response message content shall contain status information about an application lifecycle management operation occurrence.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  AppLcmOpOcc:
+                    $ref: '#/components/schemas/AppLcmOpOcc'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: appLcmOpOccId
+        in: path
+        required: true
+        description: The unique identifier of the appLcmOpOccId.
+        schema:
+          type: string
+  /app_lcm_op_occs/{appLcmOpOccId}/cancel:
+    post:
+      summary: Cancel an ongoing individual application LCM operation.
+      description: "The POST method is used to cancel an ongoing application lifecycle operation whose related \"Individual application LCM operation occurrence\" resource is in \"PROCESSING\" state. This method shall comply with the URI request and response data structures, and response codes, as specified in tables\_7.4.11.3.1-1 and 7.4.11.3.1-2."
+      operationId: ApplcmopoccsCancelPOSTApplcmopoccid
+      tags:
+      - app-lcm
+      requestBody:
+        description: The request message content contains the information on the cancellation mode to apply to the ongoing application LCM operation, as described in clause 5.4.5.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                CancelMode:
+                  $ref: '#/components/schemas/CancelMode'
+      responses:
+        '202':
+          description: 'The request was accepted for processing, but it is possible that the processing is not yet completed.
+
+
+            The response message content shall be empty.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: appLcmOpOccId
+        in: path
+        required: true
+        description: The unique identifier of the appLcmOpOccId.
+        schema:
+          type: string
+  /app_lcm_op_occs/{appLcmOpOccId}/fail:
+    post:
+      summary: Finally fail an ongoing individual application LCM operation.
+      description: "The POST method marks an application lifecycle management operation occurrence as \"finally failed\" if that operation occurrence is in \"FAILED_TEMP\" state. This method shall comply with the URI request and response data structures, and response codes, as specified in tables\_7.4.12.3.1-1 and 7.4.12.3.1-2."
+      operationId: ApplcmopoccsFailPOSTApplcmopoccid
+      tags:
+      - app-lcm
+      requestBody:
+        description: The POST request message content to this resource shall be empty.
+        content:
+          application/json: {}
+        required: false
+      responses:
+        '200':
+          description: 'Shall be returned when the state of the application lifecycle management operation occurrence has been changed successfully.
+
+
+            The response shall include a representation of the "Individual application lifecycle management operation occurrence" resource.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  AppLcmOpOcc:
+                    $ref: '#/components/schemas/AppLcmOpOcc'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: appLcmOpOccId
+        in: path
+        required: true
+        description: The unique identifier of the appLcmOpOccId.
+        schema:
+          type: string
+  /app_lcm_op_occs/{appLcmOpOccId}/retry:
+    post:
+      summary: Retry an ongoing individual application LCM operation.
+      description: "The POST method is used to initiate retrying an application lifecycle operation that has experience a temporary failure, i.e. the related \"application LCM operation occurrence\" is in \"FAILED_TEMP\" state. This method shall comply with the URI request and response data structures, and response codes, as specified in tables\_7.4.13.3.1-1 and 7.4.13.3.1-2."
+      operationId: ApplcmopoccsRetryPOSTApplcmopoccid
+      tags:
+      - app-lcm
+      requestBody:
+        description: The POST request message content to this resource shall be empty. .
+        content:
+          application/json: {}
+        required: false
+      responses:
+        '202':
+          description: 'The request was accepted for processing, but it is possible that the processing is not yet completed.
+
+
+            The response message content shall be empty.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '404':
+          $ref: '#/components/responses/404'
+        '406':
+          $ref: '#/components/responses/406'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: appLcmOpOccId
+        in: path
+        required: true
+        description: The unique identifier of the appLcmOpOccId.
+        schema:
+          type: string
+  /app_instances/{appInstanceId}/configure_platform_for_app:
+    post:
+      description: The POST method is to provide configuration information in AppD to the MEPM-V, intended to configure the MEP to run the application instance.
+      operationId: AppinstancesConfigureplatformforappPOSTAppinstanceid
+      tags:
+      - app-lcm
+      requestBody:
+        description: "The request message content contains the information necessary to provide configuration information in AppD as described in clause\_6.2.2.21."
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ConfigPlatformForAppRequest:
+                  $ref: '#/components/schemas/ConfigPlatformForAppRequest'
+      responses:
+        '202':
+          description: 'The request has been accepted for processing, but the processing has not yet been completed.
+
+
+            The response message content shall be empty.
+
+
+            The HTTP response shall include a "Location" HTTP header that contains the URI of the newly-created "application LCM operation occurrence" resource that corresponds to this application instance configure operation.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
+        '429':
+          $ref: '#/components/responses/429'
+      parameters:
+      - name: appInstanceId
+        in: path
+        required: true
+        description: The unique identifier of the appInstanceId.
+        schema:
+          type: string
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+    VirtualMemoryData:
+      type: object
+      required:
+      - virtualMemSize
+      properties:
+        virtualMemSize:
+          type: number
+          description: Amount of virtual memory in MB.
+        virtualMemOversubscriptionPolicy:
+          type: string
+          description: 'The memory core oversubscription policy in terms of virtual memory to physical memory
+
+            on the platform. The cardinality can be 0 during the allocation request, if no particular
+
+            value is requested.
+
+            '
+        vduMemRequirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValuePairs'
+          description: Array of key-value pair requirements on the memory for the VDU.
+        numaEnabled:
+          type: boolean
+          description: Specifies the memory allocation to be cognisant of the relevant process/core allocation.
+        hugePagesRequirements:
+          type: string
+          description: Specifies requirements on the huge pages resources for the virtual memory.
+    BlockStorageData:
+      type: object
+      required:
+      - sizeOfStorage
+      properties:
+        sizeOfStorage:
+          type: number
+          description: Size of virtualised storage resource in GB.
+        vduStorageRequirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValuePairs'
+          description: An array of key-value pairs that articulate the storage deployment requirements.
+        rdmaEnabled:
+          type: boolean
+          description: Indicate if the storage support RDMA.
+        swImageDesc:
+          type: object
+          $ref: '#/components/schemas/SwImageDesc'
+          description: 'References the software image to be loaded on the VirtualStorage resource created
+
+            based on this VirtualStorageDesc. Shall be absent when used for virtual disks. See note
+
+            '
+    VirtualCpuData:
+      type: object
+      required:
+      - numVirtualCpu
+      properties:
+        cpuArchitecture:
+          type: string
+          description: CPU architecture type. Examples are x86, ARM.
+        numVirtualCpu:
+          type: integer
+          description: Number of virtual CPUs.
+        virtualCpuClock:
+          type: number
+          description: Minimum virtual CPU clock rate (e.g. in MHz).
+        virtualCpuOversubscriptionPolicy:
+          type: string
+          description: The CPU core oversubscription policy, e.g. the relation of virtual CPU cores to physical CPU cores/threads.
+        vduCpuRequirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValuePairs'
+          description: Array of key-value pair requirements on the Compute (CPU) for the VDU.
+        virtualCpuPinning:
+          $ref: '#/components/schemas/VirtualCpuPinningData'
+    RequestedAdditionalCapabilityData:
+      type: object
+      required:
+      - requestedAdditionalCapabilityName
+      - supportMandatory
+      - targetPerformanceParameters
+      properties:
+        requestedAdditionalCapabilityName:
+          type: string
+          description: Specifies a requested additional capability for the VDU
+        supportMandatory:
+          type: boolean
+          description: Indicates whether the requested additional capability is mandatory for successful operation
+        minRequestedAdditionalCapabilityVersion:
+          type: string
+          description: Specifies the minimum version of the requested additional capability
+        preferredRequestedAdditionalCapabilityVersion:
+          type: string
+          description: Specifies the preferred version of the requested additional capability
+        targetPerformanceParameters:
+          type: array
+          description: Specifies specific attributes, dependent on the requested additional capability type.
+          items:
+            $ref: '#/components/schemas/KeyValuePairs'
+    VirtualStorageDescriptor:
+      type: object
+      required:
+      - id
+      - typeOfStorage
+      properties:
+        id:
+          type: string
+          description: Unique identifier of this VirtualStorageDesc in the VNFD.
+        typeOfStorage:
+          type: string
+          description: Type of virtualised storage resource.
+          enum:
+          - BLOCK
+          - OBJECT
+          - FILE
+        blockStorageData:
+          type: object
+          $ref: '#/components/schemas/BlockStorageData'
+          description: Details of block storage.
+        objectStorageData:
+          type: object
+          $ref: '#/components/schemas/ObjectStorageData'
+          description: Details of object storage.
+        fileStorageData:
+          type: object
+          $ref: '#/components/schemas/FileStorageData'
+          description: Details of file storage.
+        nfviMaintenanceInfo:
+          type: object
+          $ref: '#/components/schemas/NfviMaintenanceInfo'
+          description: Information on the rules to be observed during NFVI operation and maintenance.
+        perVnfcInstance:
+          type: boolean
+          description: Indicates whether the virtual storage resource shall be instantiated per VNFC instance.
+    FileStorageData:
+      type: object
+      required:
+      - sizeOfStorage
+      - fileSystemProtocol
+      - intVirtualLinkDesc
+      properties:
+        sizeOfStorage:
+          type: number
+          description: Size of virtualised storage resource in GB.
+        fileSystemProtocol:
+          type: string
+          description: The shared file system protocol (e.g. NFS, CIFS).
+        intVirtualLinkDesc:
+          type: object
+          $ref: '#/components/schemas/VnfVirtualLinkDesc'
+          description: Reference of the internal VLD which this file storage connects to.
+    VnfVirtualLinkDesc:
+      type: object
+      required:
+      - virtualLinkDescId
+      - virtualLinkDescFlavour
+      - connectivityType
+      properties:
+        virtualLinkDescId:
+          type: string
+          description: Unique identifier of this internal VLD in VNFD.
+        virtualLinkDescFlavour:
+          type: array
+          description: Describes a specific flavour of the VL with specific bitrate requirements.
+          items:
+            $ref: '#/components/schemas/VirtualLinkDescFlavour'
+        connectivityType:
+          type: object
+          description: See clause 7.1.7.3.
+          $ref: '#/components/schemas/ConnectivityType'
+        testAccess:
+          type: array
+          description: Specifies test access facilities expected on the VL.
+          items:
+            type: string
+            example: passive monitoring
+        description:
+          type: string
+          description: Provides human-readable information on the purpose of the VL.
+          example: control plane traffic
+        monitoringParameter:
+          type: array
+          description: Specifies the virtualised resource related performance metrics on VLD level to be tracked by the VNFM.
+          items:
+            $ref: '#/components/schemas/MonitoringParameter'
+        nfviMaintenanceInfo:
+          type: object
+          description: When present, provides information on the rules to be observed when an instance based on this VnfVirtualLinkDesc is impacted during NFVI operation and maintenance (e.g. NFVI resource upgrades). NfviMaintenanceInfo is defined in clause 7.1.8.17.
+          $ref: '#/components/schemas/NfviMaintenanceInfo'
+        externallyManaged:
+          type: string
+          description: Specifies the intent of the VNF designer with respect to the internal VL instances created from this descriptor being externally managed.
+          enum:
+          - REQUIRED
+          - ALLOWED
+          default: ALLOWED
+    ConnectivityType:
+      type: object
+      required:
+      - layerProtocol
+      properties:
+        layerProtocol:
+          type: array
+          description: 'Specifies the protocols that the VL uses See note 1 and note 2.
+
+            '
+          items:
+            type: string
+            enum:
+            - Ethernet
+            - MPLS
+            - ODU2
+            - IPV4
+            - IPV6
+            - Pseudo-Wire
+            - Etc
+          minItems: 1
+        flowPattern:
+          type: string
+          description: Specifies the flow pattern of the connectivity (Line, Tree, Mesh, etc.).
+      description: "NOTE 1 The top layer protocol of the VL protocol stack shall always be provided. The lower layer protocols may be included when there are specific requirements on these layers. \nNOTE 2  If more than 1 values are present, the first value represents the highest layer protocol data, and the last value represents the lowest layer protocol data. \n"
+    QoS:
+      type: object
+      required:
+      - latency
+      - packetDelayVariation
+      properties:
+        latency:
+          type: number
+          description: Latency of the VL in milliseconds.
+        packetDelayVariation:
+          type: number
+          description: Packet delay variation of the VL in milliseconds.
+        packetLossRatio:
+          type: number
+          description: Packet loss ratio of the VL in percentage.
+    VirtualLinkDescFlavour:
+      type: object
+      required:
+      - flavourId
+      properties:
+        flavourId:
+          type: string
+          description: Identifies a flavour within a VnfVirtualLinkDesc.
+        qos:
+          type: object
+          $ref: '#/components/schemas/QoS'
+          description: QoS of the VL.
+    Version:
+      type: object
+      required:
+      - srcVnfdId
+      - dstVnfdId
+      - srcFlavourId
+      properties:
+        srcVnfdId:
+          type: string
+          description: Identifier of the source VNFD and the source VNF package. See note 1.
+        dstVnfdId:
+          type: string
+          description: Identifier of the destination VNFD and the destination VNF package. See note 1.
+        srcFlavourId:
+          type: string
+          description: Identifier of the deployment flavour in the source VNF package for which this modification applies. See note 2.
+      description: "NOTE 1: Either the srcVnfdId or the dstVnfdId shall be equal to the vnfdId of the VNFD containing this version selector. \nNOTE 2: It is up to protocol design stage to decide whether there is further optimization potential to apply one modification for multiple srcFlavourIds.\n"
+    AppInstanceSubscriptionType:
+      type: string
+      enum:
+      - AppInstanceStateChangeSubscription
+      - AppLcmOpOccStateChangeSubscription
+      - AppIdentifierCreationSubscription
+      - AppIdentifierDeletionSubscription
+      description: String representing the type of a subscription.
+    McioInfo:
+      type: object
+      required:
+      - mcioId
+      - mcioName
+      - mcioNamespace
+      - vduId
+      - cismId
+      - mcioType
+      - desiredInstances
+      - availableInstances
+      properties:
+        mcioId:
+          type: string
+          description: Identifier of this MCIO, created by the CISM.
+        mcioName:
+          type: string
+          description: Human readable name of this MCIO.
+        mcioNamespace:
+          type: string
+          description: Namespace of this MCIO
+        vduId:
+          type: string
+          description: Reference to the applicable Vdu information element in the VNFD.
+        cismId:
+          type: string
+          description: Identifier of the CISM managing this MCIO.
+        mcioType:
+          type: string
+          description: The type of MCIO. See note 1.
+        desiredInstances:
+          type: integer
+          description: Number of desired MCIO instances.
+        availableInstances:
+          type: integer
+          description: Number of available MCIO instances
+        additionalInfo:
+          type: string
+          description: Additional information which is specific to the MCIO, its type, and which is available from the CISM. See note 2
+      description: "NOTE 1: The type of MCIO as specified in the declarative descriptor of the MCIO, and that can be read from the CISM.\nEXAMPLE: In case of MCIOs managed by Kubernetes\xAE, the type of MCIO corresponds to the \"kind\" property of the declarative descriptor.\nNOTE 2: If the attribute additionalInfo is present, it may contain runtime information on the actual and desired state of the MCIO(s)\n"
+    CommunicationInterface:
+      type: object
+      properties:
+        ipAddresses:
+          type: array
+          description: Entry point information of the service as one or more pairs of IP address and port.
+          items:
+            $ref: '#/components/schemas/ipAddresses'
+    OsContainerDescriptor:
+      title: OsContainerDescriptor
+      type: object
+      required:
+      - osContainerDescId
+      - name
+      - description
+      - swImageDesc
+      properties:
+        osContainerDescId:
+          type: string
+          description: Unique identifier of this OsContainerDesc in the VNFD.
+        name:
+          type: string
+          description: Human readable name of this OS container.
+        description:
+          type: string
+          description: Human readable description of this OS container.
+        requestedCpuResources:
+          type: integer
+          description: Number of CPU resources requested for the container (e.g. in milli-CPU-s).
+        requestedMemoryResources:
+          type: number
+          description: Amount of memory resources requested for the container (e.g. in MB).
+        requestedEphemeralStorageResources:
+          type: number
+          description: Size of ephemeral storage resources requested for the container (e.g. in GB).
+        extendedResourceRequests:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyValuePairs'
+          description: An array of key-value pairs of extended resources required by the container see note.
+        cpuResourceLimit:
+          type: integer
+          description: Number of CPU resources the container can maximally use (e.g. in milli-CPU).
+        memoryResourceLimit:
+          type: number
+          description: Amount of memory resources the container can maximally use (e.g. in MB).
+        ephemeralStorageResourceLimit:
+          type: number
+          description: Size of ephemeral storage resources the container can maximally use (e.g. in GB).
+        hugePageResources:
+          type: object
+          description: Specifies HugePages resources requested for the container, which the container can maximally use.
+          additionalProperties:
+            type: string
+        cpuPinningRequirements:
+          type: object
+          $ref: '#/components/schemas/VirtualCpuPinningData'
+          description: Requirements for CPU pinning configuration for this OS container.
+        swImageDesc:
+          type: object
+          $ref: '#/components/schemas/SwImageDesc'
+          description: Describes the software image realizing this OS container.
+        bootData:
+          type: string
+          description: Contains a string or a URL to a file contained in the VNF package used to customize a container resource at boot time. The bootData may contain variable parts that are replaced by deployment specific values before being sent.
+        monitoringParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/MonitoringParameter'
+          description: Specifies the virtualized resource related performance metrics on the OsContainerDesc level to be tracked by the VNFM.
+    KeyValuePairs:
+      type: object
+      additionalProperties:
+        type: object
+    ObjectStorageData:
+      type: object
+      properties:
+        maxSizeOfStorage:
+          type: number
+          description: Maximum size of virtualized storage resource in GB.
+    VirtualCpuPinningData:
+      type: object
+      properties:
+        virtualCpuPinningPolicy:
+          type: string
+          description: Indicates the policy for CPU pinning.
+          enum:
+          - STATIC
+          - DYNAMIC
+        virtualCpuPinningRule:
+          type: array
+          items:
+            type: string
+          description: List of rules that should be considered during the allocation of the virtual CPUs to logical CPUs in case of "STATIC" virtualCpuPinningPolicy.
+    SwImageDesc:
+      type: object
+      required:
+      - id
+      - name
+      - version
+      - containerFormat
+      - swImage
+      properties:
+        id:
+          type: string
+          description: The identifier of this software image.
+        name:
+          type: string
+          description: The name of this software image.
+        version:
+          type: string
+          description: The version of this software image.
+        checksum:
+          $ref: '#/components/schemas/ChecksumData'
+          description: The checksum of the software image file. See note 3.
+        containerFormat:
+          type: string
+          description: The container format describes the container file format in which software image is provided.
+        diskFormat:
+          type: string
+          description: The disk format of a software image is the format of the underlying disk image. See note 1.
+        minDisk:
+          type: number
+          description: The minimal disk size requirement for this software image. The value of the "size of storage" attribute of the VirtualStorageDesc referencing this SwImageDesc shall not be smaller than the value of minDisk. See note 1.
+        minRam:
+          type: number
+          description: The minimal RAM requirement for this software image. The value of the "size" attribute of VirtualMemoryData of the Vdu referencing this SwImageDesc shall not be smaller than the value of minRam. See note 2.
+        size:
+          type: number
+          description: The size of this software image file. See note 3.
+        swImage:
+          type: object
+          $ref: '#/components/schemas/SwImageDesc'
+          description: This is a reference to the actual software image. The reference can be relative to the root of the VNF Package or can be a URL.
+        operatingSystem:
+          type: string
+          description: Specifies the operating system used in the software image. This attribute may also identify if a 32 bit or 64 bit software image is used.
+        supportedVirtualisationEnvironment:
+          type: array
+          items:
+            type: string
+          description: Specifies the virtualisation environments (e.g. hypervisor) compatible with this software image.
+      description: "NOTE 1: The attribute shall be present for VM-based software images referenced from a Vdu or from a VirtualStorageDesc, and shall be absent otherwise.\nNOTE 2: The attribute may be present for VM-based software images referenced from a Vdu or from a VirtualStorageDesc, and shall be absent otherwise.\nNOTE 3: The attribute shall be present for VM-based software images referenced from a Vdu or from a VirtualStorageDesc, and may be present otherwise. \n"
+    MonitoringParameter:
+      type: object
+      required:
+      - monitoringParameterId
+      - performanceMetric
+      properties:
+        monitoringParameterId:
+          type: string
+          description: Unique identifier of the monitoring parameter.
+        name:
+          type: string
+          description: Human readable name of the monitoring parameter.
+        performanceMetric:
+          type: string
+          description: Specifies the virtualised resource performance metric.
+        collectionPeriod:
+          type: string
+          description: An attribute that describes the periodicity at which to collect the performance information.
+    VirtualComputeDescriptor:
+      title: VirtualComputeDescriptor
+      type: object
+      required:
+      - virtualComputeDescId
+      - virtualMemory
+      - virtualCpu
+      properties:
+        virtualComputeDescId:
+          type: string
+          description: Unique identifier of this VirtualComputeDesc in the VNFD.
+        logicalNode:
+          type: array
+          description: The logical node requirements.
+          items:
+            $ref: '#/components/schemas/LogicalNodeRequirements'
+        requestAdditionalCapabilities:
+          type: array
+          description: Specifies requirements for additional capabilities. These may be for a range of purposes. One example is acceleration related capabilities. See clause 7.1.9.5.
+          items:
+            $ref: '#/components/schemas/RequestedAdditionalCapabilityData'
+        computeRequirements:
+          description: Specifies compute requirements.
+          type: array
+          items:
+            type: string
+            format: not-specified
+        virtualMemory:
+          type: object
+          description: The virtual memory of the virtualised compute. See clause 7.1.9.3.2.
+          $ref: '#/components/schemas/VirtualMemoryData'
+        virtualCpu:
+          type: object
+          description: The virtual CPU(s) of the virtualised compute. See clause 7.1.9.2.3.
+          $ref: '#/components/schemas/VirtualCpuData'
+        virtualDisk:
+          type: array
+          description: The local or ephemeral disk(s) of the virtualised compute. See clause 7.1.9.4.3.
+          items:
+            $ref: '#/components/schemas/BlockStorageData'
+    LogicalNodeRequirements:
+      type: object
+      required:
+      - id
+      - logicalNodeRequirementDetail
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Identifies this set of logical node requirements
+        logicalNodeRequirementDetail:
+          description: 'The logical node-level compute, memory and I/O requirements. An array of key-value pairs that articulate the deployment requirements. This could include the number of CPU cores on this logical node, a memory configuration specific to a logical node (e.g. such as available in the Linux kernel  via the libnuma library) or a requirement related to the association of an I/O device with the logical node.
+
+            '
+          type: array
+          items:
+            type: string
+            format: not-specified
+    ChecksumData:
+      type: object
+      required:
+      - algorithm
+      - hash
+      properties:
+        algorithm:
+          type: string
+          description: Specifies the algorithm used to obtain the checksum value. See note.
+        hash:
+          type: string
+          description: 'Contains the result of applying the algorithm indicated by the algorithm attribute to the data to which this ChecksumData refers.
+
+            '
+      description: 'NOTE: The algorithm attribute value shall be one of the Hash Function Textual Names present in [2].
+
+        '
+    ipAddresses:
+      type: object
+      required:
+      - host
+      - port
+      properties:
+        host:
+          type: string
+          description: Host portion of the address.
+        port:
+          type: integer
+          description: Port portion of the address.
+    Polygon:
+      type: string
+      description: 'To specify a constraint specific to Polygons, it is useful to introduce the concept of a linear ring:
+
+
+        - A linear ring is a closed LineString with four or more positions.
+
+        - The first and last positions are equivalent, and they MUST contain identical values; their representation SHOULD also be identical.
+
+        - A linear ring is the boundary of a surface or the boundary of a hole in a surface.
+
+        - A linear ring MUST follow the right-hand rule with respect to the area it bounds, i.e., exterior rings are counterclockwise, and holes are clockwise.
+
+
+        Note: The [GJ2008] specification did not discuss linear ring winding order. For backward compatibility, parsers SHOULD NOT reject Polygons that do not follow the right-hand rule.
+
+
+        Though a linear ring is not explicitly represented as a GeoJSON geometry type, it leads to a canonical formulation of the Polygon geometry type definition as follows:
+
+
+        - For type "Polygon", the "coordinates" member MUST be an array of linear ring coordinate arrays.
+
+        - For Polygons with more than one of these rings, the first MUST be the exterior ring, and any others MUST be interior rings. The exterior ring bounds the surface, and the interior rings (if present) bound holes within the surface.
+
+        '
+    TransportTypes:
+      x-etsi-ref: 8.1.6.4
+      type: string
+      enum:
+      - REST_HTTP
+      - MB_TOPIC_BASED
+      - MB_ROUTING
+      - MB_PUBSUB
+      - RPC
+      - RPC_STREAMING
+      - WEBSOCKET
+      description: The enumeration TransportType represents types of transports.
+      x-etsi-mec-extensible: true
+      x-etsi-mec-enumeration-table:
+      - value: REST_HTTP
+        description: RESTful API using HTTP (as defined in IETF RFC 9110 [11]).
+      - value: MB_TOPIC_BASED
+        description: Topic-based message bus which routes messages to receivers based on subscriptions, if a pattern passed on subscription matches the topic of the message. EXAMPLE MQTT (see [i.4]).
+      - value: MB_ROUTING
+        description: Routing-based message bus which routes messages to receivers based on subscriptions, if a key passed on subscription is equal to the key of the message.
+      - value: MB_PUBSUB
+        description: Publish-subscribe based message bus which distributes messages to all subscribers.
+      - value: RPC
+        description: Remote procedure call. EXAMPLE GRPC (see [i.5]).
+      - value: RPC_STREAMING
+        description: Remote procedure call supporting streams of requests and responses. EXAMPLE GRPC (see [i.5]).
+      - value: WEBSOCKET
+        description: Websockets as defined in IETF RFC 6455 [12].
+    SerializerType:
+      x-etsi-ref: 8.1.6.3
+      type: string
+      enum:
+      - JSON
+      - XML
+      - PROTOBUF3
+      x-etsi-mec-extensible: true
+      x-etsi-mec-enumeration-table:
+      - value: JSON
+        description: Javascript object notation [9]
+      - value: XML
+        description: eXtensible Mark-up Language version 1.1 [10]
+      - value: PROTOBUF3
+        description: Protocol buffers version 3 [i.3]
+    SecurityInfo:
+      x-etsi-ref: 8.1.5.4
+      type: object
+      properties:
+        oAuth2Info:
+          $ref: '#/components/schemas/OAuth2Info'
+        (extensions):
+          description: Extensions for alternative transport mechanisms. These extensions depend on the actual transport, and are out of scope of the present document. For instance, such extensions may be used to signal the necessary parameters for the client to use TLS-based authorization defined for alternative transports (see ETSI GS MEC 009 [5] for more information).
+    OAuth2Info:
+      description: Parameters related to use of OAuth 2.0. Shall be present in case OAuth 2.0 (see IETF RFC 6749 [13]) is supported to secure the provision of the service over the transport.
+      type: object
+      properties:
+        grantTypes:
+          description: "List of supported OAuth 2.0 grant types. Each entry shall be one of the following permitted values: \u2022 OAUTH2_AUTHORIZATION_CODE (Authorization code grant type) \u2022 OAUTH2_IMPLICIT_GRANT (Implicit grant type) \u2022 OAUTH2_RESOURCE_OWNER (Resource owner password credentials grant type) \u2022 OAUTH2_CLIENT_CREDENTIALS (Client credentials grant type) Only the value \"OAUTH2_CLIENT_CREDENTIALS\" is supported in the present document."
+          type: array
+          minItems: 0
+          items:
+            type: string
+            enum:
+            - SEE_DESCRIPTION
+        tokenEndpoint:
+          description: The token endpoint. Shall be present unless the grant type is OAUTH2_IMPLICIT_GRANT.
+          type: string
+          format: uri
+      required:
+      - grantTypes
+    NfviMaintenanceInfo:
+      type: object
+      required:
+      - impactNotificationLeadTime
+      properties:
+        impactNotificationLeadTime:
+          type: number
+          description: The minimum notification lead time requested for upcoming impact of the virtualised resource or their group.
+        isImpactMitigationRequested:
+          type: boolean
+          description: When set to True, it is requested that at the time of the notification of an upcoming change that is expected to have an impact on the VNF, virtualised resource(s) of the same characteristics as the impacted ones is/are provided to compensate for the impact.
+        supportedMigrationType:
+          type: array
+          description: Applicable to VirtualComputeDesc and VirtualStorageDesc. When present, specifies the allowed migration types in the order of preference in case of an impact starting with the most preferred type. For LIVE_MIGRATION, see note 1.
+          items:
+            type: string
+            enum:
+            - NO_MIGRATION
+            - OFFLINE_MIGRATION
+            - LIVE_MIGRATION
+        maxUndetectableInterruptionTime:
+          type: number
+          description: Applicable to VirtualComputeDesc and VirtualStorageDesc. When present, it specifies the maximum interruption time that can go undetected at the VNF level and therefore which will not trigger VNF-internal recovery during live migration. (see note 1)
+        minRecoveryTimeBetweenImpacts:
+          type: number
+          description: When present, it specifies the time required by the group to recover from an impact, thus, the minimum time requested between consecutive impacts of the group. (see note 2.)
+        maxNumberOfImpactedInstances:
+          type: object
+          $ref: '#/components/schemas/MaxNumberOfImpactedInstances'
+          description: When present, specifies for different group sizes the maximum number of instances that can be impacted simultaneously within the group of virtualised resources without losing functionality. Zero cardinality indicates no constraint (see note 2). MaxNumberOfImpactedInstances is defined in clause 7.1.8.18. See note 3.
+        minNumberOfPreservedInstances:
+          type: object
+          $ref: '#/components/schemas/MinNumberOfPreservedInstances'
+          description: When present, specifies for different group sizes the minimum number of instances which need to be preserved simultaneously within the group of virtualised resources. Zero cardinality indicates no constraint (see note 2). MinNumberOfPreservedInstances is defined in clause 7.1.8.22.See note 3.
+      description: 'NOTE 1: When the maximum undetectable interruption time is specified it constrains the live migration. If it cannot be
+
+        guaranteed on an NFVI that the interruption caused by the live migration will be less than the indicated
+
+        maximum undetectable interruption time, then life migration should be downgraded according to the order of preference.
+
+        NOTE 2: Impacts to instances of the group happening within the minimum recovery time are considered simultaneous
+
+        impacts.
+
+        NOTE 3: Either "maxNumberOfImpactedInstances" or "minNumberOfPreservedInstances" may be provided, but not both
+
+        '
+    MaxNumberOfImpactedInstances:
+      type: object
+      required:
+      - maxNumberOfImpactedInstances
+      properties:
+        groupSize:
+          type: integer
+          description: Determines the size of the group for which the maxNumberOfImpactedInstances is specified.
+        maxNumberOfImpactedInstances:
+          type: integer
+          description: The maximum number of instances that can be impacted simultaneously within the group of the specified size.
+      description: "NOTE 1: Each groupSize value specified for a group of virtual resources shall be unique, and it shall be possible to form an ascending ordered list of groupSizes. \nNOTE 2: The number of instances in the group for which the maxNumberOfImpactedInstances is specified may be equal to groupSize or less. When the number of instances is less than   \n            the groupSize, it shall be at least 1 if this is the first groupSize in the ordered list of groupSizes, or it shall be greater by at least 1 than the previous groupSize in the ordered list of groupSizes.\n"
+    MinNumberOfPreservedInstances:
+      type: object
+      required:
+      - minNumberOfPreservedInstances
+      properties:
+        groupSize:
+          type: integer
+          description: When present, determines the size of the group for which the minNumberOfPreservedInstances is specified. Otherwise, the size is not limited.
+        minNumberOfPreservedInstances:
+          type: integer
+          description: The minimum number of instances which need to be preserved simultaneously within the group of the specified size.
+      description: "NOTE 1: Each groupSize value specified for a group of virtual resources shall be unique, and it shall be possible to form \n            an ascending ordered list of groupSizes. \nNOTE 2: The number of instances in the group for which the minNumberOfPreservedInstances is specified may be equal \n        to groupSize or less.\n"
+    CategoryRef:
+      x-etsi-ref: 8.1.5.2
+      type: object
+      properties:
+        href:
+          description: Reference of the catalogue.
+          type: string
+        id:
+          description: Unique identifier of the category.
+          type: string
+        name:
+          description: Name of the category.
+          type: string
+        version:
+          description: Name of the category.
+          type: string
+      required:
+      - href
+      - id
+      - name
+      - version
+    ServiceDescriptor:
+      x-etsi-ref: 6.2.1.7
+      type: object
+      properties:
+        serName:
+          description: The name of the service, for example, RNIS, LocationService, etc.
+          type: string
+        serCategory:
+          description: A Category reference of the service, defined in ETSI GS MEC 011 [17].
+          $ref: '#/components/schemas/CategoryRef'
+          type: object
+        version:
+          description: The version of the service.
+          type: string
+        transportsSupported:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransportsSupported'
+      required:
+      - serName
+      - version
+    FeatureDependency:
+      x-etsi-ref: 6.2.1.8
+      type: object
+      properties:
+        featureName:
+          description: The name of the feature, for example, UserApps, UEIdentity, etc.
+          type: string
+        version:
+          description: The version of the feature.
+          type: string
+      required:
+      - featureName
+      - version
+    TrafficRuleDescriptor:
+      x-etsi-ref: 6.2.1.9
+      type: object
+      properties:
+        trafficRuleId:
+          description: Identifies the traffic rule.
+          type: string
+        filterType:
+          type: string
+          description: 'Definition of filter type: per FLOW or PACKET
+
+            If it is per FLOW, the filter matches upstream (e.g. UE->EPC) packets and downstream (e.g. EPC->UE) packets are handled by the same context.'
+          enum:
+          - SEE_DESCRIPTION
+        priority:
+          description: "Priority of this traffic rule within the range 0 to 255. If traffic rule conflicts, the one with higher priority take precedence. See note\_1."
+          type: integer
+        trafficFilter:
+          description: The filter used to identify specific flow/packets that need to be handled by the MEC host.
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/TrafficFilter'
+        action:
+          type: string
+          description: 'Identifies the action of the MEC host data plane, when a packet matches the trafficFilter, the example actions include:
+
+            DROP,
+
+            FORWARD_DECAPSULATED,
+
+            FORWARD_ENCAPSULATED,
+
+            PASSTHROUGH,
+
+            DUPLICATE_DECAPSULATED,
+
+            DUPLICATE_ENCAPSULATED '
+          enum:
+          - SEE_DESCRIPTION
+        dstInterface:
+          description: Describes the destination interface information. If the action is FORWARD_DECAPSULATED, FORWARD_ENCAPSULATED or PASSTHROUGH, one value shall be provided. If the action is DUPLICATE_DECAPSULATED or DUPLICATE_ENCAPSULATED, two values shall be provided. See note 2. If the action is DROP, no value shall be provided.
+          $ref: '#/components/schemas/InterfaceDescriptor'
+          type: object
+      required:
+      - trafficRuleId
+      - filterType
+      - priority
+      - trafficFilter
+      - action
+      description: "|-\n  NOTE 1:\tValue indicates the priority in descending order, i.e. with 0 as the highest priority and 255 as the lowest priority.\nNOTE 2:\tSome applications (like inline/tap) require two interfaces. The first interface in the case of inline/tap is on the client (e.g. UE) side and the second on the core network (e.g. EPC) side."
+    TrafficFilter:
+      x-etsi-ref: 6.2.1.10
+      type: object
+      properties:
+        srcAddress:
+          description: 'An IP address or a range of IP addresses.
+
+            For IPv4, the IP address could be an IP address plus mask, or an individual IP address, or a range of IP addresses.
+
+            For IPv6, the IP address could be an IP prefix, or a range of IP prefixes.'
+          type: array
+          minItems: 0
+          items:
+            type: string
+        dstAddress:
+          description: 'An IP address or a range of IP addresses.
+
+            For IPv4, the IP address could be an IP address plus mask, or an individual IP address, or a range of IP addresses.
+
+            For IPv6, the IP address could be an IP prefix, or a range of IP prefixes.'
+          type: array
+          minItems: 0
+          items:
+            type: string
+        srcPort:
+          description: A port or a range of ports.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        dstPort:
+          description: A port or a range of ports.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        protocol:
+          description: Specify the protocol of the traffic filter.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        tag:
+          description: Used for tag based traffic rule.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        uri:
+          description: An URI label, in application layer, i.e. in HTTP message, is used to filter the traffic.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        packetLabel:
+          description: A customized packet label in network layer, as defined by the owner of the MEC platform, is used to filter the traffic.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        srcTunnelAddress:
+          description: Used for GTP tunnel based traffic rule.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        tgtTunnelAddress:
+          description: Used for GTP tunnel based traffic rule.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        srcTunnelPort:
+          description: Used for GTP tunnel based traffic rule.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        dstTunnelPort:
+          description: Used for GTP tunnel based traffic rule.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        qCI:
+          description: Used to match all packets that have the same QCI.
+          type: integer
+        dSCP:
+          description: Used to match all IPv4 packets that have the same DSCP.
+          type: integer
+        tC:
+          description: Used to match all IPv6 packets that have the same TC.
+          type: integer
+    InterfaceDescriptor:
+      x-etsi-ref: 6.2.1.11
+      type: object
+      properties:
+        interfaceType:
+          type: string
+          description: 'Type of interface: TUNNEL, MAC, IP, etc.'
+          enum:
+          - SEE_DESCRIPTION
+        tunnelInfo:
+          description: Included only if the destination address type is tunnel.
+          $ref: '#/components/schemas/TunnelInfo'
+          type: object
+        srcMACAddress:
+          description: If the interface type is MAC, the source address identifies the MAC address of the interface.
+          type: string
+        dstMACAddress:
+          description: If the interface type is MAC, the destination address identifies the MAC address of the destination. Only used for dstInterface.
+          type: string
+        dstIPAddress:
+          description: If the interface type is IP, the destination address identifies the IP address of the destination. Only used for dstInterface.
+          type: string
+      required:
+      - interfaceType
+    TunnelInfo:
+      x-etsi-ref: 6.2.1.12
+      type: object
+      properties:
+        tunnelType:
+          type: string
+          description: 'Type of tunnel: GTP-U, GRE, etc.'
+          enum:
+          - SEE_DESCRIPTION
+        tunnelDstAddress:
+          description: Destination address of the tunnel.
+          type: string
+        tunnelSrcAddress:
+          description: Source address of the tunnel.
+          type: string
+        tunnelSpecificData:
+          description: Parameters specific to the tunnel.
+          type: object
+      required:
+      - tunnelType
+      - tunnelDstAddress
+      - tunnelSrcAddress
+    DNSRuleDescriptor:
+      x-etsi-ref: 6.2.1.13
+      type: object
+      properties:
+        dnsRuleId:
+          description: Identifies the DNS Rule
+          type: string
+        domainName:
+          description: FQDN of the DNS rule
+          type: string
+        ipAddressType:
+          type: string
+          description: 'Specifies the IP address type, value: IP_V6, IP_V4'
+          enum:
+          - SEE_DESCRIPTION
+        ipAddress:
+          description: IP address given by the DNS rule
+          type: string
+        ttl:
+          description: Time-to-live value
+          type: integer
+      required:
+      - dnsRuleId
+      - domainName
+      - ipAddressType
+      - ipAddress
+    LatencyDescriptor:
+      x-etsi-ref: 6.2.1.14
+      type: object
+      properties:
+        maxLatency:
+          description: The value of the maximum latency in nano seconds tolerated by the MEC application. See note.
+          type: integer
+          format: uint32
+      required:
+      - maxLatency
+      description: "|-\n  NOTE:\tThe latency is considered to be the one way end-to-end latency between the client application (e.g. in a device) and the service (i.e. the MEC application instance)."
+    ServiceDependency:
+      x-etsi-ref: 6.2.1.17
+      type: object
+      properties:
+        serName:
+          description: The name of the service, for example, RNIS, LocationService, AMS, etc.
+          type: string
+        serCategory:
+          description: A Category reference of the service.
+          $ref: '#/components/schemas/CategoryRef'
+          type: object
+        version:
+          description: The version of the service.
+          type: string
+        serTransportDependencies:
+          description: Indicates transport and serialization format dependencies of consuming the service. Defaults to REST + JSON if absent. See note.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/TransportDependency'
+        requestedPermissions:
+          description: 'Requested permissions regarding the access of the application to the service. See clause 7.2 of ETSI GS MEC 009 [4].
+
+            The format of this attribute is left for the data model design stage.'
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/Not_specified'
+      required:
+      - serName
+      - version
+      description: "|-\n  NOTE:\tThis attribute indicates groups of transport bindings that a service-consuming MEC application supports for the consumption of the MEC service defined by this ServiceDependency structure. If at least one of the indicated groups is supported by the service it may be consumed by the application."
+    TransportDependency:
+      x-etsi-ref: 6.2.1.18
+      type: object
+      properties:
+        transport:
+          description: Information about the transport in this transport binding.
+          $ref: '#/components/schemas/TransportDescriptor'
+          type: object
+        serializers:
+          description: Information about the serializers in this transport binding, as defined in the SerializerType type in ETSI GS MEC 011 [17]. Support for at least one of the entries is required in conjunction with the transport.
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/SerializerType'
+        labels:
+          description: Set of labels that allow to define groups of transport bindings. The mechanism of the grouping is defined below this table.
+          type: array
+          minItems: 1
+          items:
+            type: string
+      required:
+      - transport
+      - serializers
+      - labels
+    TransportDescriptor:
+      x-etsi-ref: 6.2.1.19
+      type: object
+      properties:
+        name:
+          description: The name of this transport.
+          type: string
+        description:
+          description: Human-readable description of this transport.
+          type: string
+        type:
+          description: Type of the transport, as defined in the TransportTypes type in ETSI GS MEC 011 [17].
+          $ref: '#/components/schemas/TransportTypes'
+          type: object
+        protocol:
+          description: The name of the protocol used. Shall be set to "HTTP" for a REST API.
+          type: string
+        version:
+          description: The version of the protocol used.
+          type: string
+        security:
+          description: Information about the security used by the transport in ETSI GS MEC 011 [17].
+          $ref: '#/components/schemas/SecurityInfo'
+          type: object
+        implSpecificInfo:
+          description: Additional implementation specific details of the transport.
+          type: object
+      required:
+      - name
+      - type
+      - protocol
+      - version
+      - security
+    UserContextTransferCapability:
+      x-etsi-ref: 6.2.1.20
+      type: object
+      properties:
+        statefulApplication:
+          description: 'If the application is stateful, this attribute shall be set to true.
+
+            Otherwise, this attribute shall be set to false. '
+          type: boolean
+        userContextTransferSupport:
+          description: 'This attribute shall be present if the application is stateful and shall be absent otherwise.
+
+
+            If the application supports the user context transfer, this attribute shall be set to true.
+
+            Otherwise this attribute shall be set to false.'
+          type: boolean
+      required:
+      - statefulApplication
+    AppNetworkPolicy:
+      x-etsi-ref: 6.2.1.21
+      type: object
+      properties:
+        steeredNetwork:
+          $ref: '#/components/schemas/SteeredNetwork'
+      required:
+      - steeredNetwork
+      description: "|-\n  NOTE:\tThe network types may depend on the availability of deployed access networks of MEC system."
+    LocationConstraints:
+      x-etsi-ref: 6.2.2.2
+      type: object
+      properties:
+        countryCode:
+          description: The two-letter ISO 3166 [3] country code in capital letters. Shall be present in the case that "area" attribute is absent. May be present if the "area" attribute is present. See note.
+          type: string
+        civicAddressElement:
+          type: array
+          items:
+            $ref: '#/components/schemas/CivicAddressElement'
+        area:
+          description: Geographic area. Shall be absent if the "civicAddressElement" attribute is present. The content of this attribute shall follow the provisions for the "Polygon" geometry object as defined in IETF RFC 7946 [8], for which the "type" member shall be set to the value "Polygon". See note.
+          $ref: '#/components/schemas/Polygon'
+          type: object
+      description: "|-\n  NOTE:\tIf both \"countryCode\" and \"area\" are present, no conflicts should exist between the values of these two attributes. In case of conflicts, the API producer (e.g. MEO, MEAO) shall disregard parts of the geographic area signalled by \"area\" that are outside the boundaries of the country signalled by \"countryCode\". If \"countryCode\" is absent, it is solely the \"area\" attribute that defines the location constraint."
+    CreateAppInstanceRequest:
+      x-etsi-ref: 6.2.2.3
+      type: object
+      properties:
+        appDId:
+          description: The application descriptor identifier. It is managed by the application provider to identify the application descriptor in a globally unique way.
+          type: string
+        appInstanceName:
+          description: Human-readable name of the application instance to be created.
+          type: string
+        appInstanceDescription:
+          description: Human-readable description of the application instance to be created.
+          type: string
+        appPlacementInfo:
+          description: Describes the information of selected MEC platform for the application instance to associate. See note.
+          $ref: '#/components/schemas/MepInformation'
+          type: object
+      required:
+      - appDId
+      description: "|-\n  NOTE:\tThis field applies to Mm3* reference point only."
+    AppInstanceInfo:
+      x-etsi-ref: 6.2.2.4
+      type: object
+      properties:
+        id:
+          description: Identifier of the application instance represented by this data type.
+          type: string
+        appInstanceName:
+          description: Name of the application instance.
+          type: string
+        appInstanceDescription:
+          description: Human-readable description of the application instance to be created.
+          type: string
+        appDId:
+          description: 'The application descriptor identifier is managed by the application provider to identify the application descriptor in a globally unique way.
+
+            It is copied from the AppD of the onboarded application package.'
+          type: string
+        appProvider:
+          description: The onboarded application package provider name.
+          type: string
+        appName:
+          description: The onboarded application name.
+          type: string
+        appSoftVersion:
+          description: The application software version.
+          type: string
+        appDVersion:
+          description: Version of the application descriptor.
+          type: string
+        appPkgId:
+          description: Identifier of the onboarded application package.
+          type: string
+        vimConnectionInfo:
+          description: "Information about VIM connections to be used for managing the resources for the application instance.\nThe keys of the map, each of which identifies information about a particular VIM connection, are managed by the MEO and referenced from other data structures via the \"vimConnectionId\" attribute. \nSee notes 1 and 3."
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/VimConnectionInfoMap'
+        nsInstanceId:
+          description: Identifier of the NS instance created by NFVO in which the MEC application has been instantiated as a VNF instance. See note 2.
+          type: string
+        vnfInstanceId:
+          description: "Identifier of the VNF instance created by VNFM that the MEC application has been instantiated as. See\_note 2."
+          type: string
+        instantiationState:
+          type: string
+          description: "Instantiation state of the application instance: \nNOT_INSTANTIATED: the application instance is not instantiated.\nINSTANTIATED: the application instance has been instantiated."
+          enum:
+          - SEE_DESCRIPTION
+        instantiatedAppState:
+          $ref: '#/components/schemas/InstantiatedAppState'
+        communicationInterface:
+          description: Interface for communication with other application instances. See clause 7.5.2 of ETSI GS MEC 021 [13] for the data type definition.
+          $ref: '#/components/schemas/CommunicationInterface'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links'
+      required:
+      - id
+      - appDId
+      - appProvider
+      - appName
+      - appSoftVersion
+      - appDVersion
+      - appPkgId
+      - instantiationState
+      - _links
+      description: "|-\n  NOTE 1:\tThis field does not apply if the data structure is used by MEAO.\nNOTE 2:\tThis field applies if the data structure is used by MEAO.\nNOTE 3:\tThis field does not apply if the data structure is used on Mm3*.\nNOTE 4:\tThis field applies if the data structure is used on Mm3*.\nNOTE 5:\tThis field applies if the data structure is used on Mm1 or Mm3*.\nNOTE 6:\tIt is not specified in the present document how location information is obtained in the case of MEC in NFV.\nNOTE 7:\tThis attribute reflects the ETSI NFV interpretation of the cloud native workloads."
+    AppInstanceSubscriptionFilter:
+      x-etsi-ref: 6.2.2.5
+      type: object
+      properties:
+        appInstSelectorType:
+          type: integer
+          description: '0 = void
+
+            1 = APP_IDENTITY
+
+            2 = APP_NAME
+
+            3 = APP_D_ID
+
+            4 = APP_FROM_PROVIDER'
+          enum:
+          - SEE_DESCRIPTION
+        appInstances:
+          description: 'If appInstIdSelector = APP_IDENTITY match existing application instances with an "application instance identifier" listed in this attribute.
+
+
+            If appInstIdSelector = APP_NAME match existing application instances with an "application instance name" listed in this attribute.
+
+
+            If appInstIdSelector = APP_D_ID match existing application instances, or those created in the future whilst the subscription is active, based on the application descriptors identified by one of the "application descriptor identities" listed in this attribute.
+
+
+            If appInstIdSelector = APP_FROM_PROVIDER this attribute shall not be included.'
+          type: array
+          minItems: 0
+          items:
+            type: string
+        appsFromProviders:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppsFromProviders'
+      required:
+      - appInstSelectorType
+    AppLcmOpOccSubscriptionFilter:
+      x-etsi-ref: 6.2.2.6
+      type: object
+      properties:
+        appInstanceSubscriptionFilter:
+          description: If present, this attribute contains filter criteria that selects one or more application instances on which to receive "LCM operation occurrence" notifications.
+          $ref: '#/components/schemas/AppInstanceSubscriptionFilter'
+          type: object
+        notificationTypes:
+          description: 'Match particular notification types.
+
+
+            Permitted values:
+
+            AppLcmOpOccNotification.'
+          type: string
+        operationTypes:
+          type: string
+          description: 'Type of the LCM operation represented by this application instance LCM operation occurrence.
+
+
+            Permitted values:
+
+            INSTANTIATE.
+
+            OPERATE.
+
+            TERMINATE.
+
+
+            Match particular application lifecycle operation types for the notification of AppLcmOpOccNotification.
+
+
+            May be present if the "notificationTypes" attribute contains the value "AppLcmOpOccNotification", and shall be absent otherwise.'
+          enum:
+          - SEE_DESCRIPTION
+        operationStates:
+          type: string
+          description: 'Type of the LCM operation state represented by this application instance LCM operation occurrence.
+
+
+            Permitted values:
+
+            STARTING.
+
+            PROCESSING.
+
+            COMPLETED.
+
+            FAILED.
+
+            FAILED_TEMP
+
+
+            Match particular LCM operation state values as reported in notifications of AppLcmOpOccNotification.
+
+
+            May be present if the "notificationTypes" attribute contains the value "AppLcmOpOccNotification", and shall be absent otherwise.'
+          enum:
+          - SEE_DESCRIPTION
+    InstantiateAppRequest:
+      x-etsi-ref: 6.2.2.7
+      type: object
+      properties:
+        virtualComputeDescriptor:
+          description: Describes CPU and memory requirements, as well as optional additional requirements, such as disk and acceleration related capabilities, of the single VM to realize the application instance to be created. See notes 1 and 4.
+          $ref: '#/components/schemas/VirtualComputeDescriptor'
+          type: object
+        osContainerDescriptor:
+          description: 'Describes CPU, memory requirements and limits, and software images of the OS Containers realizing this MEC application corresponding to OS Containers sharing the same host and same network namespace.
+
+            See notes 1, 4 and 5.'
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/OsContainerDescriptor'
+        virtualStorageDescriptor:
+          description: Defines descriptors of virtual storage resources to be used by the application instance to be created. See note 1.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/VirtualStorageDescriptor'
+        selectedMECHostInfo:
+          description: Describes the information of selected host for the application instance. See note 2.
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/MECHostInformation'
+        locationConstraints:
+          description: Defines the location constraints for the application instance to be created. See note 3.
+          $ref: '#/components/schemas/LocationConstraints'
+          type: object
+        vimConnectionInfo:
+          description: "Information about VIM connections to be used for managing the resources for the application instance, or refer to external/externally-managed virtual links.\nThis attribute shall only be supported and may be present if application-related resource management in direct mode is applicable. See\_note 2."
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/VimConnectionInfoMap'
+        appTermCandsForCoord:
+          description: Provides sets of applications as termination candidate alternatives that the MEO/MEAO shall select from when utilizing the coordinate LCM operation exchange in pre-emption situations (see step 3 in clause 5.3.1). If this attribute is omitted, the MEO/MEAO shall make its own selection for the coordinate LCM operation exchange. See note 3.
+          $ref: '#/components/schemas/AppTermCandsForCoord'
+          type: object
+      required:
+      - selectedMECHostInfo
+      description: "|-\n  NOTE 1:\tThis attribute may be provided in the InstantiateAppRequest structure to override the same attribute in the AppD.\nNOTE 2:\tThis field applies to Mm3 reference point only.\nNOTE 3:\tThis field applies to Mm1 reference point only.\nNOTE 4:\tOnly one of virtualComputeDescriptor or osContainerDescriptor shall be present.\nNOTE 5:\tThis attribute reflects the ETSI NFV interpretation of the cloud native workloads."
+    OperateAppRequest:
+      x-etsi-ref: 6.2.2.8
+      type: object
+      properties:
+        changeStateTo:
+          type: string
+          description: 'The desired operational state:
+
+            STARTED: the application instance is up and running.
+
+            STOPPED: the application instance stops operation.'
+          enum:
+          - SEE_DESCRIPTION
+        stopType:
+          type: string
+          description: 'The stop type:
+
+            FORCEFUL: it will stop the application immediately after accepting the request.
+
+            GRACEFUL: it will first arrange to take the application instance out of service after accepting the request. Once that operation is successful or once the timer value specified in the "gracefulStopTimeout" attribute expires, it will stop the application.
+
+            See notes 1 and 3.'
+          enum:
+          - SEE_DESCRIPTION
+        gracefulStopTimeout:
+          description: The time interval (in seconds) to wait for the application instance to be taken out of service during graceful stop, before stopping the application. See note 1 and note 2.
+          type: integer
+      required:
+      - changeStateTo
+      description: "|-\n  NOTE 1:\tThe \"stopType\" and \"gracefulStopTimeout\" attributes shall be absent, when the \"changeStateTo\" attribute is equal to \"STARTED\".\nNOTE 2:\tThe \"gracefulStopTimeout\" attribute shall be present, when the \"changeStateTo\" is equal to \"STOPPED\" and the \"stopType\" attribute is equal to \"GRACEFUL\". The \"gracefulStopTimeout\" attribute shall be absent, when the \"changeStateTo\" attribute is equal to \"STOPPED\" and the \"stopType\" attribute is equal to \"FORCEFUL\".\nNOTE 3:\tThe request shall be treated as if the \"stopType\" attribute was set to \"FORCEFUL\", when the \"changeStateTo\" attribute is equal to \"STOPPED\" and the \"stopType\" attribute is absent."
+    TerminateAppRequest:
+      x-etsi-ref: 6.2.2.9
+      type: object
+      properties:
+        terminationType:
+          type: string
+          description: "Indicates whether forceful or graceful termination is requested. \nFORCEFUL: it will shut down the application instance and release the resources immediately after accepting the request. See note.\nGRACEFUL: it will first arrange to take the application instance out of service after accepting the request. Once the operation of taking the application instance out of service finishes or once the timer value specified in the \"gracefulTerminationTimeout\" attribute expires, it will shut down the application instance and release the resources."
+          enum:
+          - SEE_DESCRIPTION
+        gracefulTerminationTimeout:
+          description: 'This attribute is only applicable in case of graceful termination. It defines the time to wait for the application instance to be taken out of service before shutting down the application and releasing the resources.
+
+            The unit is seconds.
+
+            If not given and the "terminationType" attribute is set to "GRACEFUL", it is expected to wait for the successful taking out of service of the application, no matter how long it takes, before shutting down the application and releasing the resources.'
+          type: integer
+      required:
+      - terminationType
+      description: "|-\n  NOTE:\tIf the application instance is still in service, requesting forceful termination can adversely impact service."
+    AppInstSubscriptionInfo:
+      x-etsi-ref: 6.2.2.10
+      type: object
+      properties:
+        id:
+          description: Identifier of the subscription to application instance operational state change notification.
+          type: string
+        subscriptionType:
+          description: Shall be set to "AppInstanceStateChangeSubscription".
+          type: string
+        appInstanceState:
+          type: string
+          description: 'Application instance state subscribed to:
+
+            NOT_INSTANTIATED: the application instance is not instantiated.
+
+            STARTED: the application instance is up and running.
+
+            STOPPED: the application instance stops operation.'
+          enum:
+          - SEE_DESCRIPTION
+        appInstanceSubscriptionFilter:
+          description: Criteria used to select application instances on which to send notifications related to this subscription.
+          $ref: '#/components/schemas/AppInstanceSubscriptionFilter'
+          type: object
+        callbackUri:
+          description: The URI of the endpoint for the subscription related notification to be sent to.
+          type: string
+          format: uri
+        _links:
+          $ref: '#/components/schemas/_links1'
+      required:
+      - id
+      - subscriptionType
+      - callbackUri
+      - _links
+    AppInstNotification:
+      x-etsi-ref: 6.2.2.11
+      type: object
+      properties:
+        id:
+          description: Identifier of this notification. If a notification is sent multiple times due to multiple subscriptions, the "notificationId" attribute of all these notifications shall have the same value.
+          type: string
+        notificationType:
+          description: Discriminator for the different notification types. Shall be set to "AppInstanceStateChangeSubscription" for this notification type.
+          type: string
+        appInstanceState:
+          type: string
+          description: 'Application instance state:
+
+            NOT_INSTANTIATED: the application instance is not instantiated.
+
+            STARTED: the application instance is up and running.
+
+            STOPPED: the application instance stops operation.'
+          enum:
+          - SEE_DESCRIPTION
+        subscriptionId:
+          description: Identifier of the subscription related to this notification.
+          type: string
+        timeStamp:
+          description: Date and time of the notification generation.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        appInstanceId:
+          description: Identifier of application instance.
+          type: string
+        appPkgId:
+          description: Identifier of the onboarded application package.
+          type: string
+        appDId:
+          description: The application descriptor identifier identifies the application package and the application descriptor in a globally unique way.
+          type: string
+        appInstLocation:
+          description: Location of the MEC application instance. Shall be present if the application instance is instantiated and shall be absent otherwise.
+          $ref: '#/components/schemas/LocationInformation'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links2'
+      required:
+      - id
+      - notificationType
+      - appInstanceState
+      - subscriptionId
+      - timeStamp
+      - appInstanceId
+      - appPkgId
+      - appDId
+      - _links
+    AppInstSubscriptionRequest:
+      x-etsi-ref: 6.2.2.12
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "AppInstanceStateChangeSubscription".
+          type: string
+        callbackUri:
+          description: The URI of the endpoint for the subscription related notification to be sent to.
+          type: string
+          format: uri
+        appInstanceState:
+          type: string
+          description: 'Only send notifications for application instances that are in one of the states listed in this attribute. If this attribute is absent, match all states.
+
+
+            Application states:
+
+            NOT_INSTANTIATED: the application instance is not instantiated.
+
+            STARTED: the application instance is up and running.
+
+            STOPPED: the application instance stops operation.'
+          enum:
+          - SEE_DESCRIPTION
+        appInstanceSubscriptionFilter:
+          description: Criteria used to filter application instances for which to send notifications related to this subscription.
+          $ref: '#/components/schemas/AppInstanceSubscriptionFilter'
+          type: object
+      required:
+      - subscriptionType
+      - callbackUri
+    AppLcmOpOcc:
+      x-etsi-ref: 6.2.2.13
+      type: object
+      properties:
+        id:
+          description: Identifier of the subscription to application LCM operation occurrence notification.
+          type: string
+        operationState:
+          type: string
+          description: 'Operation state:
+
+            STARTING: the LCM operation starting.
+
+            PROCESSING: the LCM operation is currently in execution.
+
+            COMPLETED: the LCM operation has been completed.
+
+            FAILED: The LCM operation has failed and it cannot be retried, as it is determined that such action will not succeed.
+
+            FAILED_TEMP: The LCM operation has failed and execution has stopped, but the execution of the operation is not considered to be closed.'
+          enum:
+          - SEE_DESCRIPTION
+        stateEnteredTime:
+          description: Date and time when the current state was entered.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        startTime:
+          description: Date and time of the start of the operation.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        lcmOperation:
+          type: string
+          description: 'Type of the actual LCM operation represented by this application instance LCM operation occurrence:
+
+            INSTANTIATE.
+
+            OPERATE.
+
+            TERMINATE.
+
+            This attribute is associated to the operationParams.'
+          enum:
+          - SEE_DESCRIPTION
+        operationParams:
+          description: 'Input parameters of the LCM operation. This attribute shall be formatted according to the request data type of the related LCM operation. The following mapping between LCM operation and the data type of this attribute shall apply: INSTANTIATE: InstantiateAppRequest. OPERATE: OperateAppRequest. TERMINATE: TerminateAppRequest. This attribute shall be present if this data type is returned in a response to reading an individual resource. See note 2.'
+          $ref: '#/components/schemas/InstantiateAppRequest'
+          type: object
+        isCancelPending:
+          description: If the application LCM operation occurrence operationState is in "PROCESSING" state and the operation is being cancelled, this attribute shall be set to true. Otherwise, it shall be set to false.
+          type: boolean
+        cancelMode:
+          description: 'The mode of a cancellation: GRACEFUL: Indicates ongoing resource management operations in the underlying system are being allowed to complete execution or timing out. FORCEFUL: Indicates ongoing resource management operations in the underlying system are being forcefully cancelled. Shall be present when isCancelPending equals true and shall be absent otherwise.'
+          $ref: '#/components/schemas/CancelMode'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links3'
+      required:
+      - id
+      - operationState
+      - stateEnteredTime
+      - startTime
+      - lcmOperation
+      - _links
+      description: "|-\n  Note 1:\tVoid.\nNote 2:\tThis object contains structured data, and shall comply with the provisions of clause 4 of IETF RFC 8259 [5]."
+    AppLcmOpOccSubscriptionRequest:
+      x-etsi-ref: 6.2.2.14
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "AppLcmOpOccStateChangeSubscription".
+          type: string
+        callbackUri:
+          description: The URI of the endpoint for the subscription related notification to be sent to.
+          type: string
+          format: uri
+        appLcmOpOccSubscriptionFilter:
+          description: Subscription filter criteria to match specific application LCM operation occurrences.
+          $ref: '#/components/schemas/AppLcmOpOccSubscriptionFilter'
+          type: object
+      required:
+      - subscriptionType
+      - callbackUri
+    AppLcmOpOccSubscriptionInfo:
+      x-etsi-ref: 6.2.2.15
+      type: object
+      properties:
+        id:
+          description: Identifier of this subscription resource.
+          type: string
+        subscriptionType:
+          description: Shall be set to "AppLcmOpOccStateChangeSubscription".
+          type: string
+        callbackUri:
+          description: The URI of the endpoint for the subscription related notification to be sent to.
+          type: string
+          format: uri
+        appLcmOpOccSubscriptionFilter:
+          description: Criteria used to select application LCM operation occurrences on which to send notifications related to this subscription.
+          $ref: '#/components/schemas/AppLcmOpOccSubscriptionFilter'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links1'
+      required:
+      - id
+      - subscriptionType
+      - callbackUri
+      - _links
+    AppLcmOpOccNotification:
+      x-etsi-ref: 6.2.2.16
+      type: object
+      properties:
+        id:
+          description: Identifier of this notification. If a notification is sent multiple times due to multiple subscriptions, the "notificationId" attribute of all these notifications shall have the same value.
+          type: string
+        notificationType:
+          description: Discriminator for the different notification types. Shall be set to "AppLcmOpOccStateChangeSubscription" for this notification type.
+          type: string
+        operationType:
+          type: string
+          description: 'Type of the LCM operation represented by this application instance LCM operation occurrence.
+
+
+            Permitted values:
+
+            INSTANTIATE.
+
+            OPERATE.
+
+            TERMINATE.'
+          enum:
+          - SEE_DESCRIPTION
+        operationState:
+          type: string
+          description: 'Operation state:
+
+
+            STARTING: the LCM operation starting.
+
+            PROCESSING: the LCM operation is currently in execution.
+
+            COMPLETED: the LCM operation has been completed.
+
+            FAILED: The LCM operation has failed and it cannot be retried, as it is determined that such action will not succeed.
+
+            FAILED_TEMP: The LCM operation has failed and execution has stopped, but the execution of the operation is not considered to be closed.'
+          enum:
+          - SEE_DESCRIPTION
+        subscriptionId:
+          description: Identifier of the subscription to this notification.
+          type: string
+        timeStamp:
+          description: Date and time of the notification generation.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        appLcmOpOccId:
+          description: Identifier of application lifecycle management operation occurrence.
+          type: string
+        appInstanceId:
+          description: Identifier of application instance.
+          type: string
+        _links:
+          $ref: '#/components/schemas/_links4'
+      required:
+      - id
+      - notificationType
+      - operationType
+      - operationState
+      - subscriptionId
+      - timeStamp
+      - appLcmOpOccId
+      - appInstanceId
+      - _links
+    MECHostInformation:
+      x-etsi-ref: 6.2.2.17
+      type: object
+      properties:
+        hostName:
+          description: Human-readable name of MEC host.
+          type: string
+        hostId:
+          description: Deployment-specific information to identify a MEC host. See note.
+          type: object
+      required:
+      - hostId
+      description: "|-\n  NOTE:\tThis information can be structured to cater for host identification schemes that are more complex than a simple identifier, e.g. when referring to the structure of an NFVI."
+    VimConnectionInfo:
+      x-etsi-ref: 6.2.2.18
+      type: object
+      properties:
+        id:
+          description: The identifier of the VIM Connection. This identifier is managed by the MEO.
+          type: string
+        vimId:
+          description: 'The identifier of the VIM instance. This identifier is managed by the MEO.
+
+
+            Shall be present to address additional information about the VIM if such information has been configured into the MEPM by means outside the scope of the present document, and should be absent otherwise.'
+          type: string
+        vimType:
+          description: 'Discriminator for the different types of the VIM information.
+
+
+            The value of this attribute determines the structure of the "interfaceInfo" and "accessInfo" attributes, based on the type of the VIM.
+
+
+            The set of permitted values is expected to change over time as new types or versions of VIMs become available.'
+          type: string
+        interfaceInfo:
+          description: 'Information about the interface or interfaces to the VIM, if applicable, such as the URI of an interface endpoint to communicate with the VIM. The applicable keys are dependent on the content of vimType.
+
+
+            Alternatively, such information may have been configured into the VNFM and bound to the vimId.'
+          type: object
+        accessInfo:
+          description: 'Authentication credentials for accessing the VIM, and other access-related information such as tenants or infrastructure resource groups. The applicable keys are dependent on the content of vimType.
+
+
+            If the VimConnectionInfo structure is part of an HTTP response message content, sensitive attributes that are children of this attributes (such as passwords) shall not be included.
+
+
+            If the VimConnectionInfo structure is part of an HTTP request message content, sensitive attributes that are children of this attribute (such as passwords) shall be present if they have not been provisioned out of band.'
+          type: object
+        extra:
+          description: VIM type specific additional information. The applicable structure, and whether or not this attribute is available, is dependent on the content of vimType.
+          type: object
+      required:
+      - id
+      - vimType
+    AppInstanceSubscriptionLinkList:
+      x-etsi-ref: 6.2.2.19
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/_links5'
+      required:
+      - _links
+    ConfigPlatformForAppRequest:
+      x-etsi-ref: 6.2.2.21
+      type: object
+      properties:
+        appServiceRequired:
+          description: Describes services a MEC application requires to run.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/ServiceDependency'
+        appServiceOptional:
+          description: Describes services a MEC application may use if available.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/ServiceDependency'
+        appServiceProduced:
+          description: Describes services a MEC application is able to produce to the platform or other MEC applications. Only relevant for service-producing apps.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/ServiceDescriptor'
+        appFeatureRequired:
+          description: Describes features a MEC application requires to run.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/FeatureDependency'
+        appFeatureOptional:
+          description: Describes features a MEC application may use if available.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/FeatureDependency'
+        transportDependencies:
+          description: Transports, if any, that this application requires to be provided by the platform. These transports will be used by the application to deliver services provided by this application. Only relevant for service-producing apps.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/TransportDependency'
+        appTrafficRule:
+          description: Describes traffic rules the MEC application requires.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/TrafficRuleDescriptor'
+        appDNSRule:
+          description: Describes DNS rules the MEC application requires.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/DNSRuleDescriptor'
+        appLatency:
+          description: Describes the maximum latency tolerated by the MEC application.
+          $ref: '#/components/schemas/LatencyDescriptor'
+          type: object
+        userContextTransferCapability:
+          description: If the application supports the user context transfer capability, this attribute shall be included.
+          $ref: '#/components/schemas/UserContextTransferCapability'
+          type: object
+        appNetworkPolicy:
+          description: If present, it represents the application network policy of carrying the application traffic.
+          $ref: '#/components/schemas/AppNetworkPolicy'
+          type: object
+    MepInformation:
+      x-etsi-ref: 6.2.2.22
+      type: object
+      properties:
+        mepName:
+          description: Human-readable name of MEC platform.
+          type: string
+        mepId:
+          description: Deployment-specific identifier of MEC platform.
+          type: string
+      required:
+      - mepId
+    AppTermCandsForCoord:
+      x-etsi-ref: 6.2.2.23
+      type: object
+      properties:
+        terminationOptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TerminationOptions'
+      required:
+      - terminationOptions
+    AppInstIdCreationSubscriptionRequest:
+      x-etsi-ref: 6.2.2.25
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "AppIdentifierCreationSubscription".
+          type: string
+        callbackUri:
+          description: The URI of the endpoint for the subscription related notification to be sent to.
+          type: string
+          format: uri
+        appInstanceSubscriptionFilter:
+          description: Criteria used to filter application instances for which to send notifications related to this subscription. See note.
+          $ref: '#/components/schemas/AppInstanceSubscriptionFilter'
+          type: object
+      required:
+      - subscriptionType
+      - callbackUri
+      description: "|-\n  NOTE:\tIf present, the value of attribute \"appInstSelectorType\" in appInstanceSubscriptionFilter can only be set as \"APP_D_ID\" or \"APP_FROM_PROVIDER\"."
+    AppInstIdCreationSubscriptionInfo:
+      x-etsi-ref: 6.2.2.26
+      type: object
+      properties:
+        id:
+          description: Identifier of the subscription to application instance operational state change notification.
+          type: string
+        subscriptionType:
+          description: Shall be set to "AppIdentifierCreationSubscription".
+          type: string
+        callbackUri:
+          description: The URI of the endpoint for the subscription related notification to be sent to.
+          type: string
+          format: uri
+        appInstanceSubscriptionFilter:
+          description: Criteria used to select application instances on which to send notifications related to this subscription.
+          $ref: '#/components/schemas/AppInstanceSubscriptionFilter'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links1'
+      required:
+      - id
+      - subscriptionType
+      - callbackUri
+      - _links
+    AppInstanceIdentifierCreationNotification:
+      x-etsi-ref: 6.2.2.27
+      type: object
+      properties:
+        id:
+          description: Identifier of this notification. If a notification is sent multiple times due to multiple subscriptions, the "notificationId" attribute of all these notifications shall have the same value.
+          type: string
+        notificationType:
+          description: Discriminator for the different notification types. Shall be set to "AppIdentifierCreationSubscription" for this notification type.
+          type: string
+        subscriptionId:
+          description: Identifier of the subscription related to this notification.
+          type: string
+        timeStamp:
+          description: Date and time of the notification generation.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        appInstanceId:
+          description: The created application instance Identifier.
+          type: string
+        _links:
+          $ref: '#/components/schemas/_links6'
+      required:
+      - id
+      - notificationType
+      - subscriptionId
+      - timeStamp
+      - appInstanceId
+      - _links
+    AppInstIdDeletionSubscriptionRequest:
+      x-etsi-ref: 6.2.2.28
+      type: object
+      properties:
+        subscriptionType:
+          description: Shall be set to "AppIdentifierDeletionSubscription".
+          type: string
+        callbackUri:
+          description: The URI of the endpoint for the subscription related notification to be sent to.
+          type: string
+          format: uri
+        appInstanceSubscriptionFilter:
+          description: Criteria used to filter application instances for which to send notifications related to this subscription.
+          $ref: '#/components/schemas/AppInstanceSubscriptionFilter'
+          type: object
+      required:
+      - subscriptionType
+      - callbackUri
+    AppInstIdDeletionSubscriptionInfo:
+      x-etsi-ref: 6.2.2.29
+      type: object
+      properties:
+        id:
+          description: Identifier of the subscription to application instance operational state change notification.
+          type: string
+        subscriptionType:
+          description: Shall be set to "AppIdentifierDeletionSubscription".
+          type: string
+        callbackUri:
+          description: The URI of the endpoint for the subscription related notification to be sent to.
+          type: string
+          format: uri
+        appInstanceSubscriptionFilter:
+          description: Criteria used to select application instances on which to send notifications related to this subscription.
+          $ref: '#/components/schemas/AppInstanceSubscriptionFilter'
+          type: object
+        _links:
+          $ref: '#/components/schemas/_links1'
+      required:
+      - id
+      - subscriptionType
+      - callbackUri
+      - _links
+    AppInstanceIdentifierDeletionNotification:
+      x-etsi-ref: 6.2.2.30
+      type: object
+      properties:
+        id:
+          description: Identifier of this notification. If a notification is sent multiple times due to multiple subscriptions, the "notificationId" attribute of all these notifications shall have the same value.
+          type: string
+        notificationType:
+          description: Discriminator for the different notification types. Shall be set to "AppIdentifierDeletionSubscription" for this notification type.
+          type: string
+        subscriptionId:
+          description: Identifier of the subscription related to this notification.
+          type: string
+        timeStamp:
+          description: Date and time of the notification generation.
+          $ref: '#/components/schemas/TimeStamp'
+          type: object
+        appInstanceId:
+          description: The deleted application instance Identifier.
+          type: string
+        _links:
+          $ref: '#/components/schemas/_links7'
+      required:
+      - id
+      - notificationType
+      - subscriptionId
+      - timeStamp
+      - appInstanceId
+      - _links
+    LocationInformation:
+      x-etsi-ref: 6.2.2.31
+      type: object
+      properties:
+        countryCode:
+          description: The two-letter ISO 3166 [3] country code in capital letters where an instance is deployed.
+          type: string
+        civicAddress:
+          $ref: '#/components/schemas/CivicAddress'
+        geographicalPosition:
+          description: Geographical position (i.e. latitude and longitude) where an instance is deployed. The content of this attribute shall follow the provisions for the "Point" geometry object as defined in IETF RFC 7946 [8].
+          type: string
+      required:
+      - countryCode
+      description: "|-\n  NOTE:\tAt least one of civicAddress or geographicalPosition shall be present. If both are present they shall specify the same location, bound by the precision of the provided coordinates."
+    CancelMode:
+      x-etsi-ref: 6.2.2.32
+      type: object
+      properties:
+        CancelMode:
+          type: string
+          description: 'Indicates the intervention action to be taken.
+
+            GRACEFUL: Indicates ongoing resource management operations in the underlying system are allowed to complete execution or time out.
+
+            FORCED: Indicates ongoing resource management operations in the underlying system are to be cancelled without allowing them to complete execution or time out.'
+          enum:
+          - SEE_DESCRIPTION
+      required:
+      - CancelMode
+    LinkType:
+      x-etsi-ref: 6.2.5.2
+      type: object
+      properties:
+        href:
+          description: URI referring to a resource.
+          type: string
+          format: uri
+      required:
+      - href
+    TimeStamp:
+      x-etsi-ref: 6.2.5.4
+      type: object
+      properties:
+        seconds:
+          description: "The seconds part of the Time. Time is defined as Unix-time since January\_1, 1970, 00:00:00 UTC."
+          type: integer
+          format: uint32
+        nanoSeconds:
+          description: The nanoseconds part of the Time. Time is defined as Unix-time since January 1, 1970, 00:00:00 UTC.
+          type: integer
+          format: uint32
+      required:
+      - seconds
+      - nanoSeconds
+    Checksum:
+      x-etsi-ref: 6.2.5.6
+      type: object
+      properties:
+        algorithm:
+          description: Name of the algorithm used to generate the checksum, as defined in ETSI GS NFV-SOL 004 [18]. For example, SHA-256, SHA-512.
+          type: string
+        hash:
+          description: The hexadecimal value of the checksum.
+          type: string
+      required:
+      - algorithm
+      - hash
+    TransportsSupported:
+      description: Indicates transports and serialization formats supported made available to the service-consuming application. Defaults to REST + JSON if absent.
+      type: object
+      minItems: 0
+      properties:
+        transport:
+          description: Information about the transport in this binding.
+          $ref: '#/components/schemas/TransportDescriptor'
+          type: object
+        serializers:
+          description: "Information about the serializers in this binding, as defined in the SerializerType type in ETSI GS\_MEC\_011\_[17]."
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/SerializerType'
+      required:
+      - transport
+      - serializers
+    SteeredNetwork:
+      description: 'This attribute provides an option for the application to specify a type of network to carry the application traffic.
+
+        See note.'
+      type: object
+      properties:
+        cellularNetwork:
+          description: If present, and the application prefers to a cellular network to carry its traffic, this attribute shall be set to true. Otherwise, it shall be set to false.
+          type: boolean
+        wi-fiNetwork:
+          description: "If present, and the application prefers to a WiFi\xAEnetwork to carry its traffic, this attribute shall be set to true. Otherwise, it shall be set to false."
+          type: boolean
+        fixedAccessNetwork:
+          description: If present, and the application prefers to a fixed access network to carry its traffic, this attribute shall be set to true. Otherwise, it shall be set to false.
+          type: boolean
+    CivicAddressElement:
+      description: Zero or more elements comprising the civic address. Shall be absent if the "area" attribute is present.
+      type: object
+      minItems: 0
+      properties:
+        caType:
+          description: Describe the content type of caValue. The value of caType shall comply with section 3.4 of IETF RFC 4776 [2].
+          type: integer
+        caValue:
+          description: Content of civic address element corresponding to the caType. The format caValue shall comply with section 3.4 of IETF RFC 4776 [2].
+          type: string
+      required:
+      - caType
+      - caValue
+    InstantiatedAppState:
+      description: Information specific to an instantiated application. This attribute shall be present if the instantiationState attribute value is INSTANTIATED.
+      type: object
+      properties:
+        operationalState:
+          type: string
+          description: 'Operational state is applicable in the instantiation state INSTANTIATED:
+
+            STARTED: the application instance is up and running.
+
+            STOPPED: the application instance stops operation.'
+          enum:
+          - SEE_DESCRIPTION
+        appInstLocation:
+          description: Location of the MEC application instance. See note 5 and note 6.
+          $ref: '#/components/schemas/LocationInformation'
+          type: object
+        mcioInfo:
+          description: Information on the MCIO(s) representing application instance realized by one or a set of OS containers. See note 7.
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/McioInfo'
+      required:
+      - operationalState
+    _links:
+      description: Links to resources related to this resource.
+      type: object
+      properties:
+        self:
+          description: Self referring URI.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+        instantiate:
+          description: Link to the "instantiate" task resource, if the related operation is possible based on the current status of this application instance resource (i.e. application instance in NOT_INSTANTIATED state). See note 3.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+        terminate:
+          description: Link to the "terminate" task resource, if the related operation is possible based on the current status of this application instance resource (i.e. application instance is in INSTANTIATED state).
+          $ref: '#/components/schemas/LinkType'
+          type: object
+        operate:
+          description: Link to the "operate" task resource, if the related operation is supported for this application instance, and is possible based on the current status of this application instance resource (i.e. application instance is in INSTANTIATED state).
+          $ref: '#/components/schemas/LinkType'
+          type: object
+        configure_platform_for_app:
+          description: Link to the "configure_platform_for_app" task resource, if the related operation is supported for this application instance, and is possible based on the current status of this application instance resource (i.e. application instance is in INSTANTIATED state). See note 4.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - self
+    Versions:
+      description: If present, match application instances that belong to application products with certain versions and a certain product name, from one particular provider.
+      type: object
+      minItems: 0
+      properties:
+        appSoftVersion:
+          description: Application software version to match.
+          type: string
+        appDVersion:
+          description: If present, match application instances that belong to application products with certain appD versions, a certain software version and a certain product name, from one particular provider.
+          type: array
+          minItems: 0
+          items:
+            type: string
+      required:
+      - appSoftVersion
+    AppProducts:
+      description: If present, match application instances that belong to application products with certain product names, from one particular provider.
+      type: object
+      minItems: 0
+      properties:
+        appName:
+          description: Name of the application product to match.
+          type: string
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Versions'
+      required:
+      - appName
+    AppsFromProviders:
+      description: Present only if appInstIdSelector = APP_FROM_PROVIDER. Match existing application instances, or those created in the future whilst the subscription is active, that belong to applications from certain providers.
+      type: object
+      minItems: 0
+      properties:
+        appProvider:
+          description: Name of the application provider to match.
+          type: string
+        appProducts:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppProducts'
+      required:
+      - appProvider
+    _links1:
+      description: Links to resources related to this resource.
+      type: object
+      properties:
+        self:
+          description: URI of this resource.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - self
+    _links2:
+      description: Links to resources related to this notification.
+      type: object
+      properties:
+        subscription:
+          description: A link to the related subscription.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - subscription
+    _links3:
+      description: Links to resources related to this resource.
+      type: object
+      properties:
+        self:
+          description: URI of this resource.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+        appInstance:
+          description: Link to the application instance that the operation applies to.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - self
+      - appInstance
+    _links4:
+      description: Links to resources related to this notification.
+      type: object
+      properties:
+        appInstance:
+          description: Link to the resource representing the application instance to which the notified change applies.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+        subscription:
+          description: Link to the related subscription.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+        appLcmOpOcc:
+          description: Link to the application lifecycle management operation occurrence that this notification is related to.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - appInstance
+      - subscription
+      - appLcmOpOcc
+    Subscriptions:
+      description: A link list to the subscriptions.
+      type: object
+      minItems: 0
+      properties:
+        href:
+          description: The URI referring to the subscription.
+          type: string
+          format: uri
+        subscriptionType:
+          description: Type of the subscription.
+          $ref: '#/components/schemas/AppInstanceSubscriptionType'
+          type: object
+      required:
+      - href
+      - subscriptionType
+    _links5:
+      description: List of hyperlinks related to the resource.
+      type: object
+      properties:
+        self:
+          description: URI of this resource.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+        subscriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscriptions'
+      required:
+      - self
+    TerminationOptions:
+      description: Sets of application options for the MEO/MEAO to select from as candidates for termination. The MEO/MEAO shall select one or more of these alternate options to pass to the OSS when utilizing the LCM coordination exchange in pre-emption situations. For each option, the MEO/MEAO may select all, or a subset, of the candidate set's members.
+      type: object
+      minItems: 1
+      properties:
+        appInstIdTerminationCands:
+          description: 'List of application instance identifiers, constituting a candidate set for termination. '
+          type: array
+          minItems: 1
+          items:
+            type: string
+      required:
+      - appInstIdTerminationCands
+    _links6:
+      description: Links to resources related to this notification.
+      type: object
+      properties:
+        subscription:
+          description: A link to the related subscription.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+        appInstance:
+          description: Link to the resource representing the created application instance.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - subscription
+      - appInstance
+    _links7:
+      description: Links to resources related to this notification.
+      type: object
+      properties:
+        subscription:
+          description: A link to the related subscription.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+        appInstance:
+          description: Link to the resource representing the deleted application instance.
+          $ref: '#/components/schemas/LinkType'
+          type: object
+      required:
+      - subscription
+      - appInstance
+    CivicAddressElement1:
+      description: Provides elements comprising a single civic address as described in section 3.4, with accompanying example in section 5 of IETF RFC 4776 [2].
+      type: object
+      minItems: 1
+      properties:
+        caType:
+          description: "Describe the content type of caValue. The value of caType shall comply with section 3.4 of IETF RFC\_4776 [2]. "
+          type: integer
+        caValue:
+          description: "Content of civic address element corresponding to the caType. The format caValue shall comply with section\_3.4 of IETF RFC 4776 [2]."
+          type: string
+      required:
+      - caType
+      - caValue
+    CivicAddress:
+      description: Provides the civic address of the site hosting the MEC application instance.
+      type: object
+      properties:
+        civicAddressElement:
+          type: array
+          items:
+            $ref: '#/components/schemas/CivicAddressElement1'
+      required:
+      - civicAddressElement
+    VimConnectionInfoMap:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/VimConnectionInfo'
+  responses:
+    '200':
+      description: OK
+    '204':
+      description: No Content
+    '400':
+      description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '401':
+      description: 'Unauthorized: used when the client did not submit credentials.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '403':
+      description: 'Forbidden: operation is not allowed given the current status of the resource.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '404':
+      description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '406':
+      description: 'Not Acceptable: used to indicate that the server cannot provide the any of the content formats supported by the client.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '409':
+      description: 'Conflict: The operation cannot be executed currently, due to a conflict with the state of the resource. .'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '429':
+      description: 'Too Many Requests: used when a rate limiter has triggered.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+  parameters:
+    Query.Filter:
+      description: 'Attribute-based filtering parameters according to ETSI GS MEC 009 [4].
+
+        The API producer shall support receiving filtering parameters as part of the URI query string.
+
+        All attribute names that appear in the AppInstanceInfo and in data types referenced from it shall be supported in attribute-based filtering parameters.
+
+        See clause 6.19 in ETSI GS MEC 009 [4] for details.'
+      name: filter
+      in: query
+      required: false
+      x-exportParamName: Query.Filter
+      schema:
+        type: string
+    Query.All_fields:
+      description: "Include all complex attributes in the response. See clause 6.18 in ETSI GS\_MEC\_009\_[4] for details. The API producer shall support this parameter."
+      name: all_fields
+      in: query
+      required: false
+      x-exportParamName: Query.All_fields
+      schema:
+        type: string
+    Query.Fields:
+      description: "Complex attributes to be included into the response. See clause 6.18 in ETSI GS\_MEC\_009 [4] for details. The API producer should support this parameter."
+      name: fields
+      in: query
+      required: false
+      x-exportParamName: Query.Fields
+      schema:
+        type: string
+    Query.Exclude_fields:
+      description: Complex attributes to be excluded from the response. See clause 6.18 in [4] for details. The API producer should support this parameter.
+      name: exclude_fields
+      in: query
+      required: false
+      x-exportParamName: Query.Exclude_fields
+      schema:
+        type: string
+    Query.Exclude_default:
+      description: "Indicates to exclude the following complex attributes from the response. See clause\_6.18 in ETSI GS MEC 009 [4] for details. The API producer shall support this parameter.\nThe following attributes shall be excluded from the AppInstanceInfo structure in the response message content if this parameter is provided, or none of the parameters \"all_fields\", \"fields\", \"exclude_fields\", \"exclude_default\" are provided:\nvimConnectionInfo;\ninstantiate;\nterminate;\noperate."
+      name: exclude_default
+      in: query
+      required: false
+      x-exportParamName: Query.Exclude_default
+      schema:
+        type: string
+    Query.Subscriptiontype:
+      description: Query parameter to filter on a specific subscription type.
+      name: subscriptiontype
+      in: query
+      required: false
+      x-exportParamName: Query.Subscriptiontype
+      schema:
+        $ref: '#/components/schemas/AppInstanceSubscriptionType'
+    Query.Filter1:
+      description: 'Attribute-based filtering parameters according to ETSI GS MEC 009 [4].
+
+        The API producer shall support receiving filtering parameters as part of the URI query string.
+
+        All attribute names that appear in the AppLcmOpOcc and in data types referenced from it shall be supported in attribute-based filtering parameters. See clause 6.19 in ETSI GS MEC 009 [4] for details.'
+      name: filter
+      in: query
+      required: false
+      x-exportParamName: Query.Filter1
+      schema:
+        type: string
+    Query.Fields1:
+      description: 'Complex attributes of AppLcmOpOcc to be included into the response.
+
+
+        See clause 6.18 in ETSI GS MEC 009 [4] for details. The API producer should support this parameter.'
+      name: fields
+      in: query
+      required: false
+      x-exportParamName: Query.Fields1
+      schema:
+        type: string
+    Query.Exclude_fields1:
+      description: 'Complex attributes of AppLcmOpOcc to be excluded from the response.
+
+
+        See clause 6.18 in ETSI GS MEC 009 [4] for details. The API producer should support this parameter.'
+      name: exclude_fields
+      in: query
+      required: false
+      x-exportParamName: Query.Exclude_fields1
+      schema:
+        type: string
+    Query.Exclude_default1:
+      description: 'Indicates to exclude the following complex attributes of AppLcmOpOcc from the response.
+
+
+        The following attributes shall be excluded from the AppLcmOpOcc structure in the response message content if this parameter is provided, or none of the parameters "all_fields", "fields", "exclude_fields", "exclude_default" are provided:
+
+        operationParams;
+
+        _links.'
+      name: exclude_default
+      in: query
+      required: false
+      x-exportParamName: Query.Exclude_default1
+      schema:
+        type: string
+

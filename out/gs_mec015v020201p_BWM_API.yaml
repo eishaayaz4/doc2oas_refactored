@@ -1,0 +1,442 @@
+openapi: 3.1.0
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+info:
+  contact:
+    url: https://forge.etsi.org/rep/mec/gs015-bandwith-mgmt-api
+  title: ETSI GS MEC 015 Multi-access Traffic Steering APIs
+  description: The present document focuses on the Multi-access Traffic Steering multi-access edge service. It describes the related application policy information including authorization and access control, information flows, required information and service aggregation patterns. The present document specifies the necessary API with the data model and data format.
+  license:
+    name: BSD-3-Clause
+    url: https://forge.etsi.org/legal-matters
+  version: 2.2.1
+paths:
+  /bw_allocations/{allocationId}:
+    get:
+      summary: Retrieve information about a specific bandwidthAllocation.
+      description: "This method retrieves information about a bandwidthAllocation resource. This method is typically used in \"Get configured bandwidth allocation from Bandwidth Management Service\" procedure as described in clause\_6.2.5."
+      operationId: BwallocationsGETAllocationid
+      tags:
+      - bwm
+      responses:
+        '200':
+          description: It is used to indicate nonspecific success. The response body contains a representation of the resource.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  BwInfo:
+                    $ref: '#/components/schemas/BwInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+      parameters:
+      - name: allocationId
+        in: path
+        required: true
+        description: The unique identifier of the allocationId.
+        schema:
+          type: string
+    put:
+      summary: Update the information about a specific bandwidthAllocation.
+      description: "This method updates the information about a bandwidthAllocation resource. As specified in ETSI GS\_MEC\_009\_[6], the PUT HTTP method has \"replace\" semantics."
+      operationId: BwallocationsPUTAllocationid
+      tags:
+      - bwm
+      requestBody:
+        description: BwInfo with updated information is included as entity body of the request.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                BwInfo:
+                  $ref: '#/components/schemas/BwInfo'
+      responses:
+        '200':
+          description: Upon success, a response body containing data type describing the updated BwInfo is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  BwInfo:
+                    $ref: '#/components/schemas/BwInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+        '412':
+          $ref: '#/components/responses/412'
+      parameters:
+      - name: allocationId
+        in: path
+        required: true
+        description: The unique identifier of the allocationId.
+        schema:
+          type: string
+    patch:
+      summary: Modify the information about a specific existing bandwidthAllocation by sending updates on the data structure.
+      description: 'This method updates the information about a bandwidthAllocation resource. As specified in ETSI GS MEC 009 [6], the PATCH HTTP method updates a resource on top of the existing resource state by just including the changes ("deltas") in the request body. '
+      operationId: BwallocationsPATCHAllocationid
+      tags:
+      - bwm
+      requestBody:
+        description: Description of the changes to instruct the server how to modify the resource representation. .
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                BwInfoDeltas:
+                  $ref: '#/components/schemas/BwInfoDeltas'
+      responses:
+        '200':
+          description: Upon success, a response body containing data type describing the updated BwInfo is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  BwInfo:
+                    $ref: '#/components/schemas/BwInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+        '412':
+          $ref: '#/components/responses/412'
+      parameters:
+      - name: allocationId
+        in: path
+        required: true
+        description: The unique identifier of the allocationId.
+        schema:
+          type: string
+    delete:
+      summary: Remove a specific bandwidthAllocation.
+      description: DELETE method is typically used in "Unregister from Bandwidth Management Service" procedure as described in clause 6.2.3.
+      operationId: BwallocationsDELETEAllocationid
+      tags:
+      - bwm
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+      parameters:
+      - name: allocationId
+        in: path
+        required: true
+        description: The unique identifier of the allocationId.
+        schema:
+          type: string
+  /bw_allocations:
+    get:
+      summary: Retrieve information about a list of bandwidthAllocation resources.
+      description: This method retrieves information about a list of bandwidthAllocation resources. This method is typically used in "Get configured bandwidth allocation from Bandwidth Management Service" procedure as described in clause 6.2.5.
+      operationId: BwallocationsGET
+      tags:
+      - bwm
+      parameters:
+      - $ref: '#/components/parameters/Query.App_instance_id'
+      - $ref: '#/components/parameters/Query.App_name'
+      - $ref: '#/components/parameters/Query.Session_id'
+      responses:
+        '200':
+          description: Upon success, a response body containing an array of the bandwidthAllocations is returned.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BwInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+    post:
+      summary: Create a bandwidthAllocation resource.
+      description: This method is used to create a bandwidthAllocation resource. This method is typically used in "Register to Bandwidth Management Service" procedure as described in clause 6.2.1.
+      operationId: BwallocationsPOST
+      tags:
+      - bwm
+      requestBody:
+        description: Entity body in the request contains BwInfo to be created.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                BwInfo:
+                  $ref: '#/components/schemas/BwInfo'
+      responses:
+        '201':
+          description: Upon success, the HTTP response shall include a "Location" HTTP header that contains the resource URI of the created resource.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  BwInfo:
+                    $ref: '#/components/schemas/BwInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+      parameters: []
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+    BwInfo:
+      x-etsi-ref: 7.2.2
+      type: object
+      properties:
+        allocationId:
+          description: Bandwidth allocation instance identifier
+          type: string
+        timeStamp:
+          $ref: '#/components/schemas/TimeStamp'
+        appInsId:
+          description: Application instance identifier
+          type: string
+        appName:
+          description: Name of the application
+          type: string
+        requestType:
+          type: integer
+          description: 'Numeric value (0 - 255) corresponding to specific type of consumer as following:
+
+            0 = APPLICATION_SPECIFIC_BW_ALLOCATION
+
+            1 = SESSION_SPECIFIC_BW_ALLOCATION'
+          enum:
+          - SEE_DESCRIPTION
+        sessionFilter:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionFilter'
+        fixedBWPriority:
+          type: string
+          description: Indicates the allocation priority when dealing with several applications or sessions in parallel. Values are not defined in the present document
+          enum:
+          - SEE_DESCRIPTION
+        fixedAllocation:
+          description: Size of requested fixed BW allocation in [bps]
+          type: string
+        allocationDirection:
+          description: 'The direction of the requested BW allocation:
+
+            00 = Downlink (towards the UE)
+
+            01 = Uplink (towards the application/session)
+
+            10 = Symmetrical'
+          type: string
+      required:
+      - appInsId
+      - requestType
+      - fixedAllocation
+      - allocationDirection
+    BwInfoDeltas:
+      x-etsi-ref: 7.2.3
+      type: object
+      properties:
+        allocationId:
+          description: Bandwidth allocation instance identifier
+          type: string
+        appInsId:
+          description: Application instance identifier
+          type: string
+        requestType:
+          type: integer
+          description: 'Numeric value (0 - 255) corresponding to specific type of consumer as following:
+
+            0 = APPLICATION_SPECIFIC_BW_ALLOCATION
+
+            1 = SESSION_SPECIFIC_BW_ALLOCATION'
+          enum:
+          - SEE_DESCRIPTION
+        sessionFilter:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionFilter1'
+        fixedBWPriority:
+          type: string
+          description: Indicates the allocation priority when dealing with several applications or sessions in parallel. Values are not defined in the present document
+          enum:
+          - SEE_DESCRIPTION
+        fixedAllocation:
+          description: Size of requested fixed BW allocation in [bps]
+          type: string
+        allocationDirection:
+          description: 'The direction of the requested BW allocation:
+
+            00 = Downlink (towards the UE)
+
+            01 = Uplink (towards the application/session)
+
+            10 = Symmetrical'
+          type: string
+      required:
+      - allocationId
+      - appInsId
+      - requestType
+    TimeStamp:
+      description: Time stamp to indicate when the corresponding information elements are sent
+      type: object
+      properties:
+        seconds:
+          description: The seconds part of the Time. Time is defined as Unixtime since January 1, 1970, 00:00:00 UTC
+          type: integer
+          format: uint32
+        nanoSeconds:
+          description: The nanoseconds part of the Time. Time is defined as Unix-time since January 1, 1970, 00:00:00 UTC
+          type: integer
+          format: uint32
+      required:
+      - seconds
+      - nanoSeconds
+    SessionFilter:
+      description: Session filtering criteria, applicable when requestType is set as SESSION_SPECIFIC_BW_ALLOCATION. Any filtering criteria shall define a single session only. In case multiple sessions match sessionFilter, the request shall be rejected
+      type: object
+      minItems: 0
+      properties:
+        sourceIp:
+          description: "Source address identity of session. The string for an IPv4 address shall be formatted in the \"dotted decimal\" notation as defined in IETF RFC\_1166\_[10]. The string for an IPv6 address shall be formatted according to clause 4 of IETF RFC\_5952\_[11], with in CIDR notation [12] used to provide the routing prefix"
+          type: string
+        sourcePort:
+          description: Source port identity of session
+          type: string
+        dstAddress:
+          description: "Destination address identity of session. The string for an IPv4 address shall be formatted in the \"dotted decimal\" notation as defined in IETF RFC\_1166\_[10]. The string for an IPv6 address shall be formatted according to clause 4 of IETF RFC\_5952\_[11], with in CIDR notation [12] used to provide the routing prefix"
+          type: string
+        dstPort:
+          description: Destination port identity of session
+          type: string
+        protocol:
+          description: Protocol number
+          type: string
+    SessionFilter1:
+      description: Session filtering criteria, applicable when requestType is set as SESSION_SPECIFIC_BW_ALLOCATION. Any filtering criteria shall define a single session only. In case multiple sessions match sessionFilter, the request shall be rejected
+      type: object
+      minItems: 0
+      properties:
+        sourceIp:
+          description: "Source address identity of session. The string for an IPv4 address shall be formatted in the \"dotted decimal\" notation as defined in IETF RFC\_1166\_[10]. The string for an IPv6 address shall be formatted according to clause 4 of IETF\_RFC\_5952\_[11], with in CIDR notation [12] used to provide the routing prefix"
+          type: string
+        sourcePort:
+          description: 'Source port identity of session '
+          type: string
+        dstAddress:
+          description: "Destination address identity of session. The string for an IPv4 address shall be formatted in the \"dotted decimal\" notation as defined in IETF RFC\_1166\_[10]. The string for an IPv6 address shall be formatted according to clause 4 of IETF\_RFC\_5952\_[11], with in CIDR notation [12] used to provide the routing prefix"
+          type: string
+        dstPort:
+          description: Destination port identity of session
+          type: string
+        protocol:
+          description: Protocol number
+          type: string
+  responses:
+    '200':
+      description: OK
+    '204':
+      description: No Content
+    '400':
+      description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '403':
+      description: 'Forbidden: operation is not allowed given the current status of the resource.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '404':
+      description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '412':
+      description: 'Precondition failed: used when a condition has failed during conditional requests, e.g. when using ETags to avoid write conflicts when using PUT'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+  parameters:
+    Query.App_instance_id:
+      description: 'A MEC application instance may use multiple app_instance_ids as an input parameter to query the bandwidth allocation of a list of MEC application instances. app_instance_id corresponds to appInsId defined in table 7.2.2-1.
+
+        See note.'
+      name: app_instance_id
+      in: query
+      required: false
+      x-exportParamName: Query.App_instance_id
+      schema:
+        type: array
+        items:
+          type: string
+    Query.App_name:
+      description: 'A MEC application instance may use multiple app_names as an input parameter to query the bandwidth allocation of a list of MEC application instances. app_name corresponds to appName defined in table 7.2.2-1.
+
+        See note.'
+      name: app_name
+      in: query
+      required: false
+      x-exportParamName: Query.App_name
+      schema:
+        type: array
+        items:
+          type: string
+    Query.Session_id:
+      description: 'A MEC application instance may use session_id as an input parameter to query the bandwidth allocation of a list of sessions. session_id corresponds to allocationId defined in table 7.2.2-1.
+
+        See note.'
+      name: session_id
+      in: query
+      required: false
+      x-exportParamName: Query.Session_id
+      schema:
+        type: array
+        items:
+          type: string
+

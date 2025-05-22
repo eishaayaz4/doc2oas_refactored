@@ -1,0 +1,446 @@
+---
+data_model_headings:
+  headings1:
+    - '6[ ]*Data model$'
+    - '7[ ]*API definition$'
+
+api_def_headings:
+  headings1:
+    - '7[ ]*API definition$'
+    - 'Annex A \(informative\)\:\nMapping of permissions for RESTful API and topic based alternative transport$'
+    
+servers:
+  - url: https://localhost/rni/v2
+
+tags:
+  - 'queries'
+  - 'subscriptions'
+
+fake_data_types: False
+manual_types:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+    Enum:
+      type: integer
+    CellId:
+      type: string
+      description: String representing the E-UTRAN Cell Identity. Encoded as a bit string (size (28)) as defined in ETSI TS 136 413 [i.3].
+    NrCellId:
+      type: string
+      description: String representing the NR Cell Identity. Encoded as a bit string (size (36)) as defined in ETSI TS 138 423 [i.17].
+    Trigger:
+      description: "As defined in Ref ETSI TS 136 331 [i.7]
+        <p>0 = NOT_AVAILABLE
+        <p>1 = PERIODICAL_REPORT_STRONGEST_CELLS
+        <p>2 = PERIODICAL_REPORT_STRONGEST_CELLS_FOR_SON
+        <p>3 = PERIODICAL_REPORT_CGI
+        <p>4 = INTRA_PERIODICAL_REPORT_STRONGEST_CELLS
+        <p>5 = INTRA_PERIODICAL_REPORT_CGI
+        <p>10 = EVENT_A1
+        <p>11 = EVENT_A2
+        <p>12 = EVENT_A3
+        <p>13 = EVENT_A4
+        <p>14 = EVENT_A5
+        <p>15 = EVENT_A6
+        <p>20 = EVENT_B1
+        <p>21 = EVENT_B2
+        <p>20 = EVENT_B1-NR
+        <p>21 = EVENT_B2-NR
+        <p>30 = EVENT_C1
+        <p>31 = EVENT_C2
+        <p>40 = EVENT_W1
+        <p>41 = EVENT_W2
+        <p>42 = EVENT_W3
+        <p>50 = EVENT_V1
+        <p>51 = EVENT_V2
+        <p>60 = EVENT_H1
+        <p>61 = EVENT_H2"
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 20
+      - 21
+      - 30
+      - 31
+      - 40
+      - 41
+      - 42
+      - 50
+      - 51
+      - 60
+      - 61
+      type: integer
+    TriggerNr:
+      description: "The enumeration Trigger represents specified triggers for a 5G
+        UE Measurement Report. Full details can be found in ETSI TS 138 331 [i.13]).
+        <p>0 = NOT_AVAILABLE
+        <p>1 = NR_PERIODICAL
+        <p>2 = NR_CGI
+        <p>10 = EVENT_A1
+        <p>11 = EVENT_A2
+        <p>12 = EVENT_A3
+        <p>13 = EVENT_A4
+        <p>14 = EVENT_A5
+        <p>15 = EVENT_A6
+        <p>20 = INTER_RAT_PERIODICAL
+        <p>21 = INTER_RAT_CGI
+        <p>30 = EVENT_B1
+        <p>31 = EVENT_B2"
+      enum:
+      - 0
+      - 1
+      - 2
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 20
+      - 21
+      - 30
+      - 31
+      type: integer
+    AssociateId1_:
+      properties:
+        type:
+          description: "Numeric value (0-255) corresponding to specified type of identifier
+            as following:
+            <p>0 = reserved.
+            <p>1 = UE_IPv4_ADDRESS.
+            <p>2 = UE_IPV6_ADDRESS.
+            <p>3 = NATED_IP_ADDRESS.
+            <p>4 = GTP_TEID."
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          type: integer
+        value:
+          description: Value for the identifier.
+          type: string
+
+    NRcgi:
+      type: object
+      properties:
+        plmn:
+          $ref: '#/components/schemas/Plmn'
+        nrCellId:
+          $ref: '#/components/schemas/NrCellId'
+      required:
+        - plmn
+        - nrCellId
+      description: New Radio Cell Global Identifier.
+
+    L2Meas1_:
+      properties:
+        cellInfo:
+          description: The per cell measurement information as defined below.
+          items:
+            type: object
+            properties:
+              dl_gbr_prb_usage_cell:
+                description: It indicates the PRB usage for downlink GBR traffic, as
+                  defined in ETSI TS 136 314 [i.11] and ETSI TS 136 423 [i.12].
+                type: integer
+              dl_nongbr_prb_usage_cell:
+                description: "It indicates (in percentage) the PRB usage for downlink\
+                  \ non-GBR traffic, as defined in ETSI TS\_136\_314 [i.11] and ETSI\
+                  \ TS\_136 423 [i.12]."
+                type: integer
+              dl_total_prb_usage_cell:
+                description: "It indicates (in percentage) the PRB usage for total downlink\
+                  \ traffic, as defined in ETSI TS\_136\_314 [i.11] and ETSI TS\_136\
+                  \ 423 [i.12]."
+                type: integer
+              ecgi:
+                $ref: '#/components/schemas/Ecgi'
+                description: E-UTRAN Cell Global Identifier.
+              ul_gbr_prb_usage_cell:
+                description: "It indicates (in percentage) the PRB usage for uplink\
+                  \ GBR traffic, as defined in ETSI TS\_136\_314\_[i.11] and ETSI TS\_\
+                  136 423 [i.12]."
+                type: integer
+              ul_nongbr_prb_usage_cell:
+                description: "It indicates (in percentage) the PRB usage for uplink\
+                  \ non-GBR traffic, as defined in ETSI TS\_136\_314 [i.11] and ETSI\
+                  \ TS\_136 423 [i.12]."
+                type: integer
+              ul_total_prb_usage_cell:
+                description: "It indicates (in percentage) the PRB usage for total uplink\
+                  \ traffic, as defined in ETSI TS\_136\_314\_[i.11] and ETSI TS\_136\_\
+                  423 [i.12]."
+                type: integer
+              received_dedicated_preambles_cell:
+                description: It indicates (in percentage) the received dedicated preamples,
+                  as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              received_randomly_selected_preambles_high_range_cell:
+                description: It indicates (in percentage) the received randomly selected
+                  preambles in the high range, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              received_randomly_selected_preambles_low_range_cell:
+                description: It indicates (in percentage) the received randomly selected
+                  preambles in the low range, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              number_of_active_ue_dl_gbr_cell:
+                description: It indicates the number of active UEs with downlink GBR traffic,
+                  as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              number_of_active_ue_dl_nongbr_cell:
+                description: "It indicates the number of active UEs with downlink non-GBR\
+                  \ traffic, as defined in ETSI TS\_136\_314 [i.11]."
+                type: integer
+              number_of_active_ue_ul_gbr_cell:
+                description: It indicates the number of active UEs with uplink GBR traffic,
+                  as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              number_of_active_ue_ul_nongbr_cell:
+                description: "It indicates the number of active UEs with uplink non-GBR\
+                  \ traffic, as defined in ETSI TS\_136\_314\_[i.11]."
+                type: integer
+              dl_gbr_pdr_cell:
+                description: It indicates the packet discard rate in percentage of the downlink
+                  GBR traffic in a cell, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              dl_nongbr_pdr_cell:
+                description: It indicates the packet discard rate in percentage of the downlink
+                  non-GBR traffic in a cell, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              ul_gbr_pdr_cell:
+                description: It indicates the packet discard rate in percentage of the uplink
+                  GBR traffic in a cell, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              ul_nongbr_pdr_cell:
+                description: It indicates the packet discard rate in percentage of the uplink
+                  non-GBR traffic in a cell, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+          required:
+          - ecgi
+          minItems: 0
+          type: array
+        cellUEInfo:
+          description: The per cell per UE layer 2 measurements information as defined
+            below.
+          items:
+            type: object
+            properties:
+              associateId:
+                $ref: '#/components/schemas/AssociateId'
+                description: Identifier to associate the information for a specific UE or flow.
+              dl_gbr_delay_ue:
+                description: It indicates the packet delay of the downlink GBR traffic
+                  of a UE, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              dl_nongbr_delay_ue:
+                description: "It indicates the packet delay of the downlink non-GBR\
+                  \ traffic of a UE, as defined in ETSI TS\_136\_314\_[i.11]."
+                type: integer
+              ecgi:
+                $ref: '#/components/schemas/Ecgi'
+                description: E-UTRAN Cell Global Identifier.
+              ul_gbr_delay_ue:
+                description: It indicates the packet delay of the uplink GBR traffic of a UE, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              ul_nongbr_delay_ue:
+                description: It indicates the packet delay of the uplink non-GBR traffic
+                  of a UE, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              dl_gbr_data_volume_ue:
+                description: It indicates the data volume of the downlink GBR traffic of
+                  a UE, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              dl_gbr_pdr_ue:
+                description: It indicates the packet discard rate in percentage of the downlink
+                  GBR traffic of a UE, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              dl_gbr_throughput_ue:
+                description: It indicates the scheduled throughput of the downlink GBR traffic
+                  of a UE, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              dl_nongbr_data_volume_ue:
+                description: "It indicates the data volume of the downlink non-GBR traffic\
+                  \ of a UE, as defined in ETSI TS\_136\_314\_[i.11]."
+                type: integer
+              dl_nongbr_pdr_ue:
+                description: It indicates the packet discard rate in percentage of the downlink
+                  nonGBR traffic of a UE, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              dl_nongbr_throughput_ue:
+                description: It indicates the scheduled throughput of the downlink nonGBR
+                  traffic of a UE, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              ul_gbr_data_volume_ue:
+                description: It indicates the data volume of the uplink GBR traffic of a
+                  UE, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              ul_gbr_pdr_ue:
+                description: It indicates the packet discard rate in percentage of the uplink
+                  GBR traffic of a UE, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              ul_gbr_throughput_ue:
+                description: It indicates the scheduled throughput of the uplink GBR traffic
+                  of a UE, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              ul_nongbr_data_volume_ue:
+                description: It indicates the data volume of the uplink non-GBR traffic
+                  of a UE, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              ul_nongbr_pdr_ue:
+                description: It indicates the packet discard rate in percentage of the uplink
+                  nonGBR traffic of a UE, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+              ul_nongbr_throughput_ue:
+                description: It indicates the scheduled throughput of the uplink non-GBR
+                  traffic of a UE, as defined in ETSI TS 136 314 [i.11].
+                type: integer
+          required:
+          - ecgi
+          - associateId
+          minItems: 0
+          type: array
+        timeStamp:
+          $ref: '#/components/schemas/TimeStamp'
+          description: Time stamp.
+      type: object
+      x-etsi-ref: 6.2.4a
+    InlineSubscription:
+        oneOf:
+          - $ref: '#/components/schemas/CellChangeSubscription'
+          - $ref: '#/components/schemas/RabEstSubscription'
+          - $ref: '#/components/schemas/RabModSubscription'
+          - $ref: '#/components/schemas/RabRelSubscription'
+          - $ref: '#/components/schemas/MeasRepUeSubscription'
+          - $ref: '#/components/schemas/NrMeasRepUeSubscription'
+          - $ref: '#/components/schemas/MeasTaSubscription'
+          - $ref: '#/components/schemas/CaReconfSubscription'
+          - $ref: '#/components/schemas/S1BearerSubscription'
+        discriminator:
+            propertyName: subscriptionType
+    InlineNotification:
+      oneOf:
+        - $ref: '#/components/schemas/CellChangeNotification'
+        - $ref: '#/components/schemas/RabEstNotification'
+        - $ref: '#/components/schemas/RabModNotification'
+        - $ref: '#/components/schemas/RabRelNotification'
+        - $ref: '#/components/schemas/MeasRepUeNotification'
+        - $ref: '#/components/schemas/NrMeasRepUeNotification'
+        - $ref: '#/components/schemas/MeasTaNotification'
+        - $ref: '#/components/schemas/CaReconfNotification'
+        - $ref: '#/components/schemas/S1BearerNotification'
+      discriminator:
+        propertyName: notificationType
+
+info:
+  contact:
+    url: https://forge.etsi.org/rep/mec/gs012-rnis-api
+  title: 'ETSI GS MEC 012 Radio Network Information API'
+  description: The ETSI MEC ISG Radio Network Information API described using OpenAPI.
+  license:
+    name: BSD-3-Clause
+    url: 'https://forge.etsi.org/legal-matters'
+
+responses:
+  '200':
+    description: 'OK'
+  '204':
+    description: 'No Content'
+  '400':
+    description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '401':
+    description: 'Unauthorized: used when the client did not submit credentials.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '403':
+    description: 'Forbidden: operation is not allowed given the current status of the resource.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '404':
+    description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '406':
+    description: 'Not Acceptable: used to indicate that the server cannot provide the any of the content formats supported by the client.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '412':
+    description:
+      'Precondition failed: used when a condition has failed during conditional requests, e.g. when
+      using ETags to avoid write conflicts when using PUT'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '414':
+    description:
+      'URI Too Long: used to indicate that the server is refusing to process the request because the request URI is
+      longer than the server is willing or able to process.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '415':
+    description: 'Unsupported Media Type: used to indicate that the server or the client does not support the content type of the entity body.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '422':
+    description:
+      'Unprocessable Entity: used to indicate that the server understands the content type of the request entity and that the
+      syntax of the request entity is correct but that the server is unable to process the contained instructions. This error condition can occur if an
+      JSON request body is syntactically correct but semantically incorrect, for example if the target area for the request is considered too large. This
+      error condition can also occur if the capabilities required by the request are not supported.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '429':
+    description: 'Too Many Requests: used when a rate limiter has triggered.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'

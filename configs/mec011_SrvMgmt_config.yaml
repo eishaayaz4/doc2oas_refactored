@@ -1,0 +1,161 @@
+---
+data_model_headings:
+  headings1:
+    - '6[ ]*Common data types$'
+    - '7[ ]*MEC application support API$'
+  headings2:
+    - '8\.1[ ]*Data model$'
+    - '8\.2[ ]*API definition$'
+
+api_def_headings:
+  headings1:
+    - '8\.2[ ]*API definition$'
+    - 'Annex A \(informative\)\:\nComplementary material for API utilization$'
+    
+servers:
+  - url: https://localhost:8081/mec_service_mgmt/v1
+
+tags:
+- 'serviceManagement'
+
+fake_data_types: false
+manual_types:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+
+    LocalityType:
+      type: string
+      enum:
+        - MEC_SYSTEM
+        - MEC_HOST
+        - NFVI_POP
+        - ZONE
+        - ZONE_GROUP
+        - NFVI_NODE
+      description: Enumeration representing types of locality.
+
+    SerializerType:
+      type: string
+      enum:
+        - JSON
+        - XML
+        - PROTOBUF3
+      description: Enumeration representing types of serializers.
+      example: JSON
+
+    TransportType:
+      type: string
+      enum:
+        - REST_HTTP
+        - MB_TOPIC_BASED
+        - MB_ROUTING
+        - MB_PUBSUB
+        - RPC
+        - RPC_STREAMING
+        - WEBSOCKET
+      description: Enumeration representing types of transports.
+
+    ServiceState:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+        - SUSPENDED
+      description: Enumeration representing possible states of a MEC service instance.
+
+    SerInstanceId:
+      description: Identifier of the service instance assigned by the MEPM/MEC platform. For the uniqueness of the identifier
+                    across the MEC system, UUID format [i.7] is recommended.Shall be absent in POST requests, and present otherwise
+    SerName:
+      description: The name of the service. This is how the service producing MEC application identifies the service instance it produces.
+info:
+  contact:
+    url: https://forge.etsi.org/rep/mec/gs011-app-enablement-api
+  title: 'ETSI GS MEC 011 Edge Platform Application Enablement'
+  description: >
+    The present document focuses on the functionalities enabled via the Mp1 reference point
+    between MEC applications and MEC platform, which allows these applications to interact with the MEC system.
+    Service management functionality includes registration/deregistration, discovery and event notifications.
+    Application support functionality includes application start-up, registration and termination, traffic rules,
+    DNS and time of day. It describes the information flows, required information, and specifies the necessary
+    operations, data models and API definitions.
+  license:
+    name: BSD-3-Clause
+    url: 'https://forge.etsi.org/legal-matters'
+
+responses:
+  '200':
+    description: 'OK'
+  '204':
+    description: 'No Content'
+  '400':
+    description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '401':
+    description: 'Unauthorized: used when the client did not submit credentials.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '403':
+    description: 'Forbidden: operation is not allowed given the current status of the resource.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '404':
+    description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '409':
+    description: 'Conflict: The operation cannot be executed currently, due to a conflict with the state of the resource. .'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '412':
+    description:
+      'Precondition failed: used when a condition has failed during conditional requests, e.g. when
+      using ETags to avoid write conflicts when using PUT'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '414':
+    description:
+      'URI Too Long: used to indicate that the server is refusing to process the request because the request URI is
+      longer than the server is willing or able to process.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'
+  '429':
+    description: 'Too Many Requests: used when a rate limiter has triggered.'
+    content:
+      application/problem+json:
+        schema:
+          $ref: '#/components/schemas/ProblemDetails'

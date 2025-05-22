@@ -1,0 +1,65 @@
+<!doctype html>
+
+<html>
+
+<head>
+<title>ETSI CTI - doc2oas details</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<div class="container-fluid">
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+   <div class="alert alert-warning" role="alert">
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+   </div>
+  {% endif %}
+{% endwith %}
+
+<center>
+<h1>doc2oas details</h1>
+<a href="/tosca-ie">Home</a>
+<h5 style="margin-bottom: 50px">v {{ VERSION }}</h5>
+</center>
+
+<h4>Overview
+</h4>
+
+<p>The tool works as follows:</p>
+<h2 id="step-1-uploading-the-files">Step 1: Uploading the files</h2>
+<p>In the uploaded Document it searches for headings according to the config file:</p>
+<ul>
+<li>data_model_headings: data_model_headings dictionary further contains nested headings (headings1, headings2, and so on) identifying the document sections from where the Data model tables start and stop. E.g. in the MEC012 specification data definition starts in the 6th section and till the 7th (pay extra attention to the word case and numbers).</li>
+<li>api_def_headings: The api_def_headings dictionary includes nested headings such as headings1, headings2, and so on, which identify the document sections where the API definition tables are located. For example, in the MEC012 specification, the API definition table can be found between the 7 API definition and 7.3 Resource: rab_info sections.  (pay extra attention to the word case and numbers).</li>
+<li>fake_data_types: Not used so keep this false.</li>
+<li>manual_types: This is used to add schema for data objects not present in the document. These will get directly added to the generated YAML file.</li>
+</ul>
+<h2 id="step-2-generation-of-data-types">Step 2, generation of data types</h2>
+<p>For each of the section after the specified headings the tool searches for tables with the following properties:</p>
+<ul>
+<li>Data model definitions tables that match certain number of columns with a specific header name. I.e. the table contains 4 columns with the headers Attribute name, Data type, Cardinality and Description.</li>
+<li>API definitions table (including API overview tables, related query parameter tables, etc...) that match certain number of columns with a specific header name. I.e. an API definition table contains 4 columns with the headers Request body, Data Type, Cardinality and Remarks.</li>
+</ul>
+<p>		Note: Both Data model definitions and API definitions tables properties (columns and header names) can be extended to other configurations</p>
+<h2 id="step-3-generation-of-files">Step 3: Generation of files</h2>
+<p>The set of generated definitions is written to a yaml file named as the uploaded specification Word document. A conversion log file is provided alongside.</p>
+<h2 id="step-4-download">Step 4: Download</h2>
+<p>The files are archived in a zip file named `oas_defs.zip` which is served as a response.</p>
+
+<center>
+<p>
+The tools available on this page are provided with NO GUARANTEES and shall be used ONLY for validation of ETSI Specifications. 
+<br/>
+For any inquiry, contact <a href="mailto:cti_support@etsi.org">ETSI CTI</a></p>
+	<small>Copyright &copy; ETSI 2019. All rights reserved.</small>
+</center>
+</body>
+
+</html>

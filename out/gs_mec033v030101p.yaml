@@ -1,0 +1,696 @@
+openapi: 3.1.0
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+info:
+  contact:
+    url: https://forge.etsi.org/rep/mec/gs033-iot-api
+  title: ETSI GS MEC 033 IoT API
+  description: 'ETSI GS MEC 033 IoT API described using OpenAPI.
+
+    '
+  license:
+    name: BSD-3-Clause
+    url: https://forge.etsi.org/legal-matters
+  version: 3.1.1
+paths:
+  /registered_devices:
+    get:
+      summary: Retrieve information about all devices with a valid traffic rule association - see clause 5.2.2.
+      description: The GET method may be used by a service consumer to retrieve information about all devices with a valid traffic rule association. This method is typically used in the "registered devices query" procedure as described in clause 5.2.2.
+      operationId: RegistereddevicesGET
+      tags:
+      - reg-dev
+      parameters:
+      - $ref: '#/components/parameters/Query.Filter'
+      - $ref: '#/components/parameters/Query.Fields'
+      responses:
+        '200':
+          description: Upon success, a response body containing the list of registered devices is returned. The response body shall contain a list of resources that match the attribute filter.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeviceInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+    post:
+      summary: "Register a new device - see clause\_5.2.3."
+      description: The POST method may be used by a service consumer to register a new device. This method is typically used in the "device registration" procedure as described in clause 5.2.3.
+      operationId: RegistereddevicesPOST
+      tags:
+      - reg-dev
+      requestBody:
+        description: Payload body in the request contains the information associated to the IoT device to be registered.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                DeviceInfo:
+                  $ref: '#/components/schemas/DeviceInfo'
+      responses:
+        '201':
+          description: Upon success, the HTTP response shall include a "Location" HTTP header that contains the resource URI of the registered device.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  DeviceInfo:
+                    $ref: '#/components/schemas/DeviceInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+      parameters: []
+  /registered_devices/{registeredDeviceId}:
+    get:
+      summary: Retrieve information about a device - see clause 5.2.4.
+      description: The GET method may be used by a service consumer to retrieve information about a device. This method is typically used in the "device registration query" procedure as described in clause 5.2.4.
+      operationId: RegistereddevicesGETRegistereddeviceid
+      tags:
+      - reg-dev
+      responses:
+        '200':
+          description: Upon success, a response body containing information about the registered device is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  DeviceInfo:
+                    $ref: '#/components/schemas/DeviceInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+      parameters:
+      - name: registeredDeviceId
+        in: path
+        required: true
+        description: The unique identifier of the registeredDeviceId.
+        schema:
+          type: string
+    put:
+      summary: Update information about a  device including its association to a valid traffic rule - see clauses 5.2.5 and 5.4.3.
+      description: The PUT method may be used by a service consumer to update a device registration including its association to a valid traffic rule. This method is typically used in the "device registration update" procedure as described in clause 5.2.5 and in the "user transport assignment" procedure as described in clause 5.4.3.
+      operationId: RegistereddevicesPUTRegistereddeviceid
+      tags:
+      - reg-dev
+      requestBody:
+        description: One or more updated attributes that are allowed to be changed are included in the DeviceInfo data structure in the payload body of the request. .
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                DeviceInfo:
+                  $ref: '#/components/schemas/DeviceInfo'
+      responses:
+        '200':
+          description: Upon success, a response body containing data type describing the updated DeviceInfo is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  DeviceInfo:
+                    $ref: '#/components/schemas/DeviceInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+        '412':
+          $ref: '#/components/responses/412'
+      parameters:
+      - name: registeredDeviceId
+        in: path
+        required: true
+        description: The unique identifier of the registeredDeviceId.
+        schema:
+          type: string
+    delete:
+      summary: "Deregister a device - see clause\_5.2.6."
+      description: The DELETE method may be used by a service consumer to deregister a device. This method is typically used in the "device deregistration" procedure as described in clause 5.2.6.
+      operationId: RegistereddevicesDELETERegistereddeviceid
+      tags:
+      - reg-dev
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+      parameters:
+      - name: registeredDeviceId
+        in: path
+        required: true
+        description: The unique identifier of the registeredDeviceId.
+        schema:
+          type: string
+  /registered_iot_platforms:
+    get:
+      summary: Retrieve information about all IoT platforms - see clause 5.3.2.
+      description: "The GET method may be used by an authorized service consumer to retrieve the information of all currently registered IoT platforms. This method is typically used in the \"registered IoT platforms query\" procedure as described in clause\_5.3.2."
+      operationId: RegisterediotplatformsGET
+      tags:
+      - reg-dev
+      parameters:
+      - $ref: '#/components/parameters/Query.Fields1'
+      responses:
+        '200':
+          description: Upon success, a response body containing the list of registered IoT platforms is returned.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IotPlatformInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+    post:
+      summary: "Register a IoT platform - see clause\_5.3.4."
+      description: The POST method may be used by a service consumer to register a new IoT platform. This method is typically used in the "IoT platform registration" procedure as described in clause 5.3.4.
+      operationId: RegisterediotplatformsPOST
+      tags:
+      - reg-dev
+      requestBody:
+        description: Payload body in the request contains the information associated to the IoT platform to be registered.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                IoTPlatformInfo:
+                  $ref: '#/components/schemas/IoTPlatformInfo'
+      responses:
+        '201':
+          description: Upon success, the HTTP response shall include a "Location" HTTP header that contains the resource URI of the registered IoT platform.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  IoTPlatformInfo:
+                    $ref: '#/components/schemas/IoTPlatformInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+      parameters: []
+  /registered_iot_platforms/{registeredIotPlatformId}:
+    get:
+      summary: Discover native services and obtain information about user transports provided by a IoT platform - see clauses 5.3.3 and 5.4.2.
+      description: 'The GET method may be used by a service consumer to obtain information about a IoT platform. This method is typically used in the "IoT platform information request" procedure as described in clause 5.3.3 and in the "user transport query" procedure as described in clause 5.4.2. '
+      operationId: RegisterediotplatformsGETRegisterediotplatformid
+      tags:
+      - reg-dev
+      parameters:
+      - $ref: '#/components/parameters/Query.Fields2'
+      - name: registeredIotPlatformId
+        in: path
+        required: true
+        description: The unique identifier of the registeredIotPlatformId.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Upon success, a response body containing information about the registered IoT platform is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  IotPlatformInfo:
+                    $ref: '#/components/schemas/IotPlatformInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+    put:
+      summary: Update information about a IoT platform - see clause 5.3.5.
+      description: The PUT method may be used by a service consumer to update a IoT platform registration. This method is typically used in the "IoT platform update" procedure as described in clause 5.3.5.
+      operationId: RegisterediotplatformsPUTRegisterediotplatformid
+      tags:
+      - reg-dev
+      requestBody:
+        description: One or more updated attributes that are allowed to be changed are included in the IotPlatformInfo data structure in the payload body of the request. .
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                IotPlatformInfo:
+                  $ref: '#/components/schemas/IotPlatformInfo'
+      responses:
+        '200':
+          description: Upon success, a response body containing data type describing the updated IotPlatformInfo is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  IotPlatformInfo:
+                    $ref: '#/components/schemas/IotPlatformInfo'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+        '412':
+          $ref: '#/components/responses/412'
+      parameters:
+      - name: registeredIotPlatformId
+        in: path
+        required: true
+        description: The unique identifier of the registeredIotPlatformId.
+        schema:
+          type: string
+    delete:
+      summary: Deregister a IoT platform - see clause 5.3.6.
+      description: The DELETE method may be used by a service consumer to deregister a IoT platform. This method is typically used in the "IoT platform deregistration" procedure as described in clause 5.3.6.
+      operationId: RegisterediotplatformsDELETERegisterediotplatformid
+      tags:
+      - reg-dev
+      responses:
+        '204':
+          $ref: '#/components/responses/204'
+        '404':
+          $ref: '#/components/responses/404'
+        '403':
+          $ref: '#/components/responses/403'
+      parameters:
+      - name: registeredIotPlatformId
+        in: path
+        required: true
+        description: The unique identifier of the registeredIotPlatformId.
+        schema:
+          type: string
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference according to IETF RFC 3986 that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          format: uint32
+          description: The HTTP status code for this occurrence of the problem
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+    SerializerType:
+      x-etsi-ref: 8.1.6.3
+      type: string
+      enum:
+      - JSON
+      - XML
+      - PROTOBUF3
+      x-etsi-mec-extensible: true
+      x-etsi-mec-enumeration-table:
+      - value: JSON
+        description: Javascript object notation [9]
+      - value: XML
+        description: eXtensible Mark-up Language version 1.1 [10]
+      - value: PROTOBUF3
+        description: Protocol buffers version 3 [i.3]
+    DeviceInfo:
+      x-etsi-ref: 6.2.2
+      type: object
+      properties:
+        deviceAuthenticationInfo:
+          description: Information needed for secondary authentication of the IoT device to the data network - see ETSI TS 129 561 [i.4] and ETSI TS 129 061 [i.5] for 5G and LTE procedures, respectively. This attribute is implementation dependent and should be logically linked to the identifiers of the IoT device listed hereafter.
+          type: object
+        deviceMetadata:
+          description: 'Additional information about the IoT device. This attribute is implementation dependent and may be expressed as an array of keyvalue pairs. '
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/Not_specified'
+        gpsi:
+          description: GPSI of the IoT device if 5G-enabled (see note 1).
+          type: string
+        pei:
+          description: PEI of the IoT device if 5G-enabled (see note 1).
+          type: string
+        supi:
+          description: SUPI of the IoT device if 5G-enabled (see note 1).
+          type: string
+        msisdn:
+          description: MSISDN of the IoT device if LTE-enabled (see note 1).
+          type: string
+        imei:
+          description: IMEI of the IoT device if LTE-enabled (see note 1).
+          type: string
+        imsi:
+          description: IMSI of the IoT device if LTE-enabled (see note 1).
+          type: string
+        iccid:
+          description: ICCID of the IoT device (see note 1).
+          type: string
+        deviceId:
+          description: Human-readable identifier of the IoT device.
+          type: string
+        requestedMecTrafficRule:
+          description: "MEC traffic rules the IoT device is requested to be associated to (see note 2). The data type definition is as per ETSI GS\_MEC 010-2 [i.6]."
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/TrafficRuleDescriptor'
+        requestedIotPlatformId:
+          description: IoT platform to which the IoT device is requested to be associated to (see note 2).
+          type: string
+        requestedUserTransportId:
+          description: User transport to which the IoT device is requested to be associated to (see note 2).
+          type: string
+        deviceSpecificMessageFormats:
+          $ref: '#/components/schemas/DeviceSpecificMessageFormats'
+        downlinkInfo:
+          $ref: '#/components/schemas/DownlinkInfo'
+        clientCertificate:
+          description: Client-side SSL/TLS certificate to be used by the MEC IoTS to interact with the user transport provided by the associated IoT platform in case the MEC IoTS acts on behalf of the IoT device.
+          type: string
+        enabled:
+          description: Indication whether the IoT device has a valid associated traffic rule (TRUE) or not (FALSE). See note 3.
+          type: boolean
+      required:
+      - deviceAuthenticationInfo
+      - deviceId
+      - enabled
+      description: "|-\n  NOTE 1:\tAt least one attribute among gpsi, pei, supi, msisdn, imei, imsi, and iccid should be provided. Sufficient security measures shall be put in place when any attribute among PEI, SUPI, IMEI, and IMSI is disclosed over the API.\nNOTE 2:\tUntil a valid traffic rule is not provided, the device will not be able to use the IoTS. A valid traffic rule is provided by one of the following options:\nthe requestedMecTrafficRule attribute;\nthe requestedIotPlatformId attribute when the IoT platform offers only one user transport;\nthe combination of requestedIotPlatformId and requestedUserTransportId.\nNOTE 3:\tEnabled is a pseudo-attribute which needs to be maintained by the IoTS based on the presence or not of a valid traffic rule associated to the device. It cannot be set directly by the service consumer."
+    IotPlatformInfo:
+      x-etsi-ref: 6.2.3
+      type: object
+      properties:
+        iotPlatformId:
+          description: Identifier of the IoT platform.
+          type: string
+        userTransportInfo:
+          description: Information about the user transport(s)  provided by the IoT platform.
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/MBTransportInfo'
+        customServicesTransportInfo:
+          description: Transport enabling access to vendor-specific services provided by the IoT platform. The data type definition is as per ETSI GS MEC 011 [i.2].
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/TransportInfo'
+        enabled:
+          description: Indication whether the IoT platform is capable of providing user transports and vendor-specific services (TRUE) or not (FALSE).
+          type: boolean
+      required:
+      - iotPlatformId
+      - userTransportInfo
+      - enabled
+    MBTransportInfo:
+      x-etsi-ref: 6.3.2
+      type: object
+      properties:
+        id:
+          description: "The identifier of this transport as per ETSI GS\_MEC\_011 [i.2]."
+          type: string
+        name:
+          description: "The name of this transport as per ETSI GS\_MEC\_011\_[i.2]."
+          type: string
+        description:
+          description: "Human-readable description of this transport as per ETSI GS\_MEC 011 [i.2]."
+          type: string
+        type:
+          description: Type of the transport. The attribute shall be set to "MB_TOPIC_BASED."
+          $ref: '#/components/schemas/TransportType'
+          type: object
+        protocol:
+          description: The name of the protocol used. Being the transport of MB_TOPIC_BASED type, this attribute should be typically set to "MQTT" or "AMQP."
+          type: string
+        version:
+          description: "The version of the protocol used as per ETSI GS\_MEC\_011\_[i.2]."
+          type: string
+        endpoint:
+          description: Information about the endpoint to access the transport as per ETSI GS MEC 011 [i.2].
+          $ref: '#/components/schemas/EndPointInfo'
+          type: object
+        security:
+          description: Information about the security used by the transport as per ETSI GS MEC 011 [i.2].
+          $ref: '#/components/schemas/SecurityInfo'
+          type: object
+        implSpecificInfo:
+          $ref: '#/components/schemas/ImplSpecificInfo'
+      required:
+      - id
+      - name
+      - type
+      - protocol
+      - version
+      - endpoint
+      - security
+      - implSpecificInfo
+    EventMsg:
+      x-etsi-ref: 6.3.3
+      type: object
+      properties:
+        eventTopic:
+          description: 'Topic where the message containing application-specific information should be published. '
+          type: string
+        selectedSerializer:
+          description: Type of serializer to be used for the topic as per ETSI GS MEC 011 [i.2].
+          $ref: '#/components/schemas/SerializerType'
+          type: object
+        includeDeviceAddr:
+          description: Indication whether to include the IP address of the IoT device (TRUE) or not (FALSE).
+          type: boolean
+        includeDeviceMetadata:
+          description: Indication whether to include the metadata about the IoT device (TRUE) or not (FALSE).
+          type: boolean
+        includePei:
+          description: Indication whether to include the PEI of the IoT device (TRUE) or not (FALSE).
+          type: boolean
+        includeSupi:
+          description: Indication whether to include the SUPI of the IoT device (TRUE) or not (FALSE).
+          type: boolean
+        includeImei:
+          description: Indication whether to include the IMEI of the IoT device (TRUE) or not (FALSE).
+          type: boolean
+        includeImsi:
+          description: Indication whether to include the IMSI of the IoT device (TRUE) or not (FALSE).
+          type: boolean
+        includeIccid:
+          description: Indication whether to include the ICCID of the IoT device (TRUE) or not (FALSE).
+          type: boolean
+        includeDeviceId:
+          description: Indication whether to include the human-readable identified of the IoT device (TRUE) or not (FALSE).
+          type: boolean
+      required:
+      - eventTopic
+      - selectedSerializer
+    UplinkMsg:
+      x-etsi-ref: 6.3.4
+      type: object
+      properties:
+        uplinkTopic:
+          description: Topic where the message containing the data generated by the IoT device(s) should be published, in order to be consumed by the end IoT application(s).
+          type: string
+        selectedSerializer:
+          description: Type of serializer to be used for the topic as per ETSI GS MEC 011 [i.2].
+          $ref: '#/components/schemas/SerializerType'
+          type: object
+        includeDevicePort:
+          description: Indication whether to include the UDP port of the remote IoT device (TRUE) or not (FALSE).
+          type: boolean
+        includeDeviceAddr:
+          description: Indication whether to include the IP address of the IoT device (TRUE) or not (FALSE).
+          type: boolean
+        includeDeviceMetadata:
+          description: Indication whether to include the metadata about the IoT device (TRUE) or not (FALSE).
+          type: boolean
+        includePei:
+          description: Indication whether to include the PEI of the IoT device (TRUE) or not (FALSE).
+          type: boolean
+        includeSupi:
+          description: Indication whether to include the SUPI of the IoT device (TRUE) or not (FALSE).
+          type: boolean
+        includeImei:
+          description: Indication whether to include the IMEI of the IoT device (TRUE) or not (FALSE).
+          type: boolean
+        includeImsi:
+          description: Indication whether to include the IMSI of the IoT device (TRUE) or not (FALSE).
+          type: boolean
+        includeIccid:
+          description: Indication whether to include the ICCID of the IoT device (TRUE) or not (FALSE).
+          type: boolean
+        includeDeviceId:
+          description: Indication whether to include the human-readable identified of the IoT device (TRUE) or not (FALSE).
+          type: boolean
+      required:
+      - uplinkTopic
+      - selectedSerializer
+    DeviceSpecificMessageFormats:
+      description: Format of the messages to be published by the MEC IoTS on the user transport provided by the associated IoT platform in case the MEC IoTS acts on behalf of the IoT device.
+      type: object
+      properties:
+        eventMsgFormat:
+          description: Event message format configuration.
+          $ref: '#/components/schemas/EventMsg'
+          type: object
+        uplinkMsgFormat:
+          description: Uplink message format configuration.
+          $ref: '#/components/schemas/UplinkMsg'
+          type: object
+    DownlinkInfo:
+      description: Downlink communication configuration of the user transport provided by the associated IoT platform in case the MEC IoTS acts on behalf of the IoT device.
+      type: object
+      properties:
+        downlinkTopic:
+          description: Topic associated to the IoT device. This topic should be used by an end IoT application to send downlink data to the IoT device.
+          type: string
+        devicePort:
+          description: UDP port to be used by the MEC IoTS for the outgoing downlink packets towards the IoT device. In case a default value is used, this attribute is optional.
+          type: integer
+    ImplSpecificInfo:
+      description: Additional implementation specific details of the transport.
+      type: object
+      properties:
+        eventTopics:
+          description: Topics used to publish events related to the established session between the IoT device(s) and the end IoT application(s) on the user transport.
+          type: array
+          minItems: 0
+          items:
+            type: string
+        uplinkTopics:
+          description: Topics used to publish data generated by the IoT device(s) on the user transport, in order to be consumed by the end IoT application(s).
+          type: array
+          minItems: 0
+          items:
+            type: string
+        downlinkTopics:
+          description: Topics used to publish data generated by the IoT applications(s) on the user transport, in order to be consumed by the end IoT device(s).
+          type: array
+          minItems: 0
+          items:
+            type: string
+  responses:
+    '200':
+      description: OK
+    '204':
+      description: No Content
+    '400':
+      description: 'Bad Request: used to indicate that incorrect parameters were passed to the request.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '403':
+      description: 'Forbidden: operation is not allowed given the current status of the resource.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '404':
+      description: 'Not Found: used when a client provided a URI that cannot be mapped to a valid resource URI.'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    '412':
+      description: 'Precondition failed: used when a condition has failed during conditional requests, e.g. when using ETags to avoid write conflicts when using PUT'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+  parameters:
+    Query.Filter:
+      description: 'Attribute-based filtering parameters according to ETSI GS MEC 009 [i.1]. The API producer shall support receiving the following filtering parameters as part of the URI query string: "(eq,enabled,TRUE)".'
+      name: filter
+      in: query
+      required: false
+      x-exportParamName: Query.Filter
+      schema:
+        type: string
+    Query.Fields:
+      description: 'The list may contain one or more of the following attributes from the DeviceInfo data type:
+
+        deviceMetadata;
+
+        gpsi;
+
+        msisdn;
+
+        deviceId;
+
+        requestedMecTrafficRule;
+
+        requestedIotPlatformId;
+
+        requestedUserTransportId.'
+      name: fields
+      in: query
+      required: false
+      x-exportParamName: Query.Fields
+      schema:
+        type: array
+        items:
+          type: string
+    Query.Fields1:
+      description: 'The list shall contain the following attributes from the IotPlatformInfo data type:
+
+        iotPlatformId
+
+        enabled.'
+      name: fields
+      in: query
+      required: false
+      x-exportParamName: Query.Fields1
+      schema:
+        type: array
+        items:
+          type: string
+    Query.Fields2:
+      description: 'The list may contain one or more of the following attributes from the IotPlatformInfo data type:
+
+        userTransportInfo;
+
+        customServiceTransportInfo.'
+      name: fields
+      in: query
+      required: false
+      x-exportParamName: Query.Fields2
+      schema:
+        type: array
+        items:
+          type: string
+
