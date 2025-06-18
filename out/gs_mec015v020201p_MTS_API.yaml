@@ -9,6 +9,8 @@ info:
     name: BSD-3-Clause
     url: https://forge.etsi.org/legal-matters
   version: 2.2.1
+servers:
+- url: https://localhost/mts/v1
 paths:
   /mts_capability_info:
     get:
@@ -269,7 +271,8 @@ components:
 
             1 = FLOW_SPECIFIC_MTS_SESSION'
           enum:
-          - SEE_DESCRIPTION
+          - 0
+          - 1
         flowFilter:
           type: array
           items:
@@ -325,7 +328,6 @@ components:
     MtsAccessInfo:
       description: The information on access network connection as defined below
       type: object
-      minItems: 1
       properties:
         accessId:
           description: Unique identifier for the access network connection
@@ -391,7 +393,6 @@ components:
     FlowFilter:
       description: Traffic flow filtering criteria, applicable only if when requestType is set as FLOW_SPECIFIC_MTS_SESSION. Any filtering criteria shall define a single session only. In case multiple sessions match flowFilter, the request shall be rejected. If the flowFilter field is included, at least one of its subfields shall be included. Any flowFilter subfield that is not included shall be ignored in traffic flow filtering
       type: object
-      minItems: 1
       properties:
         sourceIp:
           description: "Source address identity of session. The string for an IPv4 address shall be formatted in the \"dotted decimal\" notation as defined in IETF RFC\_1166\_[10]. The string for an IPv6 address shall be formatted according to clause 4 of IETF RFC\_5952\_[11], with in CIDR notation [12] used to provide the routing prefix"
@@ -426,23 +427,18 @@ components:
         minTpt:
           description: minimal throughput in [kbps]
           $ref: '#/components/schemas/Unit32'
-          type: object
         maxLatency:
           description: tolerable (one-way) delay in [10 nanoseconds]
           $ref: '#/components/schemas/Unit32'
-          type: object
         maxLoss:
           description: tolerable packet loss rate in [1/10^x]
           $ref: '#/components/schemas/Unit32'
-          type: object
         maxJitter:
           description: tolerable jitter in [10 nanoseconds]
           $ref: '#/components/schemas/Unit32'
-          type: object
         priority:
           description: 'numeric value (0 - 255) corresponding to the traffic priority: 0: low; 1: medium; 2: high; 3: critical'
           $ref: '#/components/schemas/Unit32'
-          type: object
   responses:
     '200':
       description: OK

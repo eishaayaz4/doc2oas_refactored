@@ -9,6 +9,8 @@ info:
     name: BSD-3-Clause
     url: https://forge.etsi.org/legal-matters
   version: 2.2.1
+servers:
+- url: https://localhost/bwm/v1
 paths:
   /bw_allocations/{allocationId}:
     get:
@@ -247,7 +249,8 @@ components:
 
             1 = SESSION_SPECIFIC_BW_ALLOCATION'
           enum:
-          - SEE_DESCRIPTION
+          - 0
+          - 1
         sessionFilter:
           type: array
           items:
@@ -292,7 +295,8 @@ components:
 
             1 = SESSION_SPECIFIC_BW_ALLOCATION'
           enum:
-          - SEE_DESCRIPTION
+          - 0
+          - 1
         sessionFilter:
           type: array
           items:
@@ -336,7 +340,6 @@ components:
     SessionFilter:
       description: Session filtering criteria, applicable when requestType is set as SESSION_SPECIFIC_BW_ALLOCATION. Any filtering criteria shall define a single session only. In case multiple sessions match sessionFilter, the request shall be rejected
       type: object
-      minItems: 0
       properties:
         sourceIp:
           description: "Source address identity of session. The string for an IPv4 address shall be formatted in the \"dotted decimal\" notation as defined in IETF RFC\_1166\_[10]. The string for an IPv6 address shall be formatted according to clause 4 of IETF RFC\_5952\_[11], with in CIDR notation [12] used to provide the routing prefix"
@@ -356,7 +359,6 @@ components:
     SessionFilter1:
       description: Session filtering criteria, applicable when requestType is set as SESSION_SPECIFIC_BW_ALLOCATION. Any filtering criteria shall define a single session only. In case multiple sessions match sessionFilter, the request shall be rejected
       type: object
-      minItems: 0
       properties:
         sourceIp:
           description: "Source address identity of session. The string for an IPv4 address shall be formatted in the \"dotted decimal\" notation as defined in IETF RFC\_1166\_[10]. The string for an IPv6 address shall be formatted according to clause 4 of IETF\_RFC\_5952\_[11], with in CIDR notation [12] used to provide the routing prefix"
